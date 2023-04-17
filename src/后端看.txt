@@ -1,0 +1,3 @@
+后端相关的格式定义都在@/src/request下面的文件完成
+@/src/request/requestData.ts里面请定义请求体所需要的数据格式
+@/src/request/responseData.ts里面请定义相应数据data的数据格式
