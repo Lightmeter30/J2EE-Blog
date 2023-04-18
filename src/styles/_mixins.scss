@@ -1,0 +1,16 @@
+@mixin center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin scroll-column($item-width, $item-number) {
+  overflow: hidden;
+  white-space: nowrap;
+  display: grid;
+  grid-auto-columns: $item-width;
+  grid-column-gap: calc((100% - $item-width * $item-number) / ($item-number - 1));
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  grid-auto-flow: column;
+}

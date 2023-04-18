@@ -6,6 +6,7 @@ import { resolve } from "path";
 import AutoImport from "unplugin-auto-import/vite"
 //自动导入ui-组件 比如说ant-design-vue  element-plus等
 import Components from 'unplugin-vue-components/vite';
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,7 +14,18 @@ export default defineConfig({
     vue(),
     AutoImport({
       //安装两行后你会发现在组件中不用再导入ref，reactive等
-      imports: ['vue', 'vue-router'],
+      imports: [
+        'vue',
+        'vue-router',
+        {
+          'naive-ui': [
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar',
+          ]
+        }
+      ],
       //存放的位置
       dts: "src/auto-import.d.ts",
     }),
@@ -21,6 +33,7 @@ export default defineConfig({
       // 引入组件的,包括自定义组件
       // 存放的位置
       dts: "src/components.d.ts",
+      resolvers: [NaiveUiResolver()]
     }),
   ],
   resolve: {
@@ -28,4 +41,11 @@ export default defineConfig({
       "@": resolve(__dirname, "./src")
     }
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "./src/styles/_variables.scss";@import "./src/styles/_mixins.scss";`,
+      },
+    },
+  }
 })
