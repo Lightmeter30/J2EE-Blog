@@ -121,5 +121,21 @@ const themeOverrides: GlobalThemeOverrides = {
   </n-config-provider>
 </template>
 
-<style scoped>
+<style lang="scss" >
+body, html, .n-config-provider {
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  background: $cloud-0-hex;
+}
+
+* {
+  box-sizing: border-box;
+  list-style: none;
+  user-select: none;
+}
+
 </style>

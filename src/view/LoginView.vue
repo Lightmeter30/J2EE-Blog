@@ -21,15 +21,15 @@
           <n-tab-pane name="signin" tab="登录">
             <div class="form">
               <n-form :rules="ruleLogin" content-style="width: 80%;">
-                <n-form-item-row label="用户名" path="username">
-                  <n-input type="username" placeholder="请输入用户名" v-model:value="login.username"/>
+                <n-form-item-row label="邮箱" path="username">
+                  <n-input  placeholder="请输入邮箱地址" v-model:value="login.username"/>
                 </n-form-item-row>
                 <n-form-item-row label="密码" path="passwd">
-                  <n-input type="passwd" placeholder="请输入密码" v-model:value="login.password"/>
+                  <n-input type="password" show-password-on="mousedown" placeholder="请输入密码" v-model:value="login.password"/>
                 </n-form-item-row>
               </n-form>
               <n-button type="primary" block secondary strong @click="submitLogin"
-                        style="background-color: rgba(242,182,4, 0.9);">
+                        style="background-color: #39c5bb;">
                 登录
               </n-button>
             </div>
@@ -37,18 +37,26 @@
           <n-tab-pane name="signup" tab="注册">
             <div class="form">
               <n-form :rules="ruleRegister">
-                <n-form-item-row label="用户名" path="username">
-                  <n-input type="username" placeholder="请输入用户名" v-model:value="register.username"/>
+                <n-form-item-row label="邮箱" path="username">
+                  <n-input  placeholder="请输入邮箱地址" v-model:value="register.username"/>
+                </n-form-item-row>
+                <n-form-item-row label="邮箱验证码" path="code">
+                  <n-input  placeholder="验证码" v-model:value="register.username"> <!-- TODO: 验证码需要改一下 -->
+                    <template #suffix>
+                      <span class="sendCodeButton" @click="sendCode()" >获取邮箱验证码</span>
+                    </template>
+                  </n-input>
+                  
                 </n-form-item-row>
                 <n-form-item-row label="密码" path="passwd">
-                  <n-input type="passwd" placeholder="请输入密码" v-model:value="register.password1"/>
+                  <n-input type="password" show-password-on="mousedown" placeholder="请输入密码" v-model:value="register.password1"/>
                 </n-form-item-row>
                 <n-form-item-row label="重复密码" path="passwd2">
-                  <n-input type="passwd" placeholder="请确认密码" v-model:value="register.password2"/>
+                  <n-input type="password" show-password-on="mousedown" placeholder="请确认密码" v-model:value="register.password2"/>
                 </n-form-item-row>
               </n-form>
               <n-button type="primary" block secondary strong @click="submitRegister"
-                        style="background-color: rgba(242,182,4, 0.9);">
+                        style="background-color: #39c5bb;">
                 注册
               </n-button>
             </div>
@@ -91,10 +99,10 @@ const ruleLogin: FormRules = {
     trigger: ['blur', 'input'],
     validator() {
       if (login.username.length === 0) {
-        return new Error('用户名不能为空')
+        return new Error('邮箱名不能为空')
       } else {
         if (!reg_username.test(login.username)) {
-          return new Error('必须同时包含字母和数字，以字母开头，长度为3-8')
+          return new Error('非法邮箱地址!')
         }
       }
     }
@@ -119,13 +127,16 @@ const ruleRegister: FormRules = {
     trigger: ['focus', 'input'],
     validator() {
       if (register.username?.length === 0) {
-        return new Error('用户名不能为空')
+        return new Error('邮箱名不能为空')
       } else {
         if (!reg_username.test(register.username)) {
-          return new Error('必须同时包含字母和数字，以字母开头，长度为3-8')
+          return new Error('非法邮箱地址')
         }
       }
     }
+  },
+  code: {
+    required: true,
   },
   passwd: {
     required: true,
@@ -162,10 +173,13 @@ const updateTab = (value: string) => {
 
 const submitLogin = async () => {
   if (login.username.length === 0) {
-    message.warning('用户名不能为空')
+    message.warning('邮箱地址不能为空')
   } else if (login.password.length === 0) {
     message.warning('密码不能为空')
-  } else {
+  } else if(!reg_username.test(login.username) || !reg_passwd.test(login.password)) {
+    message.warning('非法邮箱地址或者密码不满足要求！')
+  }
+  else {
     // const res: loginRes = await userState.login(login)
     // if (res.code === 20000) {
     //   await router.replace('/')
@@ -178,13 +192,15 @@ const submitLogin = async () => {
 }
 const submitRegister = async () => {
   if (register.username.length === 0) {
-    message.warning('用户名不能为空')
+    message.warning('邮箱地址不能为空')
   } else if (register.password1.length === 0) {
     message.warning('密码不能为空')
   } else if (register.password2.length === 0) {
     message.warning('请再次输入密码')
   } else if (register.password1 !== register.password2) {
     message.warning('两次输入密码不一致')
+  } else if(!reg_username.test(register.username) || !reg_passwd.test(register.password1)) {
+    message.warning('非法邮箱地址或者密码不满足要求！');
   } else {
     // const res: registerRes = await userState.register(register)
     // if (res.code == 20000) {
@@ -194,6 +210,10 @@ const submitRegister = async () => {
     //   login.passwd = register.passwd
     // }
   }
+}
+const sendCode = async () => {
+  console.log('sendcode');
+  message.success('验证码发送成功！五分钟内有效');
 }
 </script>
 
@@ -281,6 +301,14 @@ const submitRegister = async () => {
 
   .n-button {
     color: $Elements-Icy-Cocoon-3-hex;
+  }
+}
+
+.sendCodeButton {
+  cursor: pointer;
+  color: $cloud-1-hex;
+  &:hover {
+    color: $cloud-3-hex;
   }
 }
 </style>
