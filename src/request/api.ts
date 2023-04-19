@@ -21,7 +21,7 @@ function setData<T extends object>(data: T):FormData {
 
 
 // 这下面写API就好了
-export const loginAPI = (data: requestTypes.ReqLogin): Res<responseTypes.ResLogin> => {
+export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.ResLogin> => {
   const Data = setData(data);
   return axios.post("user/login", Data);
 }

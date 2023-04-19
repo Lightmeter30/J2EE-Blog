@@ -1,5 +1,5 @@
 import {h} from "vue";
-import type {ReqLogin} from '@/request/requestData'
+import type {RequestLogin} from '@/request/requestData'
 import  type {FormRules} from 'naive-ui'
 export const formatFeedback = (raw: string | undefined) => {
     h('div', {style: 'color: green'}, [raw + '而且是绿的'])
