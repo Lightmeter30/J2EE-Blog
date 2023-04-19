@@ -124,6 +124,8 @@ const themeOverrides: GlobalThemeOverrides = {
 <style lang="scss" >
 body, html, .n-config-provider {
   height: 100%;
+  border: 0;
+  margin: 0;
 }
 
 #app {
