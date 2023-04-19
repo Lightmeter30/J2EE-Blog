@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import {Login, SignUp} from '@/components/svg'
 import {reg_username, reg_passwd, formatFeedback} from '@/utils/validate'
-import type {ReqLogin, ReqRegister} from '@/request/requestData'
+import type {RequestLogin, RequestRegister} from '@/request/requestData'
 import { loginAPI } from '@/request/api'
 import type {FormRules} from "naive-ui";
 import {useUserStore} from '@/stores/user'
@@ -83,11 +83,11 @@ const route = useRoute()
 const router = useRouter()
 const message = useMessage()
 const userState = useUserStore()
-const login = reactive<ReqLogin>({
+const login = reactive<RequestLogin>({
   username: '',
   password: '',
 })
-const register = reactive<ReqRegister>({
+const register = reactive<RequestRegister>({
   username: '',
   password1: '',
   password2: ''

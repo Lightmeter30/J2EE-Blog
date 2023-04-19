@@ -11,10 +11,10 @@
 <script setup lang="ts">
 import 'hover.css';
 import { loginAPI } from '@/request/api';
-import { ReqLogin } from '@/request/requestData';
+import { RequestLogin } from '@/request/requestData';
 import { reactive } from "vue";
 
-const user:ReqLogin = {
+const user:RequestLogin = {
   username: 'takune',
   password: 'passwd',
 }
