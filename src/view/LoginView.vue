@@ -22,7 +22,7 @@
             <div class="form">
               <n-form :rules="ruleLogin" content-style="width: 80%;">
                 <n-form-item-row label="邮箱" path="username">
-                  <n-input  placeholder="请输入邮箱地址" v-model:value="login.username"/>
+                  <n-input  placeholder="请输入邮箱地址" v-model:value="login.email"/>
                 </n-form-item-row>
                 <n-form-item-row label="密码" path="passwd">
                   <n-input type="password" show-password-on="mousedown" placeholder="请输入密码" v-model:value="login.password"/>
@@ -37,11 +37,14 @@
           <n-tab-pane name="signup" tab="注册">
             <div class="form">
               <n-form :rules="ruleRegister">
-                <n-form-item-row label="邮箱" path="username">
-                  <n-input  placeholder="请输入邮箱地址" v-model:value="register.username"/>
+                <n-form-item-row label="用户名" path="username">
+                  <n-input  placeholder="请输入用户名" v-model:value="register.name"/>
+                </n-form-item-row>
+                <n-form-item-row label="邮箱" path="email">
+                  <n-input  placeholder="请输入邮箱地址" v-model:value="register.email"/>
                 </n-form-item-row>
                 <n-form-item-row label="邮箱验证码" path="code">
-                  <n-input  placeholder="验证码" v-model:value="register.username"> <!-- TODO: 验证码需要改一下 -->
+                  <n-input  placeholder="验证码" v-model:value="register.verifyCode"> <!-- TODO: 验证码需要改一下 -->
                     <template #suffix>
                       <span class="sendCodeButton" @click="sendCode()" >获取邮箱验证码</span>
                     </template>
@@ -49,10 +52,10 @@
                   
                 </n-form-item-row>
                 <n-form-item-row label="密码" path="passwd">
-                  <n-input type="password" show-password-on="mousedown" placeholder="请输入密码" v-model:value="register.password1"/>
+                  <n-input type="password" show-password-on="mousedown" placeholder="请输入密码" v-model:value="password.password1"/>
                 </n-form-item-row>
                 <n-form-item-row label="重复密码" path="passwd2">
-                  <n-input type="password" show-password-on="mousedown" placeholder="请确认密码" v-model:value="register.password2"/>
+                  <n-input type="password" show-password-on="mousedown" placeholder="请确认密码" v-model:value="password.password2"/>
                 </n-form-item-row>
               </n-form>
               <n-button type="primary" block secondary strong @click="submitRegister"
@@ -69,14 +72,15 @@
 
 <script setup lang="ts">
 import {Login, SignUp} from '@/components/svg'
-import {reg_username, reg_passwd, formatFeedback} from '@/utils/validate'
-import type {RequestLogin, RequestRegister} from '@/request/requestData'
-import { loginAPI } from '@/request/api'
+import {reg_email, reg_passwd, formatFeedback} from '@/utils/validate'
+import type {RequestLogin, RequestRegister, RequestGetVerifyCode} from '@/request/requestData'
+import { loginAPI, registerAPI, getVerifyCodeAPI } from '@/request/api'
 import type {FormRules} from "naive-ui";
 import {useUserStore} from '@/stores/user'
 import {ref, type Ref, reactive} from 'vue'
 import {useMessage} from "naive-ui"
 import {useRoute, useRouter} from "vue-router";
+import { sub } from 'date-fns';
 
 const tabValue: Ref<string> = ref('signin')
 const route = useRoute()
@@ -84,11 +88,18 @@ const router = useRouter()
 const message = useMessage()
 const userState = useUserStore()
 const login = reactive<RequestLogin>({
-  username: '',
+  email: '',
   password: '',
 })
+
 const register = reactive<RequestRegister>({
-  username: '',
+  name: '',
+  email: '',
+  password: '',
+  verifyCode: '',
+})
+
+const password = reactive({
   password1: '',
   password2: ''
 })
@@ -98,10 +109,10 @@ const ruleLogin: FormRules = {
     required: true,
     trigger: ['blur', 'input'],
     validator() {
-      if (login.username.length === 0) {
+      if (login.email.length === 0) {
         return new Error('邮箱名不能为空')
       } else {
-        if (!reg_username.test(login.username)) {
+        if (!reg_email.test(login.email)) {
           return new Error('非法邮箱地址!')
         }
       }
@@ -122,18 +133,21 @@ const ruleLogin: FormRules = {
   }
 }
 const ruleRegister: FormRules = {
-  username: {
+  email: {
     required: true,
     trigger: ['focus', 'input'],
     validator() {
-      if (register.username?.length === 0) {
+      if (register.email.length === 0) {
         return new Error('邮箱名不能为空')
       } else {
-        if (!reg_username.test(register.username)) {
+        if (!reg_email.test(register.email)) {
           return new Error('非法邮箱地址')
         }
       }
     }
+  },
+  username: {
+    required: true,
   },
   code: {
     required: true,
@@ -142,10 +156,10 @@ const ruleRegister: FormRules = {
     required: true,
     trigger: ['focus', 'input'],
     validator() {
-      if (register.password1.length === 0) {
+      if (password.password1.length === 0) {
         return new Error('密码不能为空')
       } else {
-        if (!reg_passwd.test(register.password1)) {
+        if (!reg_passwd.test(password.password1)) {
           return new Error('密码至少同时包含字母和数字，且长度为8-18')
         }
       }
@@ -155,10 +169,10 @@ const ruleRegister: FormRules = {
     required: true,
     trigger: ['focus', 'input'],
     validator() {
-      if (register.password2.length === 0) {
+      if (password.password2.length === 0) {
         return new Error('请再次输入密码!')
       } else {
-        if (register.password2 !== register.password1) {
+        if (password.password2 !== password.password1) {
           return new Error('前后输入密码不一致!')
         }
       }
@@ -172,11 +186,11 @@ const updateTab = (value: string) => {
 }
 
 const submitLogin = async () => {
-  if (login.username.length === 0) {
+  if (login.email.length === 0) {
     message.warning('邮箱地址不能为空')
   } else if (login.password.length === 0) {
     message.warning('密码不能为空')
-  } else if(!reg_username.test(login.username) || !reg_passwd.test(login.password)) {
+  } else if(!reg_email.test(login.email) || !reg_passwd.test(login.password)) {
     message.warning('非法邮箱地址或者密码不满足要求！')
   }
   else {
@@ -186,20 +200,28 @@ const submitLogin = async () => {
     // } else {
     //   message.error('该用户未注册')
     // }
-    let res = await loginAPI(login);
-    console.log(res.data.errno,res.data.msg,res.data.userid,res.data.username);
+    const res = await loginAPI(login);
+    if(res.data.status === 0) {
+      message.success('登录成功!');
+      
+      router.replace('/'); // 去主页
+    } else {
+      message.warning('账号或者密码错误!');
+    }
   }
 }
 const submitRegister = async () => {
-  if (register.username.length === 0) {
+  if (register.email.length === 0) {
     message.warning('邮箱地址不能为空')
-  } else if (register.password1.length === 0) {
+  } else if (register.name.length === 0) {
+    message.warning('用户名不能为空')
+  } else if (password.password1.length === 0) {
     message.warning('密码不能为空')
-  } else if (register.password2.length === 0) {
+  } else if (password.password2.length === 0) {
     message.warning('请再次输入密码')
-  } else if (register.password1 !== register.password2) {
+  } else if (password.password1 !== password.password2) {
     message.warning('两次输入密码不一致')
-  } else if(!reg_username.test(register.username) || !reg_passwd.test(register.password1)) {
+  } else if(!reg_email.test(register.email) || !reg_passwd.test(password.password1)) {
     message.warning('非法邮箱地址或者密码不满足要求！');
   } else {
     // const res: registerRes = await userState.register(register)
@@ -209,11 +231,26 @@ const submitRegister = async () => {
     //   login.username = register.username
     //   login.passwd = register.passwd
     // }
+    register.password = password.password1;
+    const res = await registerAPI(register);
+    if(res.data.status === 0) {
+      message.success('注册成功!');
+      login.email = register.email;
+      login.password = register.password;
+      submitLogin();
+    } else {
+      message.warning('注册失败,请重新尝试!');
+    }
   }
 }
 const sendCode = async () => {
   console.log('sendcode');
-  message.success('验证码发送成功！五分钟内有效');
+  const email: RequestGetVerifyCode = { email: register.email };
+  const res = await getVerifyCodeAPI(email);
+  if(res.data.status === 0)
+    message.success('验证码发送成功！五分钟内有效');
+  else
+  message.warning('发送失败,请重新尝试!');
 }
 </script>
 
