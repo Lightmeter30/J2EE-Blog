@@ -19,10 +19,72 @@ function setData<T extends object>(data: T):FormData {
   return Data;
 }
 
+/**
+ * 用于注册时发送邮箱验证码
+ * user/getVerifyCode
+ */
+export const getVerifyCodeAPI = (data: requestTypes.RequestGetVerifyCode): Res<responseTypes.ResponseGetVerifyCode> => {
+  const Data = setData(data);
+  return axios.post("user/getVerifyCode", Data);
+}
 
-// 这下面写API就好了
-export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.ResLogin> => {
+/**
+ * 用于用户注册
+ * user/register
+ */
+
+export const registerAPI = (data: requestTypes.RequestRegister): Res<responseTypes.ResponseRegister> => {
+  const Data = setData(data);
+  return axios.post("user/register", Data);
+}
+
+/**
+ * 用于用户登录
+ * user/login
+ */
+
+export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.ResponseLogin> => {
   const Data = setData(data);
   return axios.post("user/login", Data);
+}
+
+/**
+ * 用于获取用户信息
+ * user/getInfo
+ */
+
+export const getUserInfoAPI = (): Res<responseTypes.ResponseGetInfo> => {
+  return axios.post("user/getInfo");
+}
+
+
+/**
+ * 用于更改用户信息
+ * user/updateInfo
+ */
+
+export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo): Res<responseTypes.ResponseUpdateInfo> => {
+  const Data = setData(data);
+  return axios.post("user/updateInfo", Data);
+}
+
+/**
+ * 用于更改用户头像
+ * user/updateAvatar
+ */
+
+export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar): Res<responseTypes.ResponseUpdateAvatar> => {
+  const Data = setData(data);
+  return axios.post("user/updateAvatar", Data);
+}
+
+/**
+ * 用于更改用户密码
+ * user/updatePassword
+ */
+
+export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword): Res<responseTypes.ResponseUpdatePassword> => {
+  const Data = setData(data);
+  return axios.post("user/updatePassword", Data);
 }
 
