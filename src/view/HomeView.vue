@@ -1,35 +1,21 @@
 <template>
   <div class="home">
-    <div @click="hClick" class="button hvr-bounce-to-left" >home</div>
+    <!-- <div @click="hClick" class="button hvr-bounce-to-left" >home</div>
     <div>
       {{ userInfo.username }}
       {{ userInfo.userid }}
+    </div> -->
+    <div style="position: relative; top: 100px; left: 200px; " >
+      <user-card></user-card>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import 'hover.css';
-import { loginAPI } from '@/request/api';
-import { RequestLogin } from '@/request/requestData';
-import { reactive } from "vue";
-
-const user:RequestLogin = {
-  username: 'takune',
-  password: 'passwd',
-}
-
-const userInfo =  reactive({
-  username: '',
-  userid: -1,
-})
-
-const hClick = async () => {
-  console.log(user);
-  let res = await loginAPI(user);
-  console.log(res.data.errno,res.data.msg,res.data.userid,res.data.username);
-}
-
+// import 'hover.css';
+// import { loginAPI } from '@/request/api';
+// import { RequestLogin } from '@/request/requestData';
+// import { reactive } from "vue";
 </script>
 
 <style scoped lang="scss">

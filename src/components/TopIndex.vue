@@ -25,7 +25,7 @@ function search() {
   console.log('search')
   console.log(searchText);
 }
-function handleSelect (key: string | number) {
+function handleSelect(key: string | number) {
   console.log(key);
 };
 function routeTo(key: number) {
@@ -35,32 +35,29 @@ function routeTo(key: number) {
 </script>
 
 <template>
-<div class="topIndex">
-  <div class="index">
-    <span @click="routeTo(1)" >博客主页</span>
-    <span @click="routeTo(2)" style="margin-left: 10px;" >个人主页</span>
-  </div>
-  <div class="search">
-    <n-input round v-model:value="searchText" placeholder="请输入关键词">
-      <template #suffix >
-        <n-icon class="searchButton" @click="search()" >
-            <Search />
-        </n-icon>
-      </template>
-    </n-input>
-  </div>
-  <div class="info">
-    <div  class="myInfo">
-      <n-dropdown :options="options" @select="handleSelect" >
-      <n-avatar
-      round
-      src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-    />
-      </n-dropdown>
+  <div class="topIndex">
+    <div class="index">
+      <span @click="routeTo(1)">博客主页</span>
+      <span @click="routeTo(2)" style="margin-left: 10px;">个人主页</span>
     </div>
-    <div v-show="false" @click="routeTo(3)" class="login">登录/注册</div>
+    <div class="search">
+      <n-input round v-model:value="searchText" placeholder="请输入关键词">
+        <template #suffix>
+          <n-icon class="searchButton" @click="search()">
+            <Search />
+          </n-icon>
+        </template>
+      </n-input>
+    </div>
+    <div class="info">
+      <div class="myInfo">
+        <n-dropdown :options="options" @select="handleSelect">
+          <n-avatar round src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+        </n-dropdown>
+      </div>
+      <div v-show="false" @click="routeTo(3)" class="login">登录/注册</div>
+    </div>
   </div>
-</div>
 </template>
 
 <style scoped lang="scss">
@@ -79,17 +76,20 @@ function routeTo(key: number) {
   .index {
     margin-left: 10px;
 
-    span{
+    span {
       cursor: pointer;
+
       &:hover {
         opacity: 0.8;
         text-decoration: underline;
       }
     }
   }
+
   .search {
     width: 30%;
   }
+
   .info {
     width: auto;
     margin-right: 10px;
@@ -97,19 +97,22 @@ function routeTo(key: number) {
     .myInfo {
       cursor: pointer;
     }
+
     .login {
       cursor: pointer;
-      &:hover{
+
+      &:hover {
         text-decoration: underline;
         color: aquamarine;
       }
     }
   }
 }
+
 .searchButton {
   cursor: pointer;
+
   &:hover {
     opacity: 0.9;
   }
-}
-</style>
+}</style>
