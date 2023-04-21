@@ -12,12 +12,12 @@ const authorInfo = {
   isAttention: false,
 }
 
-function toPersonalPage(){
+function toPersonalPage() {
   console.log('toPersonalPage');
 }
 
-function addOrRemoveAttention(key: number){
-  console.log('addAttention',key);
+function addOrRemoveAttention(key: number) {
+  console.log('addAttention', key);
 }
 </script>
 
@@ -27,9 +27,14 @@ function addOrRemoveAttention(key: number){
       <n-avatar size="100" round :src="authorInfo.url" />
     </div>
     <div class="name">
-      <span @click="toPersonalPage()" >
-        <b>{{ authorInfo.name }}</b>
-      </span>
+      <n-popover trigger="hover" placement="bottom" >
+        <template #trigger>
+          <span @click="toPersonalPage()">
+            <b>{{ authorInfo.name }}</b>
+          </span>
+        </template>
+        <span>{{ authorInfo.name }}的个人主页</span>
+      </n-popover>
     </div>
     <div class="userInfo">
       <div class="info">
@@ -58,7 +63,7 @@ function addOrRemoveAttention(key: number){
       </div>
     </div>
     <div class="attention">
-      <n-button v-if="!authorInfo.isAttention" @click="addOrRemoveAttention(1)" color="#39c5bb" block >
+      <n-button v-if="!authorInfo.isAttention" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
         <template #icon>
           <n-icon>
             <add-circle />
@@ -66,7 +71,7 @@ function addOrRemoveAttention(key: number){
         </template>
         关注
       </n-button>
-      <n-button v-else color="#39c5bb" @click="addOrRemoveAttention(2)" block >
+      <n-button v-else color="#39c5bb" @click="addOrRemoveAttention(2)" block>
         <template #icon>
           <n-icon>
             <remove-circle />
@@ -131,4 +136,5 @@ function addOrRemoveAttention(key: number){
     padding-top: 17px;
   }
 
-}</style>
+}
+</style>

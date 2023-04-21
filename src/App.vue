@@ -119,6 +119,7 @@ const themeOverrides: GlobalThemeOverrides = {
       <top-index />
       <div style="height: 50px;" ></div>
       <router-view/>
+      <n-back-top :right="30" />
     </n-message-provider>
   </n-config-provider>
 </template>
