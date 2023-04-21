@@ -116,6 +116,8 @@ const themeOverrides: GlobalThemeOverrides = {
 <template>
 <n-config-provider :theme-overrides="themeOverrides">
     <n-message-provider>
+      <top-index />
+      <div style="height: 50px;" ></div>
       <router-view/>
     </n-message-provider>
   </n-config-provider>

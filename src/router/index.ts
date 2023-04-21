@@ -21,9 +21,9 @@ const router = createRouter({
       component: () => import('@/view/EditView.vue')
     },
     {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/view/TestView.vue')
+      path: '/blog',
+      name: 'blog',
+      component: () => import('@/view/BlogView.vue')
     }
   ]
 })
