@@ -3,7 +3,8 @@ import { Search, LogOut } from "@vicons/ionicons5"
 import { h } from 'vue'
 import type { Component } from 'vue'
 import { NIcon } from 'naive-ui'
-
+import {useUserStore} from '@/stores/user'
+const userState = useUserStore();
 const renderIcon = (icon: Component) => {
   return () => {
     return h(NIcon, null, {
@@ -52,7 +53,7 @@ function routeTo(key: number) {
     <div class="info">
       <div class="myInfo">
         <n-dropdown :options="options" @select="handleSelect">
-          <n-avatar round src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+          <n-avatar round :src="userState.avatar" />
         </n-dropdown>
       </div>
       <div v-show="false" @click="routeTo(3)" class="login">登录/注册</div>

@@ -4,7 +4,7 @@
 
 <template>
   <div class="blogCard">
-
+    blogCard
   </div>
 </template>
 

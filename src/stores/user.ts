@@ -7,7 +7,7 @@ export const useUserStore = defineStore({
         token: '',
         userId: -1,
         isLogin: false,
-        url: '',
+        avatar: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
     }),
 
     getters: {
@@ -19,13 +19,13 @@ export const useUserStore = defineStore({
           this.token = userToken;
           this.userId = userId;
           this.isLogin = true;
-          this.url = '123';
+          this.avatar = '123';
         },
         logout() {
           this.token = ''
           this.userId = -1;
           this.isLogin = false;
-          this.url = '';
+          this.avatar = '';
         },
     },
 

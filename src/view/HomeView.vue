@@ -5,8 +5,11 @@
       {{ userInfo.username }}
       {{ userInfo.userid }}
     </div> -->
-    <div style="position: relative; top: 100px; left: 200px; " >
+    <div style="position: relative; top: 100px; left: 200px; width: 80%;height: auto; " >
       <user-card></user-card>
+      <blog-card></blog-card>
+      <comment-list></comment-list>
+      <user-list></user-list>
     </div>
   </div>
 </template>
