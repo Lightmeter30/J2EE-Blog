@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BlogCard: typeof import('./components/BlogCard.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Login: typeof import('./components/svg/Login.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
@@ -30,5 +31,6 @@ declare module '@vue/runtime-core' {
     SignUp: typeof import('./components/svg/SignUp.vue')['default']
     TopIndex: typeof import('./components/TopIndex.vue')['default']
     UserCard: typeof import('./components/UserCard.vue')['default']
+    UserList: typeof import('./components/userList.vue')['default']
   }
 }
