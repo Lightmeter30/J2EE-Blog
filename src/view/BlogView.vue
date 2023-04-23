@@ -36,7 +36,7 @@ onMounted(() => {
             <n-avatar round :size="60" :src="userStore.avatar" />
           </div>
           <div class="myInput">
-            <n-input v-model:value="myComment" type="textarea" placeholder="请输入你的留言" maxlength="100"></n-input>
+            <n-input v-model:value="myComment" type="textarea" placeholder="请输入你的留言(限100字)" show-count maxlength="100"></n-input>
           </div>
           <div class="mySubmit">
             <n-button color="#39c5bb" @click="comment" >

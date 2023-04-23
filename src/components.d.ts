@@ -32,6 +32,6 @@ declare module '@vue/runtime-core' {
     SignUp: typeof import('./components/svg/SignUp.vue')['default']
     TopIndex: typeof import('./components/TopIndex.vue')['default']
     UserCard: typeof import('./components/UserCard.vue')['default']
-    UserList: typeof import('./components/userList.vue')['default']
+    UserList: typeof import('./components/UserList.vue')['default']
   }
 }
