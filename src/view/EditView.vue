@@ -1,8 +1,37 @@
 <script setup lang="ts">
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
+import type {FormRules} from "naive-ui";
+// import { CloudUploadOutline } from "@vicons/ionicons5"
 
 let text = ref('');
+const NormalToolbar = MdEditor.NormalToolbar;
+const message = useMessage();
+const blog = reactive({
+  title: '',
+  description: '',
+  content: '',
+});
+const ruleBlog: FormRules = {
+  title: {
+    required: true,
+    trigger: ['focus', 'input'],
+    validator() {
+      if (blog.title.length === 0) {
+        return new Error('请添加文章标题')
+      }
+    }
+  },
+    description: {
+    required: true,
+    trigger: ['focus', 'input'],
+    validator() {
+      if (blog.description.length === 0) {
+        return new Error('请添加文章简介')
+      }
+    }
+  },
+}
 const toolbar = [
   'bold',
   'underline',
@@ -26,12 +55,13 @@ const toolbar = [
   '-',
   'revoke',
   'next',
-  'save',
+  '-',
+  0,
+  1,
   '=',
   'pageFullscreen',
   'fullscreen',
   'preview',
-  'htmlPreview',
   'catalog'
 ];
 function setText() {
@@ -42,29 +72,69 @@ int main(){  \n\
 } \n\
 ```'
 }
+function save() {
+  message.success('已保存到草稿箱!');
+};
+
+function upload() {
+  message.success('发布成功!')
+}
+
 </script>
 
 <template>
   <div class="editContainer">
-    <div class="editTitle"></div>
-    <div class="editContent">
-      <MdEditor 
-      v-model="text" 
-      :toolbars="toolbar" 
-      :show-code-row-number="true"
-      ></MdEditor>
+    <div class="editTitle">
+      <n-form :rules="ruleBlog">
+        <n-form-item-row label="标题" path="title">
+          <n-input maxlength="10" placeholder="请输入文章标题" v-model:value="blog.title" />
+        </n-form-item-row>
+        <n-form-item-row label="简介" path="description">
+          <n-input maxlength="30" placeholder="请输入简介" v-model:value="blog.description" />
+        </n-form-item-row>
+      </n-form>
     </div>
-    <n-button @click="setText()" >set</n-button>
+    <div class="editContent">
+      <MdEditor v-model="text" :toolbars="toolbar" :show-code-row-number="true">
+        <template #defToolbars>
+          <NormalToolbar title="保存到草稿箱" @onClick="save()">
+            <template #trigger>
+              <svg t="1682220624006" class="md-editor-icon" aria-hidden="true" viewBox="0 0 1024 1024" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" p-id="10601" width="200" height="200">
+                <path
+                  d="M454.4 170.666667h113.066667c8.533333 0 14.933333 2.133333 19.2 8.533333s8.533333 12.8 8.533333 19.2v198.4h138.666667c8.533333 0 12.8 2.133333 14.933333 6.4 2.133333 4.266667 0 8.533333-4.266667 14.933333l-217.6 243.2c-4.266667 6.4-10.666667 8.533333-19.2 8.533334s-12.8-2.133333-19.2-8.533334l-215.466666-243.2c-4.266667-6.4-6.4-10.666667-4.266667-14.933333s6.4-6.4 14.933333-6.4h142.933334v-198.4c0-8.533333 2.133333-14.933333 8.533333-19.2 4.266667-6.4 12.8-8.533333 19.2-8.533333z m-226.133333 512h569.6c8.533333 0 14.933333 2.133333 19.2 8.533333 6.4 6.4 8.533333 12.8 8.533333 19.2v142.933333h-625.066667v-142.933333c0-8.533333 2.133333-14.933333 8.533334-19.2 4.266667-6.4 10.666667-8.533333 19.2-8.533333z m482.133333 57.6v27.733333h57.6v-27.733333h-57.6z"
+                  p-id="10602" fill="#707070"></path>
+              </svg> </template>
+          </NormalToolbar>
+          <NormalToolbar title="发布" @onClick="upload()">
+            <template #trigger>
+              <svg class="md-editor-icon" aria-hidden="true" t="1682219906971" viewBox="0 0 1024 1024" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" p-id="2638" width="200" height="200">
+                <path
+                  d="M512 97.52381c228.912762 0 414.47619 185.563429 414.47619 414.47619s-185.563429 414.47619-414.47619 414.47619S97.52381 740.912762 97.52381 512 283.087238 97.52381 512 97.52381z m0 73.142857C323.486476 170.666667 170.666667 323.486476 170.666667 512s152.81981 341.333333 341.333333 341.333333 341.333333-152.81981 341.333333-341.333333S700.513524 170.666667 512 170.666667z m-2.072381 125.220571l222.890667 222.890667-51.712 51.712-135.070476-135.070476-0.024381 299.544381h-73.142858V436.394667l-134.119619 134.095238-51.712-51.712 222.890667-222.890667z"
+                  p-id="2639" fill="#707070"></path>
+              </svg>
+            </template>
+          </NormalToolbar>
+        </template>
+      </MdEditor>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.editContainer{
+.editContainer {
 
-  .editTitle{}
+  .editTitle {
+    width: 50%;
+    position: relative;
+    left: 25%;
+    padding-top: 40px;
+  }
 
-  .editContent{}
+  .editContent {
+  }
 
-  .editSubmit{}
+  .editSubmit {}
 }
 </style>

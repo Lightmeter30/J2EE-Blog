@@ -114,7 +114,7 @@ const themeOverrides: GlobalThemeOverrides = {
 </script>
 
 <template>
-<n-config-provider :theme-overrides="themeOverrides">
+<n-config-provider :theme-overrides="themeOverrides" > <!-- :theme-overrides="themeOverrides" -->
     <n-message-provider>
       <top-index />
       <div style="height: 50px;" ></div>
@@ -131,14 +131,17 @@ body, html, .n-config-provider {
   margin: 0;
 }
 
-#app {
-  height: 100%;
-  width: 100%;
+body {
   background: $cloud-0-hex;
 }
 
+#app {
+  height: 100%;
+  width: 100%;
+  // background: $cloud-0-hex;
+}
+
 * {
-  box-sizing: border-box;
   list-style: none;
   user-select: none;
 }

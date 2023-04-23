@@ -29,12 +29,14 @@ onMounted(() => {
   position: relative;
   left: 5%;
   width: 90%;
+  // background-color: $cloud-0-hex;
+  height: auto;
   display: flex;
   justify-content: space-around;
   .card {
     position: relative;
-    top: 40px;
-    left: 10px;
+    left: -20px;
+    padding-top: 40px;
   }
   .content {
     position: relative;
@@ -44,7 +46,8 @@ onMounted(() => {
     padding: 20px;
     background-color: #fff;
     border-radius: 1rem;
-    min-height: 1600px;
+    min-height: 560px;
+    margin-bottom: 80px;
     /* may change */
   }
 }

@@ -86,7 +86,7 @@ function addOrRemoveAttention(key: number) {
 <style scoped lang="scss">
 .userCard {
   text-align: center;
-  height: 350px;
+  height: 300px;
   width: 250px;
   border-radius: 1rem;
   background-color: white;
