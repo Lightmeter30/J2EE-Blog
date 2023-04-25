@@ -21,7 +21,7 @@ function toPersonalPage() {
         <n-avatar round :size="60" :src="comment.avatar" />
       </div>
       <div class="info" >
-        <span class="name" @click="toPersonalPage()" >{{ comment.name }}</span><br/>
+        <span class="name" @click="toPersonalPage()" ><b>{{ comment.name }}</b></span><br/>
         <span class="sub" >{{ comment.time }} {{ comment.id }}楼</span>
       </div>
     </div>
@@ -50,11 +50,7 @@ function toPersonalPage() {
         color: $cloud-1-hex;
         .name {
           font-size: large;
-          cursor: pointer;
-          &:hover {
-            text-decoration: underline;
-            opacity: 0.9;
-          }
+          @include text-hover;
         }
       }
     }

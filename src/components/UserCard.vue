@@ -107,11 +107,7 @@ function addOrRemoveAttention(key: number) {
     padding-top: 10px;
 
     span {
-      cursor: pointer;
-
-      &:hover {
-        text-decoration: underline;
-      }
+      @include text-hover;
     }
   }
 

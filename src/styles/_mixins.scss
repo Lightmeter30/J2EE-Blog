@@ -14,3 +14,13 @@
   scroll-behavior: smooth;
   grid-auto-flow: column;
 }
+
+@mixin text-hover {
+  color: $cloud-1-hex;
+  cursor: pointer;
+
+  &:hover {
+    color: $miku-fans-theme;
+    opacity: 0.9;
+  }
+}
