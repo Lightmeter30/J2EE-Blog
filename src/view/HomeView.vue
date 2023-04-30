@@ -5,12 +5,12 @@
       {{ userInfo.username }}
       {{ userInfo.userid }}
     </div> -->
-    <div style="position: relative; top: 100px; left: 200px; width: 80%;height: auto;margin-bottom: 50px; " >
-      <user-card></user-card>
       <blog-card></blog-card>
-      <comment-list></comment-list>
-      <user-list></user-list>
-    </div>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
   </div>
 </template>
 
@@ -22,4 +22,11 @@
 </script>
 
 <style scoped lang="scss">
+.home {
+  width: 80%;
+  position: relative;
+  left: 10%;
+  margin-top: 20px;
+  // margin-bottom: 20px;
+}
 </style>

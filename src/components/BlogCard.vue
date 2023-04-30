@@ -42,7 +42,7 @@ function toPersonView() {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-
+    margin-bottom: 15px;
     .title {
       font-size: 22px;
       span {

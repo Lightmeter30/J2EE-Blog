@@ -38,8 +38,8 @@ function routeTo(key: number) {
 <template>
   <div class="topIndex">
     <div class="index">
-      <span @click="routeTo(1)">博客主页</span>
-      <span @click="routeTo(2)" style="margin-left: 10px;">个人主页</span>
+      <span @click="routeTo(1)"><b>博客主页</b></span>
+      <span @click="routeTo(2)" style="margin-left: 10px;"><b>个人主页</b></span>
     </div>
     <div class="search">
       <n-input round v-model:value="searchText" placeholder="请输入关键词">
@@ -78,12 +78,8 @@ function routeTo(key: number) {
     margin-left: 10px;
 
     span {
-      cursor: pointer;
-
-      &:hover {
-        opacity: 0.8;
-        text-decoration: underline;
-      }
+      color: $cloud-1-hex;
+      @include text-hover;
     }
   }
 

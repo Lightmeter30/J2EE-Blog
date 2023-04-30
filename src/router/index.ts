@@ -24,7 +24,39 @@ const router = createRouter({
       path: '/blog',
       name: 'blog',
       component: () => import('@/view/BlogView.vue')
-    }
+    },
+    {
+      path: '/space',
+      name: 'space',
+      component: () => import('@/view/PersonalView.vue'),
+      children: [
+        {
+          path: 'home',
+          name: 'spaceHome',
+          component: () => import('@/view/space/SpaceHome.vue')
+        },
+        {
+          path: 'blog',
+          name: 'spaceBlog',
+          component: () => import('@/view/space/SpaceBlog.vue')
+        },
+        {
+          path: 'info',
+          name: 'spaceInfo',
+          component: () => import('@/view/space/SpaceChangeInfo.vue')
+        },
+        {
+          path: 'collect',
+          name: 'spaceCollect',
+          component: () => import('@/view/space/SpaceCollect.vue')
+        },
+        {
+          path: 'draft',
+          name: 'spaceDraft',
+          component: () => import('@/view/space/SpaceDraft.vue')
+        },
+      ],
+    },
   ]
 })
 
