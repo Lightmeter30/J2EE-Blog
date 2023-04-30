@@ -58,7 +58,8 @@ function addOrRemoveAttention(key: number) {
   .userList {
     background-color: white;
     display: flex;
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 
     .title {
       margin-top: 5px;

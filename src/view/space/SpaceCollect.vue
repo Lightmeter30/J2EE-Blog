@@ -9,5 +9,9 @@
 </template>
 
 <style scoped lang="scss">
-.spaceCollect {}
+.spaceCollect {
+  background-color: white;
+  border-radius: 5px;
+  padding: 20px;
+}
 </style>

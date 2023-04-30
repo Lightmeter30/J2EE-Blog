@@ -36,9 +36,14 @@ const router = createRouter({
           component: () => import('@/view/space/SpaceHome.vue')
         },
         {
-          path: 'blog',
-          name: 'spaceBlog',
-          component: () => import('@/view/space/SpaceBlog.vue')
+          path: 'attention',
+          name: 'spaceAttention',
+          component: () => import('@/view/space/SpaceList.vue')
+        },
+        {
+          path: 'fans',
+          name: 'spaceFans',
+          component: () => import('@/view/space/SpaceList.vue')
         },
         {
           path: 'info',
