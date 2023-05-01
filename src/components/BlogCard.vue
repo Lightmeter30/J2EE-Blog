@@ -18,10 +18,12 @@ const blog = {
 
 function toBlogView() {
   console.log('toBlogView');
+  router.push({path: '/blog' ,query: {id: blog.id}});
 }
 
 function toPersonView() {
   console.log('toPersonView');
+  router.push({path: '/space/home' ,query: {name: blog.author}});
 }
 
 function toEdit() {
@@ -49,7 +51,7 @@ function remove() {
 <template>
   <div class="blogCard">
     <div class="title">
-      <span @click="toPersonView()"><b>{{ blog.title }}</b></span>
+      <span @click="toBlogView()"><b>{{ blog.title }}</b></span>
     </div>
     <div class="description">
       {{ blog.description }}
