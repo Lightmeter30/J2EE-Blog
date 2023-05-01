@@ -98,3 +98,97 @@ export interface ResponseUpdatePassword {
   message: string;
   status: number;
 }
+
+// /api/article/add
+// 用于添加文章
+export interface ResponseAddArticle {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/article/delete
+// 用于删除文章
+export interface ResponseDeleteArticle {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/article/update
+// 用于更新文章
+export interface ResponseUpdateArticle {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/article/get
+// 用于查询某一文章
+export interface ResponseGetArticle {
+  code: number;
+  data: Article;
+  message: string;
+  status: number;
+}
+export interface Article {
+  author: number;
+  commentsNum: number;
+  content: string;
+  description: string;
+  favoritesNum: number;
+  id: number;
+  title: string;
+  updateTime: string;
+  CommentOrderNum: number;
+}
+
+// /api/article/getPageNum
+// 获取文章总页数
+export interface ResponseGetPageNum {
+  code: number;
+  data: number; // 页数
+  message: string;
+  status: number;
+}
+
+// /api/article/getPageArticles
+// 获取某页的文章
+export interface ResponseGetPageArticles {
+  code: number;
+  data: Article[];
+  message: string;
+  status: number;
+}
+
+// /api/article/getUserPageNum
+// 用于获取某用户文章的分页数量
+export interface ResponseGetUserPageNum {
+  code: number;
+  data: number; // 分页数量
+  message: string;
+  status: number;
+}
+
+// /api/article/getUserPage
+// 用于获取某用户某页的文章
+export interface ResponseGetUserPage {
+  code: number;
+  data: Article[];
+  message: string;
+  status: number;
+}
+
+// /api/article/pageFuzzySearch
+// 用于模糊搜索
+export interface ResponsePageFuzzySearch {
+  code: number;
+  data: DataPageFuzzySearch;
+  message: string;
+  status: number;
+}
+
+export interface DataPageFuzzySearch {
+  pageArticles: Article[];
+  pageNum: number;  //分页数量，最大50
+}

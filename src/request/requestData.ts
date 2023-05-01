@@ -57,4 +57,61 @@ export interface RequestUpdatePassword{
   newPassword: string
 }
 
-// /api/user/logout
+// /api/article/add
+// 用于添加文章
+export interface RequestAddArticle{
+  title: string,
+  content: string,
+  updateTime: string  // yyyy-MM-dd HH:mm:ss
+}
+
+// /api/article/delete
+// 用于删除文章
+export interface RequestDeleteArticle {
+  id: number
+}
+
+// /api/article/update
+// 用于更新文章
+export interface RequestUpdateArticle {
+  id: number,
+  title: string,
+  content: string,
+  updateTime: string  // yyyy-MM-dd HH:mm:ss
+}
+
+// /api/article/get
+// 用于查询某一文章
+export interface RequestGetArticle {
+  id: number
+}
+
+// /api/article/getPageNum
+// 获取文章总页数
+
+// /api/article/getPageArticles
+// 获取某页的文章
+export interface RequestGetPageArticles {
+  currentPage: number
+}
+
+// /api/article/getUserPageNum
+// 用于获取某用户文章的分页数量
+export interface RequestGetUserPageNum {
+  userId: number
+}
+
+// /api/article/getUserPage
+// 用于获取某用户某页的文章
+export interface RequestGetUserPage {
+  userId: number,
+  currentPage: number
+}
+
+// /api/article/pageFuzzySearch
+// 用于模糊搜索
+// 直接请求第一页，返回结果中有总页数
+export interface RequestPageFuzzySearch {
+  currentPage: number, // 用户第一次点击搜索，设置当前页为1即可
+  search: string  // 搜索内容
+}
