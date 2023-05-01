@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BlogCard: typeof import('./components/BlogCard.vue')['default']
+    CollectList: typeof import('./components/CollectList.vue')['default']
     CommentList: typeof import('./components/CommentList.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Login: typeof import('./components/svg/Login.vue')['default']

@@ -104,7 +104,7 @@ function remove() {
 
 <style lang="scss" scoped>
 .blogCard {
-  background-color: white;
+  background-color: rgb(244,245,247);;
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 15px;
