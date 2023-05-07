@@ -199,7 +199,7 @@ export interface DataPageFuzzySearch {
 
 // /api/article/uploadImg
 // 用于上传文章图片
-export interface Response {
+export interface ResponseUploadImg {
   code: number;
   data: string;   // 图片相对路径 /static/ + data
   message: string;

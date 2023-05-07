@@ -4,12 +4,14 @@
 
 // /api/user/getVerifyCode
 // 用于注册时发送邮箱验证码
+// test ok
 export interface RequestGetVerifyCode {
   email: string
 }
 
 // /api/user/register
 // 用于用户注册
+// test ok
 export interface RequestRegister {
   name: string,
   password: string,
@@ -19,6 +21,7 @@ export interface RequestRegister {
 
 // /api/user/login
 // 用于用户登录
+// test ok
 export interface RequestLogin {
   email: string,
   password: string
