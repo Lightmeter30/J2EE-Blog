@@ -3,8 +3,9 @@ import { Search, LogOut } from "@vicons/ionicons5"
 import { h } from 'vue'
 import type { Component } from 'vue'
 import { NIcon } from 'naive-ui'
-import {useUserStore} from '@/stores/user'
+import { useUserStore } from '@/stores/user'
 const userState = useUserStore();
+const router = useRouter();
 const renderIcon = (icon: Component) => {
   return () => {
     return h(NIcon, null, {
@@ -31,15 +32,24 @@ function handleSelect(key: string | number) {
 };
 function routeTo(key: number) {
   // 1: homepage 2: personal 3: login
-  console.log(key);
+  if (key === 1) {
+    router.push('/');
+  } else if (key === 2) {
+    router.push('/space/home');
+  } else if (key === 3) {
+    router.push('/edit');
+  } else if (key === 4) {
+    router.push('/login');
+  }
 }
 </script>
 
 <template>
   <div class="topIndex">
     <div class="index">
-      <span @click="routeTo(1)">博客主页</span>
-      <span @click="routeTo(2)" style="margin-left: 10px;">个人主页</span>
+      <span @click="routeTo(1)"><b>博客主页</b></span>
+      <span @click="routeTo(2)" style="margin-left: 10px;"><b>个人主页</b></span>
+      <span @click="routeTo(3)" style="margin-left: 10px;"><b>写博客</b></span>
     </div>
     <div class="search">
       <n-input round v-model:value="searchText" placeholder="请输入关键词">
@@ -56,7 +66,7 @@ function routeTo(key: number) {
           <n-avatar round :src="userState.avatar" />
         </n-dropdown>
       </div>
-      <div v-show="false" @click="routeTo(3)" class="login">登录/注册</div>
+      <div v-show="false" @click="routeTo(4)" class="login">登录/注册</div>
     </div>
   </div>
 </template>
@@ -65,7 +75,7 @@ function routeTo(key: number) {
 .topIndex {
   position: fixed;
   display: flex;
-  height: auto;
+  height: 40px;
   width: 100%;
   align-items: center;
   padding-top: 5px;
@@ -78,12 +88,8 @@ function routeTo(key: number) {
     margin-left: 10px;
 
     span {
-      cursor: pointer;
-
-      &:hover {
-        opacity: 0.8;
-        text-decoration: underline;
-      }
+      color: $cloud-1-hex;
+      @include text-hover;
     }
   }
 
@@ -96,6 +102,8 @@ function routeTo(key: number) {
     margin-right: 10px;
 
     .myInfo {
+      position: relative;
+      top: 4px;
       cursor: pointer;
     }
 
@@ -104,7 +112,7 @@ function routeTo(key: number) {
 
       &:hover {
         text-decoration: underline;
-        color: aquamarine;
+        color: $miku-fans-theme;
       }
     }
   }
@@ -116,4 +124,5 @@ function routeTo(key: number) {
   &:hover {
     opacity: 0.9;
   }
-}</style>
+}
+</style>

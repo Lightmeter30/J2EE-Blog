@@ -5,21 +5,57 @@
       {{ userInfo.username }}
       {{ userInfo.userid }}
     </div> -->
-    <div style="position: relative; top: 100px; left: 200px; width: 80%;height: auto;margin-bottom: 50px; " >
-      <user-card></user-card>
+    <div class="homeContent">
       <blog-card></blog-card>
-      <comment-list></comment-list>
-      <user-list></user-list>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
+      <blog-card></blog-card>
     </div>
+    <div class="homeFoot">
+      <n-pagination  :on-update:page="changePage" :item-count="total" show-quick-jumper>
+        <template #goto>
+        跳至
+      </template>
+      </n-pagination>
+    </div>
+    <div style="height: 20px;" ></div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NPagination } from 'naive-ui';
+
 // import 'hover.css';
 // import { loginAPI } from '@/request/api';
 // import { RequestLogin } from '@/request/requestData';
 // import { reactive } from "vue";
+
+let total = ref(114);
+function changePage(page: number) {
+  console.log(`to page ${page}`);
+}
+
 </script>
 
 <style scoped lang="scss">
+.home {
+  width: 70%;
+  position: relative;
+  left: 15%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  .homeContent {
+  }
+
+  .homeFoot {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+  }
+}
 </style>

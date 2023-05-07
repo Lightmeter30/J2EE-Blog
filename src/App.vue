@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {NConfigProvider, GlobalThemeOverrides} from "naive-ui"
+import type { NConfigProvider, GlobalThemeOverrides } from "naive-ui"
 
 const themeOverrides: GlobalThemeOverrides = {
   common: {
@@ -109,23 +109,27 @@ const themeOverrides: GlobalThemeOverrides = {
     "textColor": "#0D263AFF",
     "titleTextColor": "rgba(13, 38, 58, 0.8)",
     "headerBorderBottom": "1px solid rgba(13, 38, 58, 0.09)"
-}
+  }
 };
 </script>
 
 <template>
-<n-config-provider :theme-overrides="themeOverrides" > <!-- :theme-overrides="themeOverrides" -->
+  <n-config-provider :theme-overrides="themeOverrides"> <!-- :theme-overrides="themeOverrides" -->
     <n-message-provider>
-      <top-index />
-      <div style="height: 50px;" ></div>
-      <router-view/>
-      <n-back-top :right="30" />
+      <n-dialog-provider>
+        <top-index />
+        <div style="height: 50px;"></div>
+        <router-view />
+        <n-back-top :right="30" />
+      </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
 </template>
 
 <style lang="scss" >
-body, html, .n-config-provider {
+body,
+html,
+.n-config-provider {
   height: 100%;
   border: 0;
   margin: 0;
@@ -145,5 +149,4 @@ body {
   list-style: none;
   user-select: none;
 }
-
 </style>

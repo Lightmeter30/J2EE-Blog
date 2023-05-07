@@ -28,7 +28,7 @@ function addOrRemoveAttention(key: number) {
       <n-avatar round :size="60" :src="user.avatar" />
     </div>
     <div class="title">
-      <span class="name">{{ user.name }}</span><br/>
+      <span class="name"><b>{{ user.name }}</b></span><br/>
       <span class="description">{{ user.description }}</span>
     </div>
     <div class="attention">
@@ -58,10 +58,8 @@ function addOrRemoveAttention(key: number) {
   .userList {
     background-color: white;
     display: flex;
-    padding: 20px;
-    .avatar {
-
-    }
+    padding-left: 20px;
+    padding-right: 20px;
 
     .title {
       margin-top: 5px;
@@ -71,11 +69,7 @@ function addOrRemoveAttention(key: number) {
 
       .name {
         font-size: large;
-        cursor: pointer;
-        &:hover {
-          text-decoration: underline;
-          opacity: 0.9;
-        }
+        @include text-hover;
       }
 
     }
