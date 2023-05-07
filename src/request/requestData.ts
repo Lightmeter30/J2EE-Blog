@@ -1,7 +1,6 @@
 //一般情况下，接口类型会放到一个文件
 // 下面两个TS接口，表示要传的参数
 
-// 8080端口
 
 // /api/user/getVerifyCode
 // 用于注册时发送邮箱验证码
@@ -115,3 +114,10 @@ export interface RequestPageFuzzySearch {
   currentPage: number, // 用户第一次点击搜索，设置当前页为1即可
   search: string  // 搜索内容
 }
+
+// /api/article/uploadImg
+// 用于上传文章图片
+export interface RequestUploadImg {
+  articleImg: any
+}
+

@@ -67,10 +67,14 @@ export interface ResponseGetInfo {
 }
 
 export interface DataGetInfo {
+  articleNum: number;
   avatar: string;
   birthday: string;
+  defaultFavoriteFolder: number;
   description: string;
   email: string;
+  followedNum: number;
+  followerNum: number;
   name: string;
   sex: boolean; // 0女 1男
 }
@@ -191,4 +195,13 @@ export interface ResponsePageFuzzySearch {
 export interface DataPageFuzzySearch {
   pageArticles: Article[];
   pageNum: number;  //分页数量，最大50
+}
+
+// /api/article/uploadImg
+// 用于上传文章图片
+export interface Response {
+  code: number;
+  data: string;   // 图片相对路径 /static/ + data
+  message: string;
+  status: number;
 }
