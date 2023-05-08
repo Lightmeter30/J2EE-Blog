@@ -3,16 +3,23 @@ import { useUserStore } from '@/stores/user';
 import { faker } from '@faker-js/faker';
 import { Bookmark, Book, Person, Archive, AddCircle, RemoveCircle } from '@vicons/ionicons5';
 import { onMounted } from 'vue';
+import { DataGetInfo } from '@/request/responseData';
+import { getUserInfoAPI } from '@/request/api';
 const userState = useUserStore();
 const router = useRouter();
-const user = {
+let user: DataGetInfo = {
   name: 'takune',
   description: '都什么年代了，还在当传统二次元。',
   avatar: faker.image.avatar(),
-  blogNum: 114,
-  fansNum: 514,
-  attention: 10,
+  articleNum: 114,
+  followerNum: 514,
+  followedNum: 10,
+  birthday: '2001-01-08',
+  defaultFavoriteFolder: 1,
+  email: 'takune@163.com',
+  sex: true,
 }
+
 
 function routeTo(key: number) {
   // 1: homepage 2: personal 3: login
@@ -46,8 +53,16 @@ function addOrRemoveAttention(key: number) {
   console.log('addAttention', key);
 }
 
+const getUserInfo = async () => {
+  const info = await getUserInfoAPI(userState);
+  // 获取个人信息
+  console.log(info);
+  user = info.data.data;
+}
+
 onMounted(() => {
   document.getElementById('indexHome')?.classList.add('selectedIndexColor');
+  getUserInfo();
 })
 
 </script>
@@ -101,15 +116,15 @@ onMounted(() => {
       <div class="infoBox">
         <div class="boxContent" id="attention" @click="routeTo(5)">
           <div class="title">关注数</div>
-          <div class="content">{{ user.attention }}</div>
+          <div class="content">{{ user.followedNum }}</div>
         </div>
         <div class="boxContent" id="fans" @click="routeTo(6)">
           <div class="title">粉丝数</div>
-          <div class="content">{{ user.fansNum }}</div>
+          <div class="content">{{ user.followerNum }}</div>
         </div>
         <div style="color: #ACAAAB;" id="blog">
           <div class="title">博客数</div>
-          <div class="content">{{ user.blogNum }}</div>
+          <div class="content">{{ user.articleNum }}</div>
         </div>
       </div>
     </div>

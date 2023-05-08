@@ -19,7 +19,6 @@ export const useUserStore = defineStore({
           this.token = userToken;
           this.userId = userId;
           this.isLogin = true;
-          this.avatar = '123';
         },
         logout() {
           this.token = ''
@@ -27,6 +26,9 @@ export const useUserStore = defineStore({
           this.isLogin = false;
           this.avatar = '';
         },
+        setAvatar(avatar: string):void {
+          this.avatar = avatar;
+        }
     },
 
     // persist: true

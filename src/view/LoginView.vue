@@ -73,8 +73,8 @@
 <script setup lang="ts">
 import {Login, SignUp} from '@/components/svg'
 import {reg_email, reg_passwd, formatFeedback} from '@/utils/validate'
-import type {RequestLogin, RequestRegister, RequestGetVerifyCode} from '@/request/requestData'
-import { loginAPI, registerAPI, getVerifyCodeAPI } from '@/request/api'
+import type {RequestLogin, RequestRegister, RequestGetVerifyCode, RequestHeader} from '@/request/requestData'
+import { loginAPI, registerAPI, getVerifyCodeAPI, getUserInfoAPI } from '@/request/api'
 import type {FormRules} from "naive-ui";
 import {useUserStore} from '@/stores/user'
 import {ref, type Ref, reactive} from 'vue'
@@ -86,7 +86,8 @@ const tabValue: Ref<string> = ref('signin')
 const route = useRoute()
 const router = useRouter()
 const message = useMessage()
-const userState = useUserStore()
+const userState = useUserStore();
+
 const login = reactive<RequestLogin>({
   email: '',
   password: '',
@@ -204,6 +205,11 @@ const submitLogin = async () => {
     if(res.data.status === 0) {
       message.success('登录成功!');
       userState.login(res.data.data.token, res.data.data.userId);
+      const info = await getUserInfoAPI(userState);
+      // 获取个人信息
+      console.log(info);
+      userState.setAvatar(info.data.data.avatar);
+
       router.replace('/'); // 去主页
     } else {
       message.warning('账号或者密码错误!');

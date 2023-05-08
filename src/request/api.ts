@@ -1,9 +1,7 @@
 import axios from "./setAxios";
 import * as requestTypes from "./requestData";
 import * as responseTypes from "./responseData";
-import { useUserStore } from "@/stores/user";
 
-const userState = useUserStore();
 // Res是返回的参数，T是泛型，需要自己定义，返回对数统一管理***
 type Res<T> = Promise<ItypeAPI<T>>;
 // 一般情况下响应数据返回的这三个参数，
@@ -67,7 +65,7 @@ export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.Res
  * test
  */
 
-export const getUserInfoAPI = (): Res<responseTypes.ResponseGetInfo> => {
+export const getUserInfoAPI = (userState: any): Res<responseTypes.ResponseGetInfo> => {
   return axios.post("user/getInfo", undefined, { headers: {
     id: userState.userId,
     token: userState.token
@@ -83,7 +81,7 @@ export const getUserInfoAPI = (): Res<responseTypes.ResponseGetInfo> => {
  * test
  */
 
-export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo): Res<responseTypes.ResponseUpdateInfo> => {
+export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo, userState: any): Res<responseTypes.ResponseUpdateInfo> => {
   const Data = setData(data);
   return axios.post("user/updateInfo", Data, { headers: {
     id: userState.userId,
@@ -99,7 +97,7 @@ export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo): Res<res
  * test
  */
 
-export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar): Res<responseTypes.ResponseUpdateAvatar> => {
+export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar, userState: any): Res<responseTypes.ResponseUpdateAvatar> => {
   const Data = setData(data);
   return axios.post("user/updateAvatar", Data, { headers: {
     id: userState.userId,
@@ -115,7 +113,7 @@ export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar): Res
  * test
  */
 
-export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword): Res<responseTypes.ResponseUpdatePassword> => {
+export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword, userState: any): Res<responseTypes.ResponseUpdatePassword> => {
   const Data = setData(data);
   return axios.post("user/updatePassword", Data, { headers: {
     id: userState.userId,
@@ -131,7 +129,7 @@ export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword):
  * test
  */
 
-export const addArticleAPI = (data: requestTypes.RequestAddArticle): Res<responseTypes.ResponseAddArticle> => {
+export const addArticleAPI = (data: requestTypes.RequestAddArticle, userState: any): Res<responseTypes.ResponseAddArticle> => {
   const Data = setData(data);
   return axios.post("article/add", Data, { headers: {
     id: userState.userId,
@@ -147,7 +145,7 @@ export const addArticleAPI = (data: requestTypes.RequestAddArticle): Res<respons
  * test
  */
 
-export const deleteArticleAPI = (data: requestTypes.RequestDeleteArticle): Res<responseTypes.ResponseDeleteArticle> => {
+export const deleteArticleAPI = (data: requestTypes.RequestDeleteArticle, userState: any): Res<responseTypes.ResponseDeleteArticle> => {
   const Data = setData(data);
   return axios.post("article/delete", Data, { headers: {
     id: userState.userId,
@@ -163,7 +161,7 @@ export const deleteArticleAPI = (data: requestTypes.RequestDeleteArticle): Res<r
  * test
  */
 
-export const updateArticleAPI = (data: requestTypes.RequestUpdateArticle): Res<responseTypes.ResponseUpdateArticle> => {
+export const updateArticleAPI = (data: requestTypes.RequestUpdateArticle, userState: any): Res<responseTypes.ResponseUpdateArticle> => {
   const Data = setData(data);
   return axios.post("article/update", Data, { headers: {
     id: userState.userId,
@@ -179,7 +177,7 @@ export const updateArticleAPI = (data: requestTypes.RequestUpdateArticle): Res<r
  * test
  */
 
-export const getArticleAPI = (data: requestTypes.RequestGetArticle): Res<responseTypes.ResponseGetArticle> => {
+export const getArticleAPI = (data: requestTypes.RequestGetArticle, userState: any): Res<responseTypes.ResponseGetArticle> => {
   const Data = setData(data);
   return axios.post("article/get", Data, { headers: {
     id: userState.userId,
@@ -204,7 +202,7 @@ export const getArticleAPI = (data: requestTypes.RequestGetArticle): Res<respons
  * test
  */
 
-export const getPageArticlesAPI = (data: requestTypes.RequestGetPageArticles): Res<responseTypes.ResponseGetPageArticles> => {
+export const getPageArticlesAPI = (data: requestTypes.RequestGetPageArticles, userState: any): Res<responseTypes.ResponseGetPageArticles> => {
   const Data = setData(data);
   return axios.post("article/getPageArticles", Data, { headers: {
     id: userState.userId,
@@ -220,7 +218,7 @@ export const getPageArticlesAPI = (data: requestTypes.RequestGetPageArticles): R
  * test
  */
 
-export const getUserPageNumAPI = (data: requestTypes.RequestGetUserPageNum): Res<responseTypes.ResponseGetUserPageNum> => {
+export const getUserPageNumAPI = (data: requestTypes.RequestGetUserPageNum, userState: any): Res<responseTypes.ResponseGetUserPageNum> => {
   const Data = setData(data);
   return axios.post("article/getUserPageNum", Data, { headers: {
     id: userState.userId,
@@ -236,7 +234,7 @@ export const getUserPageNumAPI = (data: requestTypes.RequestGetUserPageNum): Res
  * test
  */
 
-export const getUserPageAPI = (data: requestTypes.RequestGetUserPage): Res<responseTypes.ResponseGetUserPage> => {
+export const getUserPageAPI = (data: requestTypes.RequestGetUserPage, userState: any): Res<responseTypes.ResponseGetUserPage> => {
   const Data = setData(data);
   return axios.post("article/getUserPage", Data, { headers: {
     id: userState.userId,
@@ -252,7 +250,7 @@ export const getUserPageAPI = (data: requestTypes.RequestGetUserPage): Res<respo
  * test
  */
 
-export const pageFuzzySearchAPI = (data: requestTypes.RequestPageFuzzySearch): Res<responseTypes.ResponsePageFuzzySearch> => {
+export const pageFuzzySearchAPI = (data: requestTypes.RequestPageFuzzySearch, userState: any): Res<responseTypes.ResponsePageFuzzySearch> => {
   const Data = setData(data);
   return axios.post("article/pageFuzzySearch", Data, { headers: {
     id: userState.userId,
@@ -268,7 +266,7 @@ export const pageFuzzySearchAPI = (data: requestTypes.RequestPageFuzzySearch): R
  * test
  */
 
-export const uploadImgAPI = (data: requestTypes.RequestUploadImg): Res<responseTypes.ResponseUploadImg> => {
+export const uploadImgAPI = (data: requestTypes.RequestUploadImg, userState: any): Res<responseTypes.ResponseUploadImg> => {
   const Data = setData(data);
   return axios.post("article/uploadImg", Data, { headers: {
     id: userState.userId,

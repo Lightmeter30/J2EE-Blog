@@ -28,7 +28,10 @@ function search() {
   console.log(searchText);
 }
 function handleSelect(key: string | number) {
-  console.log(key);
+  if(key === 'logout') {
+    userState.logout();
+    router.push('/');
+  }
 };
 function routeTo(key: number) {
   // 1: homepage 2: personal 3: login
@@ -61,12 +64,12 @@ function routeTo(key: number) {
       </n-input>
     </div>
     <div class="info">
-      <div class="myInfo">
+      <div class="myInfo" v-if="userState.isLogin" >
         <n-dropdown :options="options" @select="handleSelect">
           <n-avatar round :src="userState.avatar" />
         </n-dropdown>
       </div>
-      <div v-show="false" @click="routeTo(4)" class="login">登录/注册</div>
+      <div v-else @click="routeTo(4)" class="login">登录/注册</div>
     </div>
   </div>
 </template>
