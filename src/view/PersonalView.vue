@@ -62,6 +62,7 @@ const getUserInfo = async () => {
 
 onMounted(() => {
   document.getElementById('indexHome')?.classList.add('selectedIndexColor');
+  // console.log(router.currentRoute.value.query.id);
   getUserInfo();
 })
 
@@ -101,7 +102,7 @@ onMounted(() => {
         <span id="indexHome" @click="routeTo(1)"><n-icon style="position: relative; top: 2px;">
             <Book />
           </n-icon> <b>博客</b></span>
-        <span id="indexDraft" @click="routeTo(2)" style="margin-left: 15px;"><n-icon
+        <span v-show="Number(router.currentRoute.value.query.id) === userState.userId" id="indexDraft" @click="routeTo(2)" style="margin-left: 15px;"><n-icon
             style="position: relative; top: 2px;">
             <Archive />
           </n-icon> <b>草稿箱</b></span>
@@ -109,7 +110,7 @@ onMounted(() => {
             style="position: relative; top: 2px;">
             <Bookmark />
           </n-icon> <b>收藏夹</b></span>
-        <span id="indexInfo" @click="routeTo(4)" style="margin-left: 15px;"><n-icon style="position: relative; top: 2px;">
+        <span v-show="Number(router.currentRoute.value.query.id) === userState.userId" id="indexInfo" @click="routeTo(4)" style="margin-left: 15px;"><n-icon style="position: relative; top: 2px;">
             <Person />
           </n-icon> <b>个人信息</b></span>
       </div>

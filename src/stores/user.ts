@@ -30,6 +30,5 @@ export const useUserStore = defineStore({
           this.avatar = avatar;
         }
     },
-
-    // persist: true
+    persist: true,
 })

@@ -62,7 +62,7 @@ export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.Res
  * 
  * url: user/getInfo
  * 
- * test
+ * test ok
  */
 
 export const getUserInfoAPI = (userState: any): Res<responseTypes.ResponseGetInfo> => {
@@ -78,7 +78,7 @@ export const getUserInfoAPI = (userState: any): Res<responseTypes.ResponseGetInf
  * 
  * url: user/updateInfo
  * 
- * test
+ * test ok
  */
 
 export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo, userState: any): Res<responseTypes.ResponseUpdateInfo> => {
@@ -110,7 +110,7 @@ export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar, user
  * 
  * url: user/updatePassword
  * 
- * test
+ * test ok
  */
 
 export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword, userState: any): Res<responseTypes.ResponseUpdatePassword> => {

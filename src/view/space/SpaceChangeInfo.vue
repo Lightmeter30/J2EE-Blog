@@ -2,6 +2,7 @@
 import { useUserStore } from '@/stores/user';
 import { CloudUpload } from "@vicons/ionicons5";
 import { RequestUpdatePassword, RequestUpdateInfo, RequestUpdateAvatar } from '@/request/requestData';
+import { getUserInfoAPI, updateUserInfoAPI, updateUserAvatarAPI, updateUserPasswordAPI } from '@/request/api';
 import { UploadCustomRequestOptions } from 'naive-ui';
 import { clear } from 'console';
 const message = useMessage();
@@ -24,17 +25,30 @@ function showDialog() {
   showModal.value = true;
 }
 
-function changePassword() {
+const changePassword = async () => {
   console.log("change password...");
   const data: RequestUpdatePassword = {
     newPassword: password.newPassword1,
     oldPassword: password.oldPassword,
-  } 
-  console.log(data);
+  }
+  const res = await updateUserPasswordAPI(data, userState);
+  if( res.data.status === 0 ) {
+    message.success('密码修改成功');
+    showModal.value = false;
+  } else {
+    message.error(res.data.message);
+  }
+  // console.log(data);
 }
 
-function changeInfo() {
+const changeInfo = async () => {
   console.log("Change info...");
+  const res = await updateUserInfoAPI(userInfo, userState);
+  if(res.data.status === 0) {
+    message.success('修改信息成功!');
+  } else {
+    message.error(res.data.message);
+  }
 }
 
 const uploadAvatar = async ({
@@ -77,6 +91,21 @@ const uploadAvatar = async ({
   }
 }
 
+const init = async () => {
+  const res = await getUserInfoAPI(userState);
+  console.log(res);
+  if(res.data.status === 0) {
+    userInfo.name = res.data.data.name;
+    userInfo.sex = res.data.data.sex ? 1 : 0;
+    userInfo.description = res.data.data.description;
+    userInfo.birthday = res.data.data.birthday;
+  }
+}
+
+onMounted(() => {
+  init();
+});
+
 </script>
 
 <template>
@@ -111,12 +140,9 @@ const uploadAvatar = async ({
             <n-form-item label="性别">
               <n-radio-group v-model:value="userInfo.sex" name="radiogroup2">
                 <n-radio-button :value="1">
-                  保密
-                </n-radio-button>
-                <n-radio-button :value="2">
                   男
                 </n-radio-button>
-                <n-radio-button :value="3">
+                <n-radio-button :value="0">
                   女
                 </n-radio-button>
               </n-radio-group>

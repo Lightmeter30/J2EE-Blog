@@ -5,6 +5,8 @@ import type { Component } from 'vue'
 import { NIcon } from 'naive-ui'
 import { useUserStore } from '@/stores/user'
 const userState = useUserStore();
+const dialog = useDialog();
+const message = useMessage();
 const router = useRouter();
 const renderIcon = (icon: Component) => {
   return () => {
@@ -29,8 +31,17 @@ function search() {
 }
 function handleSelect(key: string | number) {
   if(key === 'logout') {
-    userState.logout();
-    router.push('/');
+    dialog.warning({
+    title: '警告',
+    content: '是否确认注销账号?',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      userState.logout();
+      router.push('/');
+      message.success('退出登录');
+    },
+  })
   }
 };
 function routeTo(key: number) {
@@ -38,7 +49,7 @@ function routeTo(key: number) {
   if (key === 1) {
     router.push('/');
   } else if (key === 2) {
-    router.push('/space/home');
+    router.push({path: '/space/home', query: {id: userState.userId}});
   } else if (key === 3) {
     router.push('/edit');
   } else if (key === 4) {
@@ -51,8 +62,8 @@ function routeTo(key: number) {
   <div class="topIndex">
     <div class="index">
       <span @click="routeTo(1)"><b>博客主页</b></span>
-      <span @click="routeTo(2)" style="margin-left: 10px;"><b>个人主页</b></span>
-      <span @click="routeTo(3)" style="margin-left: 10px;"><b>写博客</b></span>
+      <span v-show="userState.isLogin" @click="routeTo(2)" style="margin-left: 10px;"><b>个人主页</b></span>
+      <span v-show="userState.isLogin" @click="routeTo(3)" style="margin-left: 10px;"><b>写博客</b></span>
     </div>
     <div class="search">
       <n-input round v-model:value="searchText" placeholder="请输入关键词">
