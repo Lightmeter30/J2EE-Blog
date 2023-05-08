@@ -205,3 +205,182 @@ export interface ResponseUploadImg {
   message: string;
   status: number;
 }
+
+// /api/comment/getArticleComments
+// 用于获取文章评论
+export interface ResponseGetArticleComments {
+  code: number;
+  data: Comment[];
+  message: string;
+  status: number;
+}
+export interface Comment {
+  articleId: number;
+  content: string;
+  id: number;
+  orderNum: number;
+  time: string;
+  userId: number;
+}
+
+// /api/comment/add
+// 用于添加评论
+export interface ResponseAddComment {
+  code: number;
+  data: Comment;
+  message: string;
+  status: number;
+}
+
+// /api/comment/delete
+// 用于删除评论
+export interface ResponseDeleteComment {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/draft/add
+// 用于添加草稿
+export interface ResponseAddDraft {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/draft/delete
+// 用于删除草稿
+export interface ResponseDeleteDraft {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/draft/update
+// 用于更改草稿
+export interface ResponseUpdateDraft {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/draft/get
+// 用于获取某个草稿信息
+export interface ResponseGetDraft {
+  code: number;
+  data: Draft;
+  message: string;
+  status: number;
+}
+export interface Draft {
+  author: number;
+  content: string;
+  description: string;
+  id: number;
+  title: string;
+  updateTime: string;
+}
+
+// /api/draft/getUserPageNum
+// 用于获取某用户文章页数
+export interface ResponseGetUserDraftPageNum {
+  code: number;
+  data: number;   // 页数
+  message: string;
+  status: number;
+}
+
+// /api/draft/getUserPage
+// 用于获取用户某页文章
+export interface ResponseGetUserDraftPage {
+  code: number;
+  data: Draft[];
+  message: string;
+  status: number;
+}
+
+// /api/favorite/add
+// 用于添加一个收藏
+export interface ResponseAddFavorite {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/favorite/getFolderFavorites
+// 用于获取某一收藏文件夹下的收藏
+export interface ResponseGetFolderFavorites {
+  code: number;
+  data: Favorite[];
+  message: string;
+  status: number;
+}
+export interface Favorite {
+  articleId: number;
+  folderId: number;
+  id: number;
+  userId: number;
+}
+
+// /api/favorite/delete
+// 用于删除一个收藏
+export interface ResponseDeleteFavorite {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/favoriteFolder/add
+// 用于新建一个收藏文件夹
+export interface ResponseAddFavoriteFolder {
+  code: number;
+  message: string;
+  status: number;
+}
+
+// /api/favoriteFolder/getUserFolders
+// 用于获取用户所有收藏文件夹
+export interface Response {
+  code: number;
+  data: FavoriteFolder[];
+  message: string;
+  status: number;
+}
+export interface FavoriteFolder {
+  id: number;
+  name: string;
+  userId: number;
+}
+
+// /api/favoriteFolder/delete
+// 用于删除一个收藏文件夹，一并删除其中的收藏
+export interface ResponseDeleteFavoriteFolder {
+  id: number;
+  name: string;
+  userId: number;
+}
+
+// /api/follow/add
+// 用于添加一个关注
+export interface ResponseAddFollow {
+  id: number;
+  name: string;
+  userId: number;
+}
+
+// /api/follow/getUserFollowed
+// 用于获取用户的关注列表
+export interface ResponseGetUserFollowed {
+  code: number;
+  data: number[];   // 关注用户的id列表
+  message: string;
+  status: number;
+}
+
+// /api/follow/delete
+// 用于取消关注
+export interface ResponseDeleteFollow {
+  id: number;
+  name: string;
+  userId: number;
+}
