@@ -125,3 +125,116 @@ export interface RequestUploadImg {
   articleImg: any
 }
 
+// /api/comment/getArticleComments
+// 用于获取文章评论
+export interface RequestGetArticleComments {
+  articleId: number
+}
+
+// /api/comment/add
+// 用于添加评论
+export interface RequestAddComment {
+  articleId: number;
+  content: string;
+  time: string; // yyyy-MM-dd HH:mm:ss
+}
+
+// /api/comment/delete
+// 用于删除评论
+export interface RequestDeleteComment {
+  id: number
+}
+
+// /api/draft/add
+// 用于添加草稿
+export interface RequestAddDraft {
+  title: string,
+  description: string,
+  content: string,
+  updateTime: string  // yyyy-MM-dd HH:mm:ss
+}
+
+// /api/draft/delete
+// 用于删除草稿
+export interface RequestDeleteDraft {
+  id: number
+}
+
+// /api/draft/update
+// 用于更改草稿
+export interface ResponseUpdateDraft {
+  id: number,
+  title: string,
+  description: string,
+  content: string,
+  updateTime: string  // yyyy-MM-dd HH:mm:ss
+}
+
+// /api/draft/get
+// 用于获取某个草稿信息
+export interface RequestGetDraft {
+  id: number
+}
+
+// /api/draft/getUserPageNum
+// 用于获取某用户文章页数
+export interface RequestGetUserPageNum {
+  userId: number
+}
+
+// /api/draft/getUserPage
+// 用于获取用户某页文章
+export interface RequestGetUserPage {
+  currentPage: number
+}
+
+// /api/favorite/add
+// 用于添加一个收藏
+export interface RequestAddFavorite {
+  articleId: number,
+  folderId: number
+}
+
+// /api/favorite/getFolderFavorites
+// 用于获取某一收藏文件夹下的收藏
+export interface RequestGetFolderFavorites {
+  folderId: number
+}
+
+// /api/favorite/delete
+// 用于删除一个收藏
+export interface RequestDeleteFavorites {
+  id: number
+}
+
+// /api/favoriteFolder/add
+// 用于新建一个收藏文件夹
+export interface RequestAddFavoriteFolder {
+  name: string
+}
+
+// /api/favoriteFolder/getUserFolders
+// 用于获取用户所有收藏文件夹
+// 请求体中无参数
+
+// /api/favoriteFolder/delete
+// 用于删除一个收藏文件夹，一并删除其中的收藏
+export interface RequestDeleteFavoriteFolder {
+  id: number
+}
+
+// /api/follow/add
+// 用于添加一个关注
+export interface RequestAddFollow {
+  followed: number  // 被关注者
+}
+
+// /api/follow/getUserFollowed
+// 用于获取用户的关注列表
+// 请求体中无参数
+
+// /api/follow/delete
+// 用于取消关注
+export interface RequestDeleteFollow {
+  followed: number  // 被关注者的id
+}
