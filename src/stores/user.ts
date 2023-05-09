@@ -7,7 +7,8 @@ export const useUserStore = defineStore({
         token: '',
         userId: -1,
         isLogin: false,
-        avatar: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
+        staticHead: 'http://60.204.157.19/static/',
+        avatar: '07akioni.jpeg',
     }),
 
     getters: {

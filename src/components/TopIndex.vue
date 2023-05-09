@@ -77,7 +77,7 @@ function routeTo(key: number) {
     <div class="info">
       <div class="myInfo" v-if="userState.isLogin" >
         <n-dropdown :options="options" @select="handleSelect">
-          <n-avatar round :src="userState.avatar" />
+          <n-avatar round :src="userState.staticHead + userState.avatar" />
         </n-dropdown>
       </div>
       <div v-else @click="routeTo(4)" class="login">登录/注册</div>

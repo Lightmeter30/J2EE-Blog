@@ -3,10 +3,17 @@ import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import type {FormRules} from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
+import { RequestAddArticle, RequestUploadImage } from '@/request/requestData';
+import { getNowTime } from '@/utils/validate';
+import { useUserStore } from '@/stores/user';
+import { updateArticleAPI, addArticleAPI, uploadImgAPI, } from '@/request/api';
+import router from '@/router';
+import { call } from 'naive-ui/es/_utils';
 
 let text = ref('');
 const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
+const userState = useUserStore(); 
 const blog = reactive({
   title: '',
   description: '',
@@ -64,21 +71,44 @@ const toolbar = [
   'preview',
   'catalog'
 ];
-function setText() {
-  text.value = '# hello\n```c \
-#include<stdio.h> \n\
-int main(){  \n\
-    printf("hello world!"); \n\
-} \n\
-```'
-}
 function save() {
   message.success('已保存到草稿箱!');
 };
 
-function upload() {
-  message.success('发布成功!')
+const upload = async () => {
+  const data: RequestAddArticle = {
+    title: blog.title,
+    content: text.value,
+    updateTime: getNowTime(),
+    description: blog.description
+  }
+  const res = await addArticleAPI(data, userState);
+  if(res.data.status === 0) {
+    // router.replace({path: '/blog', query: {code: res.data.code}});
+    console.log(res);
+    message.success('发布成功!');
+  } else {
+    message.error(res.data.message);
+  }
 }
+
+const onUploadImg = async (files: any, callback: any) => {
+  const data: RequestUploadImage = {
+    articleImg: files[0],
+  };
+  const res = await uploadImgAPI(data, userState);
+  if(res.data.status === 0) {
+    console.log(res.data);
+    const url: Array<string> = [userState.staticHead + res.data.data];
+    callback(url);
+  } else {
+    message.error(res.data.message);
+  }
+}
+
+onMounted(() => {
+  console.log(getNowTime());
+}); 
 
 </script>
 
@@ -95,7 +125,7 @@ function upload() {
       </n-form>
     </div>
     <div class="editContent">
-      <MdEditor v-model="text" :toolbars="toolbar" :show-code-row-number="true">
+      <MdEditor v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg" >
         <template #defToolbars>
           <NormalToolbar title="保存到草稿箱" @onClick="save()">
             <template #trigger>

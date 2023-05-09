@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
-import { onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close } from '@vicons/ionicons5';
 import { faker } from '@faker-js/faker';
-// import {faker} from "@faker-js/faker";
+import { getArticleAPI } from '@/request/api';
+import { RequestGetArticle } from '@/request/requestData';
 const blog = {
   title: 'typescript/javascript学习笔记',
   description: '这是我学习typescript/javascript的学习笔记，其中以typescript为主，同时会介绍一点javascript里面会有的知识点',
   author: faker.name.firstName(),
-  time: faker.date.past(),
+  time: '2022-05-01 12:11:11',
   collectNum: 114,
   commentNum: 10,
+  comment: [],
 }
 type collect = {
   id: number,
@@ -46,7 +47,7 @@ const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 const message = useMessage();
-const blogContent = ref('123');
+const blogContent = ref('');
 const myComment = ref('');
 const showModal = ref(false);
 
@@ -66,8 +67,25 @@ function addBlogToCollect(collectID: number) {
   console.log(collectID);
 }
 
+const getArticle = async () => {
+  const data: RequestGetArticle = {
+    id: Number(router.currentRoute.value.query.id)
+  }
+  const res = await getArticleAPI(data, userStore);
+  if(res.data.status === 0) {
+    blogContent.value = res.data.data.content;
+    blog.title = res.data.data.title;
+    blog.description = res.data.data.description;
+    blog.time = res.data.data.updateTime;
+    blog.collectNum = res.data.data.favoritesNum;
+  } else {
+    message.error(res.data.message);
+  }
+}
+
 onMounted(() => {
   console.log('onMounted');
+  getArticle();
 })
 </script>
 <template>
@@ -98,7 +116,7 @@ onMounted(() => {
         <comment-list></comment-list>
         <div class="myComment">
           <div class="myAvatar">
-            <n-avatar round :size="60" :src="userStore.avatar" />
+            <n-avatar round :size="60" :src="userStore.staticHead + userStore.avatar" />
           </div>
           <div class="myInput">
             <n-input v-model:value="myComment" type="textarea" placeholder="请输入你的留言(限100字)" show-count

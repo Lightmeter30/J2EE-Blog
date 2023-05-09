@@ -7,10 +7,10 @@ import { DataGetInfo } from '@/request/responseData';
 import { getUserInfoAPI } from '@/request/api';
 const userState = useUserStore();
 const router = useRouter();
-let user: DataGetInfo = {
+const user: DataGetInfo = reactive({
   name: 'takune',
-  description: '都什么年代了，还在当传统二次元。',
-  avatar: faker.image.avatar(),
+  description: '',
+  avatar: '',
   articleNum: 114,
   followerNum: 514,
   followedNum: 10,
@@ -18,28 +18,28 @@ let user: DataGetInfo = {
   defaultFavoriteFolder: 1,
   email: 'takune@163.com',
   sex: true,
-}
+});
 
 
 function routeTo(key: number) {
   // 1: homepage 2: personal 3: login
   if (key === 1) {
-    router.replace('/space/home');
+    router.replace({path: '/space/home', query: { id: router.currentRoute.value.query.id}});
     setTopIndex('indexHome');
   } else if (key === 2) {
-    router.replace('/space/draft');
+    router.replace({path: '/space/draft', query: { id: router.currentRoute.value.query.id}});
     setTopIndex('indexDraft');
   } else if (key === 3) {
-    router.replace('/space/collect');
+    router.replace({path: '/space/collect', query: { id: router.currentRoute.value.query.id}});
     setTopIndex('indexCollect');
   } else if (key === 4) {
-    router.replace('/space/info');
+    router.replace({path: '/space/info', query: { id: router.currentRoute.value.query.id}});
     setTopIndex('indexInfo');
   } else if (key === 5) {
-    router.replace('/space/attention');
+    router.replace({path: '/space/attention', query: { id: router.currentRoute.value.query.id}});
     setTopIndex('attention');
   } else if (key === 6) {
-    router.replace('/space/fans');
+    router.replace({path: '/space/fans', query: { id: router.currentRoute.value.query.id}});
     setTopIndex('fans');
   }
 }
@@ -54,10 +54,16 @@ function addOrRemoveAttention(key: number) {
 }
 
 const getUserInfo = async () => {
-  const info = await getUserInfoAPI(userState);
+  const res = await getUserInfoAPI(userState);
   // 获取个人信息
-  console.log(info);
-  user = info.data.data;
+  if(res.data.status === 0) {
+    user.articleNum = res.data.data.articleNum;
+    user.name = res.data.data.name;
+    user.avatar =  userState.staticHead + res.data.data.avatar;
+    user.description = res.data.data.description;
+    user.followedNum = res.data.data.followedNum;
+    user.followerNum = res.data.data.followerNum;
+  }
 }
 
 onMounted(() => {
@@ -77,7 +83,7 @@ onMounted(() => {
           <span class="name"><b>{{ user.name }}</b></span><br />
           <span class="description">{{ user.description }}</span>
         </div>
-        <div class="attentionButton">
+        <div v-show="Number(router.currentRoute.value.query.id) !== userState.userId" class="attentionButton">
           <n-button v-if="true" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
             <template #icon>
               <n-icon>

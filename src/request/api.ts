@@ -94,7 +94,7 @@ export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo, userStat
  * 
  * url: user/updateAvatar
  * 
- * test
+ * test ok
  */
 
 export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar, userState: any): Res<responseTypes.ResponseUpdateAvatar> => {
@@ -126,7 +126,7 @@ export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword, 
  * 
  * url: article/add
  * 
- * test
+ * test ok
  */
 
 export const addArticleAPI = (data: requestTypes.RequestAddArticle, userState: any): Res<responseTypes.ResponseAddArticle> => {
@@ -174,7 +174,7 @@ export const updateArticleAPI = (data: requestTypes.RequestUpdateArticle, userSt
  * 
  * url: article/get
  * 
- * test
+ * test ok
  */
 
 export const getArticleAPI = (data: requestTypes.RequestGetArticle, userState: any): Res<responseTypes.ResponseGetArticle> => {
@@ -263,7 +263,7 @@ export const pageFuzzySearchAPI = (data: requestTypes.RequestPageFuzzySearch, us
  * 
  * url: article/uploadImg
  * 
- * test
+ * test ok
  */
 
 export const uploadImgAPI = (data: requestTypes.RequestUploadImg, userState: any): Res<responseTypes.ResponseUploadImg> => {

@@ -66,25 +66,13 @@ const uploadAvatar = async ({
   }
   // formData.append(file.name, file.file as File)
   avatar.avatar = file.file;
-  console.log(114);
   console.log(avatar);
-  // lyla
-  //   .post(action as string, {
-  //     withCredentials,
-  //     headers: headers as Record<string, string>,
-  //     body: formData,
-  //     onUploadProgress: ({ percent }) => {
-  //       onProgress({ percent: Math.ceil(percent) })
-  //     }
-  //   })
-  //   .then(({ json }) => {
-  //     message.success(JSON.stringify(json))
-  //     onFinish()
-  //   })
-  //   .catch((error) => {
-  //     message.success(error.message)
-  //     onError()
-  //   })
+  const res = await updateUserAvatarAPI(avatar, userState);
+  if(res.data.status === 0) {
+    message.success('头像修改成功');
+  } else {
+    message.error(res.data.message);
+  }
   onFinish(); // 清空列表
   return {
     uploadAvatar

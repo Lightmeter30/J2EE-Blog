@@ -65,6 +65,7 @@ export interface RequestAddArticle{
   title: string,
   content: string,
   updateTime: string  // yyyy-MM-dd HH:mm:ss
+  description?: string,
 }
 
 // /api/article/delete
