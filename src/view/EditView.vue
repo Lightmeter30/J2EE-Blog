@@ -3,7 +3,7 @@ import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import type {FormRules} from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
-import { RequestAddArticle, RequestUploadImage } from '@/request/requestData';
+import { RequestAddArticle, RequestUploadImg, RequestUpdateArticle } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { useUserStore } from '@/stores/user';
 import { updateArticleAPI, addArticleAPI, uploadImgAPI, } from '@/request/api';
@@ -14,6 +14,7 @@ let text = ref('');
 const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
 const userState = useUserStore(); 
+let articleType: number = 0; // 0 is new, 1 is draft, 2 is old article 
 const blog = reactive({
   title: '',
   description: '',
@@ -75,7 +76,7 @@ function save() {
   message.success('已保存到草稿箱!');
 };
 
-const upload = async () => {
+const addArticle = async () => {
   const data: RequestAddArticle = {
     title: blog.title,
     content: text.value,
@@ -90,10 +91,35 @@ const upload = async () => {
   } else {
     message.error(res.data.message);
   }
+};
+
+const updateArticle = async () => {
+  const data: RequestUpdateArticle = {
+    id: Number(router.currentRoute.value.query.id),
+    title: blog.title,
+    content: text.value,
+    updateTime: getNowTime(),
+    description: blog.description
+  };
+  const res = await updateArticleAPI(data, userState);
+  if(res.data.status === 0) {
+    console.log(res);
+    message.success('发布成功!');
+  } else {
+    message.error(res.data.message);
+  }
+};
+
+const upload = async () => {
+  if( articleType === 0 || articleType === 1 ) {
+    addArticle();
+  } else {
+    updateArticle();
+  }
 }
 
 const onUploadImg = async (files: any, callback: any) => {
-  const data: RequestUploadImage = {
+  const data: RequestUploadImg = {
     articleImg: files[0],
   };
   const res = await uploadImgAPI(data, userState);
@@ -107,22 +133,30 @@ const onUploadImg = async (files: any, callback: any) => {
 }
 
 onMounted(() => {
+  //  114514 is the new(0), 1919 is the draft(1), 810 is the old(2)
+  if( router.currentRoute.value.query.type === '114514') {
+    articleType = 0;
+  } else if(router.currentRoute.value.query.type === '1919') {
+    articleType = 1;
+  } else if(router.currentRoute.value.query.type === '810') {
+    articleType = 2;
+  }
   console.log(getNowTime());
-}); 
+});
 
 </script>
 
 <template>
   <div class="editContainer">
     <div class="editTitle">
-      <n-form :rules="ruleBlog">
-        <n-form-item-row label="标题" path="title">
-          <n-input maxlength="10" placeholder="请输入文章标题" v-model:value="blog.title" />
-        </n-form-item-row>
-        <n-form-item-row label="简介" path="description">
-          <n-input maxlength="30" placeholder="请输入简介" v-model:value="blog.description" />
-        </n-form-item-row>
-      </n-form>
+      <NForm :rules="ruleBlog">
+        <NFormItemRow label="标题" path="title">
+          <NInput maxlength="10" placeholder="请输入文章标题" v-model:value="blog.title" />
+        </NFormItemRow>
+        <NFormItemRow label="简介" path="description">
+          <NInput maxlength="30" placeholder="请输入简介" v-model:value="blog.description" />
+        </NFormItemRow>
+      </NForm>
     </div>
     <div class="editContent">
       <MdEditor v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg" >

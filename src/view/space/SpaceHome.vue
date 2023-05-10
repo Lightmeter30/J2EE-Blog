@@ -1,9 +1,44 @@
 <script setup lang="ts">
 
+import { RequestGetUserPageNum, RequestGetUserPage } from '@/request/requestData';
+import { getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
+import { useUserStore } from '@/stores/user';
+const message = useMessage();
+const userState = useUserStore();
+const router = useRouter();
 let total = ref(114);
-function changePage(page: number) {
+
+const changePage = async (page: number) => {
   console.log(`to page ${page}`);
+  const data: RequestGetUserPage = {
+    userId: Number(router.currentRoute.value.query.id),
+    currentPage: page,
+  }
+  const res = await getUserPageArticlesAPI(data, userState);
+  if (res.data.status === 0) {
+    // TODO: 接口对接
+    console.log(res);
+  } else {
+    message.error(res.data.message);
+  }
 }
+
+const init = async () => {
+  const data: RequestGetUserPageNum = {
+    userId: Number(router.currentRoute.value.query.id),
+  };
+  const res = await getUserPageNumAPI(data, userState); res
+  if (res.data.status === 0) {
+    total.value = res.data.data;
+    changePage(1);
+  } else {
+    message.error(res.data.message);
+  }
+};
+
+onMounted(() => {
+  init();
+})
 </script>
 
 <template>

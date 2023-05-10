@@ -81,6 +81,7 @@ export interface RequestUpdateArticle {
   title: string,
   content: string,
   updateTime: string  // yyyy-MM-dd HH:mm:ss
+  description?: string,
 }
 
 // /api/article/get
@@ -162,7 +163,7 @@ export interface RequestDeleteDraft {
 
 // /api/draft/update
 // 用于更改草稿
-export interface ResponseUpdateDraft {
+export interface RequestUpdateDraft {
   id: number,
   title: string,
   description: string,

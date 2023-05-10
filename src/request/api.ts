@@ -25,7 +25,7 @@ function setData<T extends object>(data: T):FormData {
  * url: user/getVerifyCode
  * 
  * test ok
- */
+* */
 export const getVerifyCodeAPI = (data: requestTypes.RequestGetVerifyCode): Res<responseTypes.ResponseGetVerifyCode> => {
   const Data = setData(data);
   return axios.post("user/getVerifyCode", Data);
@@ -37,7 +37,7 @@ export const getVerifyCodeAPI = (data: requestTypes.RequestGetVerifyCode): Res<r
  * url: user/register
  * 
  * test ok
- */
+* */
 
 export const registerAPI = (data: requestTypes.RequestRegister): Res<responseTypes.ResponseRegister> => {
   const Data = setData(data);
@@ -50,7 +50,7 @@ export const registerAPI = (data: requestTypes.RequestRegister): Res<responseTyp
  * url: user/login
  * 
  * test ok
- */
+* */
 
 export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.ResponseLogin> => {
   const Data = setData(data);
@@ -63,7 +63,7 @@ export const loginAPI = (data: requestTypes.RequestLogin): Res<responseTypes.Res
  * url: user/getInfo
  * 
  * test ok
- */
+* */
 
 export const getUserInfoAPI = (userState: any): Res<responseTypes.ResponseGetInfo> => {
   return axios.post("user/getInfo", undefined, { headers: {
@@ -79,7 +79,7 @@ export const getUserInfoAPI = (userState: any): Res<responseTypes.ResponseGetInf
  * url: user/updateInfo
  * 
  * test ok
- */
+* */
 
 export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo, userState: any): Res<responseTypes.ResponseUpdateInfo> => {
   const Data = setData(data);
@@ -95,7 +95,7 @@ export const updateUserInfoAPI = (data: requestTypes.RequestUpdateInfo, userStat
  * url: user/updateAvatar
  * 
  * test ok
- */
+* */
 
 export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar, userState: any): Res<responseTypes.ResponseUpdateAvatar> => {
   const Data = setData(data);
@@ -111,7 +111,7 @@ export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar, user
  * url: user/updatePassword
  * 
  * test ok
- */
+* */
 
 export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword, userState: any): Res<responseTypes.ResponseUpdatePassword> => {
   const Data = setData(data);
@@ -127,7 +127,7 @@ export const updateUserPasswordAPI = (data: requestTypes.RequestUpdatePassword, 
  * url: article/add
  * 
  * test ok
- */
+ **/
 
 export const addArticleAPI = (data: requestTypes.RequestAddArticle, userState: any): Res<responseTypes.ResponseAddArticle> => {
   const Data = setData(data);
@@ -143,7 +143,7 @@ export const addArticleAPI = (data: requestTypes.RequestAddArticle, userState: a
  * url: article/delete
  * 
  * test
- */
+ **/
 
 export const deleteArticleAPI = (data: requestTypes.RequestDeleteArticle, userState: any): Res<responseTypes.ResponseDeleteArticle> => {
   const Data = setData(data);
@@ -159,7 +159,7 @@ export const deleteArticleAPI = (data: requestTypes.RequestDeleteArticle, userSt
  * url: article/update
  * 
  * test
- */
+ **/
 
 export const updateArticleAPI = (data: requestTypes.RequestUpdateArticle, userState: any): Res<responseTypes.ResponseUpdateArticle> => {
   const Data = setData(data);
@@ -175,7 +175,7 @@ export const updateArticleAPI = (data: requestTypes.RequestUpdateArticle, userSt
  * url: article/get
  * 
  * test ok
- */
+* */
 
 export const getArticleAPI = (data: requestTypes.RequestGetArticle, userState: any): Res<responseTypes.ResponseGetArticle> => {
   const Data = setData(data);
@@ -186,28 +186,28 @@ export const getArticleAPI = (data: requestTypes.RequestGetArticle, userState: a
 }
 
 /**
- * 用于获取文章总页数
+ * 用于首页文章的总页数
  * 
  * url: article/getPageNum
  * 
  * test
- */
+* */
 
+export const getHomePageNumAPI = (): Res<responseTypes.ResponseGetPageNum> => {
+  return axios.post("article/get"); 
+}
 
 /**
- * 用于获取某一页的所有文章
+ * 用于获取首页某一页的所有文章
  * 
  * url: article/getPageArticles
  * 
  * test
- */
+* */
 
-export const getPageArticlesAPI = (data: requestTypes.RequestGetPageArticles, userState: any): Res<responseTypes.ResponseGetPageArticles> => {
+export const getHomePageArticlesAPI = (data: requestTypes.RequestGetPageArticles): Res<responseTypes.ResponseGetPageArticles> => {
   const Data = setData(data);
-  return axios.post("article/getPageArticles", Data, { headers: {
-    id: userState.userId,
-    token: userState.token
-  } }); 
+  return axios.post("article/getPageArticles", Data); 
 }
 
 /**
@@ -216,7 +216,7 @@ export const getPageArticlesAPI = (data: requestTypes.RequestGetPageArticles, us
  * url: article/getUserPageNum
  * 
  * test
- */
+* */
 
 export const getUserPageNumAPI = (data: requestTypes.RequestGetUserPageNum, userState: any): Res<responseTypes.ResponseGetUserPageNum> => {
   const Data = setData(data);
@@ -232,9 +232,9 @@ export const getUserPageNumAPI = (data: requestTypes.RequestGetUserPageNum, user
  * url: article/getUserPage
  * 
  * test
- */
+* */
 
-export const getUserPageAPI = (data: requestTypes.RequestGetUserPage, userState: any): Res<responseTypes.ResponseGetUserPage> => {
+export const getUserPageArticlesAPI = (data: requestTypes.RequestGetUserPage, userState: any): Res<responseTypes.ResponseGetUserPage> => {
   const Data = setData(data);
   return axios.post("article/getUserPage", Data, { headers: {
     id: userState.userId,
@@ -247,8 +247,8 @@ export const getUserPageAPI = (data: requestTypes.RequestGetUserPage, userState:
  * 
  * url: article/pageFuzzySearch
  * 
- * test
- */
+ * 
+* */
 
 export const pageFuzzySearchAPI = (data: requestTypes.RequestPageFuzzySearch, userState: any): Res<responseTypes.ResponsePageFuzzySearch> => {
   const Data = setData(data);
@@ -264,7 +264,7 @@ export const pageFuzzySearchAPI = (data: requestTypes.RequestPageFuzzySearch, us
  * url: article/uploadImg
  * 
  * test ok
- */
+* */
 
 export const uploadImgAPI = (data: requestTypes.RequestUploadImg, userState: any): Res<responseTypes.ResponseUploadImg> => {
   const Data = setData(data);
@@ -272,4 +272,291 @@ export const uploadImgAPI = (data: requestTypes.RequestUploadImg, userState: any
     id: userState.userId,
     token: userState.token
   } }); 
+}
+
+/**
+ * 用于获取文章评论
+ * 
+ * url: comment/getArticleComments
+ * 
+ *  
+* */
+
+export const getArticleCommentsAPI = (data: requestTypes.RequestGetArticleComments, userState: any): Res<responseTypes.ResponseGetArticleComments> => {
+  const Data = setData(data);
+  return axios.post("comment/getArticleComments", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } }); 
+}
+
+/**
+ * 用于添加评论
+ * 
+ * url: comment/add
+ * 
+ *  
+* */
+
+export const addArticleCommentAPI = (data: requestTypes.RequestAddComment, userState: any): Res<responseTypes.ResponseAddComment> => {
+  const Data = setData(data);
+  return axios.post("comment/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } }); 
+}
+
+/**
+ * 用于删除评论
+ * 
+ * url: comment/delete
+ *
+ *  
+* */
+
+export const deleteArticleCommentAPI = (data: requestTypes.RequestDeleteComment, userState: any): Res<responseTypes.ResponseDeleteComment> => {
+  const Data = setData(data);
+  return axios.post("comment/delete", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于添加草稿
+ * 
+ * url: draft/add
+ * 
+ *  
+* */
+
+export const addDraftAPI = (data: requestTypes.RequestAddDraft, userState: any): Res<responseTypes.ResponseAddDraft> => {
+  const Data = setData(data);
+  return axios.post("draft/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+* 用于删除草稿
+ * 
+ * url: draft/delete
+ * 
+ *  
+* */
+
+export const deleteDraftAPI = (data: requestTypes.RequestDeleteDraft, userState: any): Res<responseTypes.ResponseDeleteDraft> => {
+  const Data = setData(data);
+  return axios.post("draft/delete", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于更改草稿
+ * 
+ * url: draft/update
+ * 
+ *  
+* */
+
+export const updateDraftAPI = (data: requestTypes.RequestUpdateDraft, userState: any): Res<responseTypes.ResponseUpdateDraft> => {
+  const Data = setData(data);
+  return axios.post("draft/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某个草稿的信息
+ * 
+ * url: draft/get
+ * 
+ *  
+* */
+
+export const getDraftAPI = (data: requestTypes.RequestGetDraft, userState: any): Res<responseTypes.ResponseGetDraft> => {
+  const Data = setData(data);
+  return axios.post("draft/get", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某用户草稿页数
+ * 
+ * url: draft/getUserPageNum
+ * 
+ *  
+* */
+
+export const getUserDraftPageNumAPI = (data: requestTypes.RequestGetUserPageNum, userState: any): Res<responseTypes.ResponseGetUserDraftPageNum> => {
+  const Data = setData(data);
+  return axios.post("draft/getUserPageNum", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 获取用户某页草稿
+ * 
+ * url: draft/getUserPage
+ * 
+ *  
+* */
+
+export const getUserDraftPageAPI = (data: requestTypes.RequestGetUserPage, userState: any): Res<responseTypes.ResponseGetUserDraftPage> => {
+  const Data = setData(data);
+  return axios.post("draft/getUserPage", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 添加一篇文章到指定收藏夹
+ * 
+ * url: favorite/add
+ * 
+ *  
+* */
+
+export const addArticleToCollectAPI = (data: requestTypes.RequestAddFavorite, userState: any): Res<responseTypes.ResponseAddFavorite> => {
+  const Data = setData(data);
+  return axios.post("favorite/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 获取某一文件夹下的所有文章
+ * 
+ * url: favorite/getFolderFavorites
+ * 
+ *  
+* */
+
+export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFavorites, userState: any): Res<responseTypes.ResponseGetFolderFavorites> => {
+  const Data = setData(data);
+  return axios.post("favorite/getFolderFavorites", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+* 删除指定收藏夹下的指定文章
+ * 
+ * url: favorite/delete
+ * 
+ *  
+* */
+
+export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavorites, userState: any): Res<responseTypes.ResponseAddDraft> => {
+  const Data = setData(data);
+  return axios.post("draft/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于新建收藏夹
+ * 
+ * url: favoriteFolder/add
+ * 
+ *  
+* */
+
+export const addCollectAPI = (data: requestTypes.RequestAddFavoriteFolder, userState: any): Res<responseTypes.ResponseAddFavoriteFolder> => {
+  const Data = setData(data);
+  return axios.post("favoriteFolder/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某个用户的所有收藏夹
+ * 
+ * url: favoriteFolder/getUserFolders
+ * 
+ *  
+* */
+
+export const getUserAllCollectAPI = (userState: any): Res<responseTypes.ResponseAddDraft> => {
+  return axios.post("favoriteFolder/getUserFolders", { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 删除一个收藏夹,并且删除其中所有的收藏
+ * 
+ * url: favoriteFolder/delete
+ * 
+ *  
+**/
+
+export const deleteCollectAPI = (data: requestTypes.RequestDeleteFavoriteFolder, userState: any): Res<responseTypes.ResponseDeleteFavoriteFolder> => {
+  const Data = setData(data);
+  return axios.post("favoriteFolder/delete", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于将某个用户添加到自己的关注列表中
+ * 
+ * url: follow/add
+ * 
+ *  
+* */
+
+export const addUserToFollowAPI = (data: requestTypes.RequestAddFollow, userState: any): Res<responseTypes.ResponseAddFollow> => {
+  const Data = setData(data);
+  return axios.post("follow/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取当前用户的关注列表
+ * 
+ * url: follow/getUserFollowed
+ * 
+ *  
+* */
+
+export const getUserFollowListAPI = (userState: any): Res<responseTypes.ResponseGetUserFollowed> => {
+  // const Data = setData(data);
+  return axios.post("follow/getUserFollowed", { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于取消关注某个用户
+ * 
+ * url: follow/delete
+ * 
+ *  
+* */
+
+export const deleteUserFromFollowAPI = (data: requestTypes.RequestDeleteFollow, userState: any): Res<responseTypes.ResponseDeleteFollow> => {
+  const Data = setData(data);
+  return axios.post("draft/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
 }

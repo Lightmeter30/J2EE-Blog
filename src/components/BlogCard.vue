@@ -2,9 +2,13 @@
 import { faker } from '@faker-js/faker';
 import { Person, Time, Star, ChatboxEllipses, Pencil, Trash } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
+import { RequestDeleteArticle } from '@/request/requestData';
+import { deleteArticleAPI } from '@/request/api';
+import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const dialog = useDialog();
 const message = useMessage();
+const userState = useUserStore();
 const type: number = 3;
 const blog = {
   id: 114514,
@@ -31,14 +35,22 @@ function toEdit() {
   router.push({ path: '/edit', query: { id: blog.id } });
 }
 
-function remove() {
+const remove = () => {
   dialog.warning({
     title: '警告',
     content: '此操作将删除该文章且不可挽回,是否确认删除?',
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      message.success('删除成功');
+    onPositiveClick: async () => {
+      const data: RequestDeleteArticle = {
+        id: blog.id
+      }
+      const res = await deleteArticleAPI(data, userState);
+      if(res.data.status === 0) {
+        message.success('删除成功');
+      } else {
+        message.error(res.data.message);
+      }
     },
     onNegativeClick: () => {
       message.error('取消');

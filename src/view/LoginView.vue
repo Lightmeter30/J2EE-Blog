@@ -203,14 +203,17 @@ const submitLogin = async () => {
     // }
     const res = await loginAPI(login);
     if(res.data.status === 0) {
-      message.success('登录成功!');
       userState.login(res.data.data.token, res.data.data.userId);
       const info = await getUserInfoAPI(userState);
       // 获取个人信息
-      console.log(info);
-      userState.setAvatar(info.data.data.avatar);
-
-      router.replace('/'); // 去主页
+      // console.log(info);
+      if(info.data.status === 0) {
+        message.success('登录成功!');
+        userState.setAvatar(info.data.data.avatar);
+        router.replace('/'); // 去主页
+      } else {
+        message.error('出现错误了,请重新登录!');
+      }
     } else {
       message.warning('账号或者密码错误!');
     }

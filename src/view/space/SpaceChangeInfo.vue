@@ -87,6 +87,8 @@ const init = async () => {
     userInfo.sex = res.data.data.sex ? 1 : 0;
     userInfo.description = res.data.data.description;
     userInfo.birthday = res.data.data.birthday;
+  } else {
+    message.error(res.data.message);
   }
 }
 
