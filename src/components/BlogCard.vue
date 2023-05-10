@@ -2,8 +2,8 @@
 import { faker } from '@faker-js/faker';
 import { Person, Time, Star, ChatboxEllipses, Pencil, Trash } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
-import { RequestDeleteArticle } from '@/request/requestData';
-import { deleteArticleAPI } from '@/request/api';
+import { RequestDeleteArticle, RequestDeleteDraft } from '@/request/requestData';
+import { deleteArticleAPI, deleteDraftAPI } from '@/request/api';
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const dialog = useDialog();
@@ -35,7 +35,7 @@ function toEdit() {
   router.push({ path: '/edit', query: { id: blog.id } });
 }
 
-const remove = () => {
+const removeArticle = () => {
   dialog.warning({
     title: '警告',
     content: '此操作将删除该文章且不可挽回,是否确认删除?',
@@ -58,6 +58,29 @@ const remove = () => {
   })
 }
 
+function removeDarft() {
+  dialog.warning({
+    title: '警告',
+    content: '此操作将删除该草稿且不可挽回,是否确认删除?',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      const data: RequestDeleteDraft = {
+        id: blog.id
+      }
+      const res = await deleteDraftAPI(data, userState);
+      if(res.data.status === 0) {
+        message.success('删除成功');
+      } else {
+        message.error(res.data.message);
+      }
+    },
+    onNegativeClick: () => {
+      message.error('取消');
+    }
+  })
+};
+
 </script>
 
 <template>
@@ -68,6 +91,7 @@ const remove = () => {
     <div class="description">
       {{ blog.description }}
     </div>
+    <!-- ordinal article -->
     <div class="foot" v-if="type === 1">
       <span class="author" @click="toPersonView()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Person />
@@ -81,6 +105,7 @@ const remove = () => {
             <ChatboxEllipses />
           </n-icon></span> {{ blog.commentNum }}</span>
     </div>
+    <!-- edit article -->
     <div class="foot" v-else-if="type === 2">
       <span class="author" @click="toPersonView()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Person />
@@ -96,10 +121,11 @@ const remove = () => {
       <span class="author" @click="toEdit()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Pencil />
           </n-icon></span> 编辑</span> &nbsp;<b>|</b>&nbsp;
-      <span class="author" @click="remove()"><span style="position: relative; top: 1.6px;"><n-icon>
+      <span class="author" @click="removeArticle()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Trash />
           </n-icon></span> 删除</span>
     </div>
+    <!-- draft -->
     <div class="foot" v-else>
       <span class="author" @click="toPersonView()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Person />
@@ -109,7 +135,7 @@ const remove = () => {
       <span class="author" @click="toEdit()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Pencil />
           </n-icon></span> 编辑</span> &nbsp;<b>|</b>&nbsp;
-      <span class="author" @click="remove()"><span style="position: relative; top: 1.6px;"><n-icon>
+      <span class="author" @click="removeDarft()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Trash />
           </n-icon></span> 删除</span>
     </div>

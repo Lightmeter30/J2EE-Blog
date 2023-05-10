@@ -340,7 +340,7 @@ export interface ResponseAddFavoriteFolder {
 
 // /api/favoriteFolder/getUserFolders
 // 用于获取用户所有收藏文件夹
-export interface Response {
+export interface ResponseGetUserFolders {
   code: number;
   data: FavoriteFolder[];
   message: string;
@@ -350,6 +350,7 @@ export interface FavoriteFolder {
   id: number;
   name: string;
   userId: number;
+  articleNum: number;
 }
 
 // /api/favoriteFolder/delete

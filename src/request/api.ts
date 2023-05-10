@@ -194,7 +194,7 @@ export const getArticleAPI = (data: requestTypes.RequestGetArticle, userState: a
 * */
 
 export const getHomePageNumAPI = (): Res<responseTypes.ResponseGetPageNum> => {
-  return axios.post("article/get"); 
+  return axios.post("article/getPageNum"); 
 }
 
 /**
@@ -279,7 +279,7 @@ export const uploadImgAPI = (data: requestTypes.RequestUploadImg, userState: any
  * 
  * url: comment/getArticleComments
  * 
- *  
+ * test
 * */
 
 export const getArticleCommentsAPI = (data: requestTypes.RequestGetArticleComments, userState: any): Res<responseTypes.ResponseGetArticleComments> => {
@@ -295,7 +295,7 @@ export const getArticleCommentsAPI = (data: requestTypes.RequestGetArticleCommen
  * 
  * url: comment/add
  * 
- *  
+ * test
 * */
 
 export const addArticleCommentAPI = (data: requestTypes.RequestAddComment, userState: any): Res<responseTypes.ResponseAddComment> => {
@@ -311,7 +311,7 @@ export const addArticleCommentAPI = (data: requestTypes.RequestAddComment, userS
  * 
  * url: comment/delete
  *
- *  
+ * ????
 * */
 
 export const deleteArticleCommentAPI = (data: requestTypes.RequestDeleteComment, userState: any): Res<responseTypes.ResponseDeleteComment> => {
@@ -327,7 +327,7 @@ export const deleteArticleCommentAPI = (data: requestTypes.RequestDeleteComment,
  * 
  * url: draft/add
  * 
- *  
+ * test
 * */
 
 export const addDraftAPI = (data: requestTypes.RequestAddDraft, userState: any): Res<responseTypes.ResponseAddDraft> => {
@@ -343,7 +343,7 @@ export const addDraftAPI = (data: requestTypes.RequestAddDraft, userState: any):
  * 
  * url: draft/delete
  * 
- *  
+ * test
 * */
 
 export const deleteDraftAPI = (data: requestTypes.RequestDeleteDraft, userState: any): Res<responseTypes.ResponseDeleteDraft> => {
@@ -364,7 +364,7 @@ export const deleteDraftAPI = (data: requestTypes.RequestDeleteDraft, userState:
 
 export const updateDraftAPI = (data: requestTypes.RequestUpdateDraft, userState: any): Res<responseTypes.ResponseUpdateDraft> => {
   const Data = setData(data);
-  return axios.post("draft/add", Data, { headers: {
+  return axios.post("draft/update", Data, { headers: {
     id: userState.userId,
     token: userState.token
   } });
@@ -375,7 +375,7 @@ export const updateDraftAPI = (data: requestTypes.RequestUpdateDraft, userState:
  * 
  * url: draft/get
  * 
- *  
+ *  test
 * */
 
 export const getDraftAPI = (data: requestTypes.RequestGetDraft, userState: any): Res<responseTypes.ResponseGetDraft> => {
@@ -391,7 +391,7 @@ export const getDraftAPI = (data: requestTypes.RequestGetDraft, userState: any):
  * 
  * url: draft/getUserPageNum
  * 
- *  
+ * test
 * */
 
 export const getUserDraftPageNumAPI = (data: requestTypes.RequestGetUserPageNum, userState: any): Res<responseTypes.ResponseGetUserDraftPageNum> => {
@@ -407,7 +407,7 @@ export const getUserDraftPageNumAPI = (data: requestTypes.RequestGetUserPageNum,
  * 
  * url: draft/getUserPage
  * 
- *  
+ *  test
 * */
 
 export const getUserDraftPageAPI = (data: requestTypes.RequestGetUserPage, userState: any): Res<responseTypes.ResponseGetUserDraftPage> => {
@@ -423,7 +423,7 @@ export const getUserDraftPageAPI = (data: requestTypes.RequestGetUserPage, userS
  * 
  * url: favorite/add
  * 
- *  
+ *  test
 * */
 
 export const addArticleToCollectAPI = (data: requestTypes.RequestAddFavorite, userState: any): Res<responseTypes.ResponseAddFavorite> => {
@@ -439,7 +439,7 @@ export const addArticleToCollectAPI = (data: requestTypes.RequestAddFavorite, us
  * 
  * url: favorite/getFolderFavorites
  * 
- *  
+ * 
 * */
 
 export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFavorites, userState: any): Res<responseTypes.ResponseGetFolderFavorites> => {
@@ -487,10 +487,10 @@ export const addCollectAPI = (data: requestTypes.RequestAddFavoriteFolder, userS
  * 
  * url: favoriteFolder/getUserFolders
  * 
- *  
+ *  test
 * */
 
-export const getUserAllCollectAPI = (userState: any): Res<responseTypes.ResponseAddDraft> => {
+export const getUserAllCollectAPI = (userState: any): Res<responseTypes.ResponseGetUserFolders> => {
   return axios.post("favoriteFolder/getUserFolders", { headers: {
     id: userState.userId,
     token: userState.token

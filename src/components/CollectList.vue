@@ -3,7 +3,7 @@ import { Folder } from "@vicons/ionicons5";
 type collect = {
   id: number,
   name: string,
-  blogNum: number,
+  articleNum: number,
 };
 
 const props = defineProps<collect>();
@@ -25,7 +25,7 @@ function selectMe() {
         {{ name }}
       </span>
     </div>
-    <div class="blogNum"><span>{{ blogNum }}</span></div>
+    <div class="articleNum"><span>{{ articleNum }}</span></div>
   </div>
 </template>
 

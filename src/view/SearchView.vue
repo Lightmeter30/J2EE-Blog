@@ -67,13 +67,6 @@ async function searchAPI(curPage: number, searchText: string) {
   }
 }
 
-watch(
-  () => nowPage,
-  (newValue, oldValue) => {
-    console.log(newValue, oldValue);
-  }
-);
-
 onMounted(() => {
   console.log('change from onMounted');
   searchAPI(1, searchStore.searchText);

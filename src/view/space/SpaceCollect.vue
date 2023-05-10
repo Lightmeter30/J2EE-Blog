@@ -1,37 +1,20 @@
 <script setup lang="ts">
 import { AddCircle,CloudUpload } from "@vicons/ionicons5";
+import {FavoriteFolder} from '@/request/responseData';
+import { useUserStore } from '@/stores/user';
 
 let collect: HTMLElement;
 const newCollect = ref('');
 const showModal = ref(false);
-type collect = {
-  id: number,
-  name: string,
-  blogNum: number,
+const userStore = useUserStore();
+const message = useMessage();
+type list = {
+  collectList: FavoriteFolder[],
 };
-
-const collectList: Array<collect> = reactive([
-  {
-    id: 1,
-    name: '默认收藏夹',
-    blogNum: 12,
-  },
-  {
-    id: 2,
-    name: '美女',
-    blogNum: 19,
-  },
-  {
-    id: 3,
-    name: '好看的',
-    blogNum: 121,
-  },
-  {
-    id: 10,
-    name: '我喜欢的',
-    blogNum: 0,
-  },
-]);
+const List: list = {
+  collectList: [],
+}
+const folder = reactive(List);
 
 let total = ref(114);
 function changePage(page: number) {
@@ -52,12 +35,13 @@ function changeSelectCollect(value: number) {
 }
 
 function addCollect() {
-  const data: collect = {
+  const data: FavoriteFolder = {
     id: 114,
     name: newCollect.value,
-    blogNum: 0,
+    articleNum: 0,
+    userId: userStore.userId,
   }
-  collectList.push(data);
+  folder.collectList.push(data);
   newCollect.value = '';
   showModal.value = false;
 }
@@ -102,7 +86,7 @@ onMounted(() => {
             </div>
           </template>
         </n-modal>
-      <CollectList v-for="item in collectList" :id="item.id" :name="item.name" :blogNum="item.blogNum"
+      <CollectList v-for="item in folder.collectList" :id="item.id" :name="item.name" :articleNum="item.articleNum"
         @select-me="changeSelectCollect" />
     </div>
     <div class="content">

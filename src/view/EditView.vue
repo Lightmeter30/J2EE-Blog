@@ -3,14 +3,14 @@ import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import type {FormRules} from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
-import { RequestAddArticle, RequestUploadImg, RequestUpdateArticle } from '@/request/requestData';
+import { RequestAddArticle, RequestUploadImg, RequestUpdateArticle, RequestGetArticle, RequestAddDraft, RequestUpdateDraft, RequestGetDraft } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { useUserStore } from '@/stores/user';
-import { updateArticleAPI, addArticleAPI, uploadImgAPI, } from '@/request/api';
-import router from '@/router';
+import { updateArticleAPI, addArticleAPI, getArticleAPI, uploadImgAPI, addDraftAPI, updateDraftAPI, getDraftAPI } from '@/request/api';
 import { call } from 'naive-ui/es/_utils';
 
 let text = ref('');
+const router = useRouter();
 const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
 const userState = useUserStore(); 
@@ -72,8 +72,22 @@ const toolbar = [
   'preview',
   'catalog'
 ];
-function save() {
-  message.success('已保存到草稿箱!');
+
+async function save() {
+  const data: RequestAddDraft = {
+    title: blog.title,
+    content: text.value,
+    description: blog.description,
+    updateTime: getNowTime(),
+  };
+  const res = await addDraftAPI(data, userState);
+  if(res.data.status === 0) {
+    // TODO: API test
+    message.success('已保存到草稿箱!');
+    // message.success(res.data.message);
+  } else {
+    message.error(res.data.message);
+  }
 };
 
 const addArticle = async () => {
@@ -110,6 +124,23 @@ const updateArticle = async () => {
   }
 };
 
+async function updateDraft() {
+  const data: RequestUpdateDraft = {
+    id: Number(router.currentRoute.value.query.id),
+    title: blog.title,
+    content: text.value,
+    updateTime: getNowTime(),
+    description: blog.description
+  };
+  const res = await updateDraftAPI(data, userState);
+  if(res.data.status === 0) {
+    console.log(res);
+    message.success('发布成功!');
+  } else {
+    message.error(res.data.message);
+  }
+};
+
 const upload = async () => {
   if( articleType === 0 || articleType === 1 ) {
     addArticle();
@@ -132,6 +163,36 @@ const onUploadImg = async (files: any, callback: any) => {
   }
 }
 
+const getArticleInfo = async () => {
+  const data: RequestGetArticle = {
+    id: Number(router.currentRoute.value.query.id)
+  }
+  const res = await getArticleAPI(data, userState);
+  if(res.data.status === 0) {
+    // TODO:
+    blog.title = res.data.data.title;
+    blog.description = res.data.data.description;
+    text.value = res.data.data.content;
+  } else {
+    message.error(res.data.message);
+  }
+}
+
+async function getDraftInfo() {
+  const data: RequestGetDraft = {
+    id: Number(router.currentRoute.value.query.id)
+  }
+  const res = await getDraftAPI(data, userState);
+  if(res.data.status === 0) {
+    // TODO:
+    blog.title = res.data.data.title;
+    blog.description = res.data.data.description;
+    text.value = res.data.data.content;
+  } else {
+    message.error(res.data.message);
+  }
+}
+
 onMounted(() => {
   //  114514 is the new(0), 1919 is the draft(1), 810 is the old(2)
   if( router.currentRoute.value.query.type === '114514') {
@@ -141,7 +202,6 @@ onMounted(() => {
   } else if(router.currentRoute.value.query.type === '810') {
     articleType = 2;
   }
-  console.log(getNowTime());
 });
 
 </script>

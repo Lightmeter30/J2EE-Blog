@@ -4,8 +4,10 @@ import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close } from '@vicons/ionicons5';
 import { faker } from '@faker-js/faker';
-import { getArticleAPI } from '@/request/api';
-import { RequestGetArticle } from '@/request/requestData';
+import { getArticleAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI } from '@/request/api';
+import { RequestGetArticle, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
+import { getNowTime } from '@/utils/validate';
+import {FavoriteFolder} from '@/request/responseData';
 const blog = {
   title: 'typescript/javascript学习笔记',
   description: '这是我学习typescript/javascript的学习笔记，其中以typescript为主，同时会介绍一点javascript里面会有的知识点',
@@ -15,34 +17,13 @@ const blog = {
   commentNum: 10,
   comment: [],
 }
-type collect = {
-  id: number,
-  name: string,
-  blogNum: number,
+type list = {
+  collectList: FavoriteFolder[],
 };
-
-const collectList: Array<collect> = reactive([
-  {
-    id: 1,
-    name: '默认收藏夹',
-    blogNum: 12,
-  },
-  {
-    id: 2,
-    name: '美女',
-    blogNum: 19,
-  },
-  {
-    id: 3,
-    name: '好看的',
-    blogNum: 121,
-  },
-  {
-    id: 10,
-    name: '我喜欢的',
-    blogNum: 0,
-  },
-]);
+const List: list = {
+  collectList: [],
+}
+const folder = reactive(List);
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
@@ -51,8 +32,20 @@ const blogContent = ref('');
 const myComment = ref('');
 const showModal = ref(false);
 
-function comment() {
+async function comment() {
   console.log('comment', myComment);
+  const data: RequestAddComment = {
+    articleId: Number(router.currentRoute.value.query.id),
+    time: getNowTime(),
+    content: myComment.value
+  };
+  const res = await addArticleCommentAPI(data, userStore);
+  if(res.data.status === 0) {
+    // TODO: API test
+    console.log(res.data.data);
+  } else {
+    message.error(res.data.message);
+  }
 }
 
 function showDialog() {
@@ -63,9 +56,32 @@ function closeModal() {
   showModal.value = false;
 }
 
-function addBlogToCollect(collectID: number) {
+async function addBlogToCollect(collectID: number, collectName: string) {
   console.log(collectID);
+  const data: RequestAddFavorite = {
+    articleId: Number(router.currentRoute.value.query.id),
+    folderId: collectID
+  };
+  const res = await addArticleToCollectAPI(data, userStore);
+  if(res.data.status === 0) {
+    message.success(`成功添加到收藏夹${collectName}!`);
+  } else {
+    message.error(res.data.message);
+  }
 }
+
+async function getComments() {
+  const data: RequestGetArticleComments = {
+    articleId: Number(router.currentRoute.value.query.id)
+  };
+  const res = await getArticleCommentsAPI(data, userStore);
+  if(res.data.status === 0) {
+    // TODO: API test
+    console.log(res.data.data);
+  } else {
+    message.error(res.data.message);
+  }
+};
 
 const getArticle = async () => {
   const data: RequestGetArticle = {
@@ -81,11 +97,23 @@ const getArticle = async () => {
   } else {
     message.error(res.data.message);
   }
-}
+};
+
+const getAllFolders = async () => {
+  const res = await getUserAllCollectAPI(userStore);
+  if(res.data.status === 0) {
+    // TODO:
+    console.log(res.data.data);
+    folder.collectList = res.data.data;
+  } else {
+    message.error(res.data.message);
+  }
+};
 
 onMounted(() => {
   console.log('onMounted');
   getArticle();
+  getComments();
 })
 </script>
 <template>
@@ -144,7 +172,7 @@ onMounted(() => {
           </div>
         </template>
         <div class="collectList">
-          <div v-for="item in collectList" >
+          <div v-for="item in folder.collectList" >
             <div class="collectItem">
               <div class="title">
                 <span>
@@ -152,7 +180,7 @@ onMounted(() => {
                 </span>
               </div>
               <div class="collectButton">
-                <n-button color="#39c5bb" @click="addBlogToCollect(item.id)" >
+                <n-button color="#39c5bb" @click="addBlogToCollect(item.id, item.name)" >
                   收藏
                 </n-button>
               </div>
