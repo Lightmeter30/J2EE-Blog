@@ -3,11 +3,13 @@ import { Search, LogOut } from "@vicons/ionicons5"
 import { h } from 'vue'
 import type { Component } from 'vue'
 import { NIcon } from 'naive-ui'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/user';
+import { useSearchStore } from "@/stores/search";
 const userState = useUserStore();
 const dialog = useDialog();
 const message = useMessage();
 const router = useRouter();
+const searchStore = useSearchStore();
 const renderIcon = (icon: Component) => {
   return () => {
     return h(NIcon, null, {
@@ -25,9 +27,14 @@ const options = [
 ];
 let searchText = ref('');
 
-function search() {
-  console.log('search')
-  console.log(searchText);
+async function search() {
+  // console.log('search')
+  if(router.currentRoute.value.path === '/search') {
+    searchStore.goSearch(searchText.value);
+  } else {
+    searchStore.goSearch(searchText.value);
+    router.push('/search');
+  }
 }
 function handleSelect(key: string | number) {
   if(key === 'logout') {
