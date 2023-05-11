@@ -7,7 +7,7 @@ export const useUserStore = defineStore({
         token: '',
         userId: -1,
         isLogin: false,
-        staticHead: 'http://60.204.157.19/static/',
+        staticHead: 'http://123.60.156.248/static/',
         avatar: '07akioni.jpeg',
     }),
 

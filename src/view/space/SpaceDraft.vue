@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {darkTheme} from "naive-ui";
 import { useUserStore } from '@/stores/user';
 import { getUserDraftPageNumAPI, getUserDraftPageAPI } from '@/request/api';
 import { RequestGetUserPage, RequestGetUserPageNum } from '@/request/requestData';
@@ -49,27 +50,30 @@ onMounted( async () => {
       <blog-card></blog-card>
     </div>
     <div class="draftFoot">
+      <n-config-provider :theme="darkTheme">
       <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
         <template #goto>
           跳至
         </template>
       </n-pagination>
+      </n-config-provider>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .spaceDraft {
-  background-color: white;
+  background-color: $github-background;
   border-radius: 5px;
   padding: 20px;
+  margin-bottom: 40px;
 
   .draftContent {
 
   }
 
   .draftFoot {
-    background-color: white;
+    background-color: $github-card-background;
     padding: 10px;
     border-radius: 5px;
     display: flex;

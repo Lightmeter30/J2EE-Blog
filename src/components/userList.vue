@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {faker} from '@faker-js/faker';
 import { AddCircle, RemoveCircle } from '@vicons/ionicons5';
-
+import { darkTheme } from 'naive-ui';
 const user = reactive({
   name: faker.name.firstName(),
   description: '都什么年代了,还在当传统二次元',
@@ -50,13 +50,15 @@ function addOrRemoveAttention(key: number) {
       </n-button>
     </div>
   </div>
+  <n-config-provider :theme="darkTheme">
   <n-divider></n-divider>
+  </n-config-provider>
 </div>
 </template>
 
 <style lang="scss" scoped>
   .userList {
-    background-color: white;
+    background-color: $github-background;
     display: flex;
     padding-left: 20px;
     padding-right: 20px;

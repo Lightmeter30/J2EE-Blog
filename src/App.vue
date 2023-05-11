@@ -27,7 +27,8 @@ const themeOverrides: GlobalThemeOverrides = {
     "feedbackHeightSmall": "12px",
     "feedbackHeightMedium": "12px",
     "feedbackHeightLarge": "12px",
-    "feedbackPadding": "6px 0"
+    "feedbackPadding": "6px 0",
+    "labelTextColor": "rgba(255, 255, 255, 0.82)",
   },
   Menu: {
     borderRadius: "2px",
@@ -63,15 +64,15 @@ const themeOverrides: GlobalThemeOverrides = {
   Input: {
     caretColor: "#DDB055FF",
     textColor: "#D9D9D9",
-    colorFocus: "rgba(89,107,117,0.9)",
+    colorFocus: "rgb(34, 35, 44)", // rgba(89,107,117,0.9)
     loadingColor: "#2B303BFF",
     boxShadowFocus: "inset 1px 1px 4px rgba(0, 0, 0, 0.25)",
-    borderFocus: "5px solid rgba(13, 38, 58, 0.8)",
+    borderFocus: "5px solid rgba(13, 38, 20, 0.8)",
     borderHover: "1px solid #0D263A",
     border: "1px solid #0D263A",
     borderDisabled: "none",
     countTextColor: "rgba(255, 255, 255, 0.52)",
-    color: "#596B75",
+    color: "rgb(48, 48, 51)", // #596B75 
     textDecorationColor: "rgba(255, 255, 255, 0.82)",
     textColorDisabled: "rgba(255, 255, 255, 0.38)",
     groupLabelTextColor: "rgba(255, 255, 255, 0.82)",
@@ -81,7 +82,7 @@ const themeOverrides: GlobalThemeOverrides = {
     borderError: "2px solid #BD424C",
     borderHoverError: "2px solid #BD424C",
     boxShadowFocusError: "inset 1px 1px 4px rgba(0, 0, 0, 0.25)",
-    colorFocusError: "#075469",
+    colorFocusError: "rgb(34, 35, 50)", // #075469 
     borderFocusError: "2px solid #BD424C",
     loadingColorWarning: "#DDB055FF",
     caretColorWarning: "#DDB055FF",
@@ -119,7 +120,9 @@ const themeOverrides: GlobalThemeOverrides = {
       <n-dialog-provider>
         <top-index />
         <div style="height: 50px;"></div>
-        <router-view />
+        <!-- <div class="scrollMe"> -->
+          <router-view />
+        <!-- </div> -->
         <n-back-top :right="30" />
       </n-dialog-provider>
     </n-message-provider>
@@ -136,13 +139,36 @@ html,
 }
 
 body {
-  background: $cloud-0-hex;
+  background: $github-background;
 }
+
+.scrollMe {
+  height: 95%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-color $github-background;
+  background: url('@/assets/img/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 0;
+  opacity: 0.8;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $scrollbar-color;
+  }
+}
+
+
 
 #app {
   height: 100%;
   width: 100%;
   // background: $cloud-0-hex;
+  overflow-y: hidden;
 }
 
 * {

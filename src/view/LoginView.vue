@@ -1,7 +1,7 @@
 <template>
   <div class="login">
-    <Login id="login-logo"/>
-    <SignUp id="signup-logo"/>
+    <!-- <Login id="login-logo"/>
+    <SignUp id="signup-logo"/> -->
     <div class="login-window">
       <div class="login-window-left">
       </div>
@@ -273,8 +273,10 @@ const sendCode = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $Elements-Icy-Cocoon-1-rgba;
+  // background-color: $Elements-Icy-Cocoon-1-rgba;
+  background-color: $github-background;
   position: relative;
+
 
   #login-logo {
     position: absolute;
@@ -296,7 +298,7 @@ const sendCode = async () => {
     z-index: 1;
 
     background-color: white;
-    background-image: url('@/assets/img/cover.jpg');
+    background-image: url('@/assets/img/cover.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 0;

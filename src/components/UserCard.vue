@@ -124,7 +124,7 @@ function addOrRemoveAttention(key: number) {
   height: 300px;
   width: 250px;
   border-radius: 1rem;
-  background-color: white;
+  background-color: $github-card-background;
   color: $cloud-1-hex;
   padding-top: 30px;
   padding-left: 20px;

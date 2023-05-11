@@ -2,7 +2,7 @@
 import { Search, LogOut } from "@vicons/ionicons5"
 import { h } from 'vue'
 import type { Component } from 'vue'
-import { NIcon } from 'naive-ui'
+import { NIcon, darkTheme } from 'naive-ui'
 import { useUserStore } from '@/stores/user';
 import { useSearchStore } from "@/stores/search";
 const userState = useUserStore();
@@ -29,7 +29,7 @@ let searchText = ref('');
 
 async function search() {
   // console.log('search')
-  if(router.currentRoute.value.path === '/search') {
+  if (router.currentRoute.value.path === '/search') {
     searchStore.goSearch(searchText.value);
   } else {
     searchStore.goSearch(searchText.value);
@@ -37,18 +37,18 @@ async function search() {
   }
 }
 function handleSelect(key: string | number) {
-  if(key === 'logout') {
+  if (key === 'logout') {
     dialog.warning({
-    title: '警告',
-    content: '是否确认注销账号?',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: () => {
-      userState.logout();
-      router.push('/');
-      message.success('退出登录');
-    },
-  })
+      title: '警告',
+      content: '是否确认注销账号?',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        userState.logout();
+        router.push('/');
+        message.success('退出登录');
+      },
+    })
   }
 };
 function routeTo(key: number) {
@@ -56,7 +56,7 @@ function routeTo(key: number) {
   if (key === 1) {
     router.push('/');
   } else if (key === 2) {
-    router.push({path: '/space/home', query: {id: userState.userId}});
+    router.push({ path: '/space/home', query: { id: userState.userId } });
   } else if (key === 3) {
     router.push('/edit');
   } else if (key === 4) {
@@ -82,10 +82,12 @@ function routeTo(key: number) {
       </n-input>
     </div>
     <div class="info">
-      <div class="myInfo" v-if="userState.isLogin" >
-        <n-dropdown :options="options" @select="handleSelect">
-          <n-avatar round :src="userState.staticHead + userState.avatar" />
-        </n-dropdown>
+      <div class="myInfo" v-if="userState.isLogin">
+        <n-config-provider :theme="darkTheme">
+          <n-dropdown :options="options" @select="handleSelect">
+            <n-avatar round :src="userState.staticHead + userState.avatar" />
+          </n-dropdown>
+        </n-config-provider>
       </div>
       <div v-else @click="routeTo(4)" class="login">登录/注册</div>
     </div>
@@ -102,14 +104,14 @@ function routeTo(key: number) {
   padding-top: 5px;
   padding-bottom: 5px;
   justify-content: space-between;
-  background-color: white;
-  z-index: 999;
+  background-color: $github-head;
+  z-index: 10;
 
   .index {
     margin-left: 10px;
 
     span {
-      color: $cloud-1-hex;
+      color: $github-header-text;
       @include text-hover;
     }
   }
@@ -130,6 +132,7 @@ function routeTo(key: number) {
 
     .login {
       cursor: pointer;
+      color: $github-header-text;
 
       &:hover {
         text-decoration: underline;
@@ -143,7 +146,7 @@ function routeTo(key: number) {
   cursor: pointer;
 
   &:hover {
-    opacity: 0.9;
+    color: $miku-fans-theme;
   }
 }
 </style>

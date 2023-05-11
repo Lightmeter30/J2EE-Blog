@@ -1,31 +1,35 @@
 <template>
-  <div class="searchView">
-    <!-- <div @click="hClick" class="button hvr-bounce-to-left" >home</div>
+  <div class="scrollMe">
+    <div class="searchView">
+      <!-- <div @click="hClick" class="button hvr-bounce-to-left" >home</div>
     <div>
       {{ userInfo.username }}
       {{ userInfo.userid }}
     </div> -->
-    <div class="searchContent">
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
+      <div class="searchContent">
+        <blog-card></blog-card>
+        <blog-card></blog-card>
+        <blog-card></blog-card>
+        <blog-card></blog-card>
+        <blog-card></blog-card>
+        <blog-card></blog-card>
+      </div>
+      <div class="searchFoot">
+        <n-config-provider :theme="darkTheme">
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="total" show-quick-jumper>
+            <template #goto>
+              跳至
+            </template>
+          </n-pagination>
+        </n-config-provider>
+      </div>
+      <div style="height: 20px;"></div>
     </div>
-    <div class="searchFoot">
-      <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="total" show-quick-jumper>
-        <template #goto>
-          跳至
-        </template>
-      </n-pagination>
-    </div>
-    <div style="height: 20px;"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NPagination } from 'naive-ui';
+import { NPagination, darkTheme } from 'naive-ui';
 import { useUserStore } from '@/stores/user';
 import { useSearchStore } from "@/stores/search";
 import { initCustomFormatter } from 'vue';
@@ -85,11 +89,31 @@ onMounted(() => {
   .searchContent {}
 
   .searchFoot {
-    background-color: white;
+    background-color: $github-card-background;
     padding: 10px;
     border-radius: 5px;
     display: flex;
     justify-content: center;
+  }
+}
+
+.scrollMe {
+  height: 95%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-color $github-background;
+  background: url('@/assets/img/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 0;
+  opacity: 0.8;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $scrollbar-color;
   }
 }
 </style>

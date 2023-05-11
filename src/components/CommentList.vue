@@ -33,7 +33,7 @@ function toPersonalPage() {
 
 <style lang="scss" scoped>
   .commentList {
-    background-color: $cloud-0-hex;
+    background-color: $github-card-background;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -57,7 +57,7 @@ function toPersonalPage() {
 
     .commentContent {
       margin-left: 75px;
-      color: #222;
+      color: $github-header-text;
       font-size: medium;
     }
   }

@@ -219,7 +219,7 @@ onMounted(() => {
       </NForm>
     </div>
     <div class="editContent">
-      <MdEditor v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg" >
+      <MdEditor theme="dark" v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg" >
         <template #defToolbars>
           <NormalToolbar title="保存到草稿箱" @onClick="save()">
             <template #trigger>
@@ -248,6 +248,8 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .editContainer {
+  width: 90%;
+  margin-left: 5%;
 
   .editTitle {
     width: 50%;

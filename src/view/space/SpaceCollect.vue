@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { AddCircle,CloudUpload } from "@vicons/ionicons5";
-import {FavoriteFolder} from '@/request/responseData';
+import { AddCircle, CloudUpload } from "@vicons/ionicons5";
+import { FavoriteFolder } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
-import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI } from "@/request/api";
+import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI } from "@/request/api";
 import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder } from "@/request/requestData";
 import { Favorite } from "@/request/responseData";
-
+import { darkTheme } from "naive-ui";
 
 let collect: HTMLElement;
 const newCollect = ref('');
@@ -43,12 +43,12 @@ function changeSelectCollect(value: number) {
 
 }
 
-async function getArticlesFromCollect(collectId:number) {
+async function getArticlesFromCollect(collectId: number) {
   const data: RequestGetFolderFavorites = {
     folderId: collectId
-  }; 
+  };
   const res = await getArticlesFromCollectAPI(data, userStore);
-  if(res.data.status == 0) {
+  if (res.data.status == 0) {
     // TODO: test API
     console.log(res.data.data);
   } else {
@@ -61,7 +61,7 @@ async function addCollect() {
     name: newCollect.value,
   }
   const res = await addCollectAPI(data, userStore);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     message.success('新建收藏夹成功');
     const newFolder: FavoriteFolder = {
       id: res.data.data,
@@ -86,7 +86,7 @@ function removeCollect(id: number, index: number) {
         id: id
       }
       const res = await deleteCollectAPI(data, userStore);
-      if(res.data.status === 0) {
+      if (res.data.status === 0) {
         // TODO: test API
         List.collectList.splice(index, 1);
         message.success('删除成功');
@@ -100,11 +100,22 @@ function removeCollect(id: number, index: number) {
   })
 };
 
+const getAllFolders = async () => {
+  const res = await getUserAllCollectAPI(userStore);
+  if (res.data.status === 0) {
+    // TODO:
+    console.log(res.data.data);
+    folder.collectList = res.data.data;
+  } else {
+    message.error(res.data.message);
+  }
+};
 
 onMounted(() => {
-  collect = document.getElementById(`folder1`) as HTMLElement;
-  collect.classList.remove('collectHover');
-  collect.classList.add('selectedCollect');
+  // collect = document.getElementById(`folder1`) as HTMLElement;
+  // collect.classList.remove('collectHover');
+  // collect.classList.add('selectedCollect');
+  getAllFolders();
 });
 
 </script>
@@ -117,7 +128,8 @@ onMounted(() => {
           <AddCircle />
         </n-icon> 新建收藏夹
       </div>
-      <n-modal v-model:show="showModal" preset="dialog" title="Dialog">
+      <n-config-provider :theme="darkTheme">
+        <n-modal v-model:show="showModal" preset="dialog" title="Dialog">
           <template #header>
             <div>新建收藏夹</div>
           </template>
@@ -141,8 +153,9 @@ onMounted(() => {
             </div>
           </template>
         </n-modal>
-      <CollectList v-for="(item, key) in folder.collectList" :index="key" :id="item.id" :name="item.name" :articleNum="item.articleNum"
-        @select-me="changeSelectCollect" @delete-me="removeCollect" />
+      </n-config-provider>
+      <CollectList v-for="(item, key) in folder.collectList" :index="key" :id="item.id" :name="item.name"
+        :articleNum="item.articleNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
     </div>
     <div class="content">
       <div class="collectContent">
@@ -154,11 +167,13 @@ onMounted(() => {
         <blog-card></blog-card>
       </div>
       <div class="collectFoot">
-        <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
-          <template #goto>
-            跳至
-          </template>
-        </n-pagination>
+        <n-config-provider :theme="darkTheme">
+          <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+            <template #goto>
+              跳至
+            </template>
+          </n-pagination>
+        </n-config-provider>
       </div>
     </div>
   </div>
@@ -166,14 +181,17 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .spaceCollect {
-  background-color: white;
+  background-color: $github-background;
   border-radius: 5px;
   padding: 20px;
   display: flex;
+  margin-bottom: 40px;
 
   .sideIndex {
     width: 20%;
-    background-color: rgb(244, 245, 247);
+    background-color: $github-card-background;
+    color: $github-header-text;
+    border-radius: 5px;
   }
 
   .addCollect {
@@ -194,7 +212,7 @@ onMounted(() => {
     .collectContent {}
 
     .collectFoot {
-      background-color: white;
+      background-color: $github-card-background;
       padding: 10px;
       border-radius: 5px;
       display: flex;
@@ -202,4 +220,5 @@ onMounted(() => {
     }
   }
 
-}</style>
+}
+</style>

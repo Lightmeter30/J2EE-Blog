@@ -167,13 +167,15 @@ function removeFromCollect() {
 
 <style lang="scss" scoped>
 .blogCard {
-  background-color: rgb(244,245,247);;
+  background-color: $github-card-background;
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 15px;
+  min-width: 600px;
 
   .title {
     font-size: 22px;
+    color: $github-header-text;
 
     span {
       @include text-hover;

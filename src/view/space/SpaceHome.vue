@@ -3,6 +3,7 @@
 import { RequestGetUserPageNum, RequestGetUserPage } from '@/request/requestData';
 import { getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
 import { useUserStore } from '@/stores/user';
+import { darkTheme } from 'naive-ui';
 const message = useMessage();
 const userState = useUserStore();
 const router = useRouter();
@@ -52,26 +53,28 @@ onMounted(() => {
       <blog-card></blog-card>
     </div>
     <div class="homeFoot">
-      <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
-        <template #goto>
-          跳至
-        </template>
-      </n-pagination>
+      <n-config-provider :theme="darkTheme">
+        <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+          <template #goto>
+            跳至
+          </template>
+        </n-pagination>
+      </n-config-provider>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .spaceHome {
-  background-color: white;
+  background-color: $github-background;
   border-radius: 5px;
   padding: 20px;
+  margin-bottom: 40px;
 
-  .homeContent {
-  }
+  .homeContent {}
 
   .homeFoot {
-    background-color: white;
+    background-color: $github-card-background;
     padding: 10px;
     border-radius: 5px;
     display: flex;

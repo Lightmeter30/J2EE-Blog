@@ -3,7 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { CloudUpload } from "@vicons/ionicons5";
 import { RequestUpdatePassword, RequestUpdateInfo, RequestUpdateAvatar } from '@/request/requestData';
 import { getUserInfoAPI, updateUserInfoAPI, updateUserAvatarAPI, updateUserPasswordAPI } from '@/request/api';
-import { UploadCustomRequestOptions } from 'naive-ui';
+import { UploadCustomRequestOptions, darkTheme } from 'naive-ui';
 import { clear } from 'console';
 const message = useMessage();
 const userState = useUserStore();
@@ -101,7 +101,7 @@ onMounted(() => {
 <template>
   <div class="spaceChangeInfo">
     <div class="avatar">
-      <n-avatar round :src="userState.avatar" :size="100" />
+      <n-avatar round :src="userState.staticHead + userState.avatar" :size="100" />
     </div>
     <div class="Content">
       <div class="upload">
@@ -128,6 +128,7 @@ onMounted(() => {
               <n-input v-model:value="userInfo.description" />
             </n-form-item>
             <n-form-item label="性别">
+              <n-config-provider :theme="darkTheme">
               <n-radio-group v-model:value="userInfo.sex" name="radiogroup2">
                 <n-radio-button :value="1">
                   男
@@ -136,9 +137,12 @@ onMounted(() => {
                   女
                 </n-radio-button>
               </n-radio-group>
+              </n-config-provider>
             </n-form-item>
             <n-form-item label="生日">
+              <n-config-provider :theme="darkTheme">
               <n-date-picker v-model:formatted-value="userInfo.birthday" value-format="yyyy-MM-dd" type="date" />
+              </n-config-provider>
             </n-form-item>
           </n-form>
         </div>
@@ -199,9 +203,10 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .spaceChangeInfo {
-  background-color: white;
+  background-color: $github-background;
   border-radius: 5px;
   padding: 20px;
+  margin-bottom: 40px;
 
   .Content {
 
