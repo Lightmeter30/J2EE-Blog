@@ -2,18 +2,26 @@
 import { AddCircle,CloudUpload } from "@vicons/ionicons5";
 import {FavoriteFolder} from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
+import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI } from "@/request/api";
+import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder } from "@/request/requestData";
+import { Favorite } from "@/request/responseData";
+
 
 let collect: HTMLElement;
 const newCollect = ref('');
 const showModal = ref(false);
 const userStore = useUserStore();
 const message = useMessage();
+const dialog = useDialog();
 type list = {
   collectList: FavoriteFolder[],
+  articleList: Favorite[],
 };
 const List: list = {
   collectList: [],
+  articleList: [],
 }
+
 const folder = reactive(List);
 
 let total = ref(114);
@@ -32,19 +40,66 @@ function changeSelectCollect(value: number) {
   collect.classList.remove('collectHover');
   collect.classList.add('selectedCollect');
   // change collect now
+
 }
 
-function addCollect() {
-  const data: FavoriteFolder = {
-    id: 114,
-    name: newCollect.value,
-    articleNum: 0,
-    userId: userStore.userId,
+async function getArticlesFromCollect(collectId:number) {
+  const data: RequestGetFolderFavorites = {
+    folderId: collectId
+  }; 
+  const res = await getArticlesFromCollectAPI(data, userStore);
+  if(res.data.status == 0) {
+    // TODO: test API
+    console.log(res.data.data);
+  } else {
+    message.error(res.data.message);
   }
-  folder.collectList.push(data);
-  newCollect.value = '';
-  showModal.value = false;
 }
+
+async function addCollect() {
+  const data: RequestAddFavoriteFolder = {
+    name: newCollect.value,
+  }
+  const res = await addCollectAPI(data, userStore);
+  if(res.data.status === 0) {
+    message.success('新建收藏夹成功');
+    const newFolder: FavoriteFolder = {
+      id: res.data.data,
+      name: newCollect.value,
+      articleNum: 0,
+      userId: userStore.userId
+    }
+    folder.collectList.push(newFolder);
+  } else {
+    message.error(res.data.message);
+  }
+}
+
+function removeCollect(id: number, index: number) {
+  dialog.warning({
+    title: '警告',
+    content: '此操作将删除该收藏夹且不可挽回,是否确认删除?',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      const data: RequestDeleteFavoriteFolder = {
+        id: id
+      }
+      const res = await deleteCollectAPI(data, userStore);
+      if(res.data.status === 0) {
+        // TODO: test API
+        List.collectList.splice(index, 1);
+        message.success('删除成功');
+      } else {
+        message.error(res.data.message);
+      }
+    },
+    onNegativeClick: () => {
+      message.error('取消');
+    }
+  })
+};
+
 
 onMounted(() => {
   collect = document.getElementById(`folder1`) as HTMLElement;
@@ -86,8 +141,8 @@ onMounted(() => {
             </div>
           </template>
         </n-modal>
-      <CollectList v-for="item in folder.collectList" :id="item.id" :name="item.name" :articleNum="item.articleNum"
-        @select-me="changeSelectCollect" />
+      <CollectList v-for="(item, key) in folder.collectList" :index="key" :id="item.id" :name="item.name" :articleNum="item.articleNum"
+        @select-me="changeSelectCollect" @delete-me="removeCollect" />
     </div>
     <div class="content">
       <div class="collectContent">

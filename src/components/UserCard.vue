@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { addUserToFollowAPI, deleteUserFromFollowAPI } from '@/request/api';
+import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
+import router from '@/router';
+import { useUserStore } from '@/stores/user';
 import { faker } from '@faker-js/faker';
 import { AddCircle, RemoveCircle } from '@vicons/ionicons5';
 
+const userState = useUserStore();
+const message = useMessage();
 const authorInfo = {
   url: faker.image.avatar(),
   name: faker.name.firstName(),
@@ -16,8 +22,37 @@ function toPersonalPage() {
   console.log('toPersonalPage');
 }
 
+async function addAttention() {
+  const data: RequestAddFollow = {
+    followed: Number(router.currentRoute.value.query.id)
+  };
+  const res = await addUserToFollowAPI(data, userState);
+  if(res.data.status === 0) {
+    message.success('关注成功');
+  } else {
+    message.error(res.data.message);
+  }
+}
+
+async function removeAttention() {
+  const data: RequestDeleteFollow = {
+    followed: Number(router.currentRoute.value.query.id)
+  };
+  const res = await deleteUserFromFollowAPI(data, userState);
+  if(res.data.status === 0) {
+    message.success('取消关注');
+  } else {
+    message.error(res.data.message);
+  }
+}
+
 function addOrRemoveAttention(key: number) {
   console.log('addAttention', key);
+  if(key === 1) {
+    addAttention();
+  } else if(key === 2) {
+    removeAttention();
+  }
 }
 </script>
 

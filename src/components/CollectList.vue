@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Folder } from "@vicons/ionicons5";
 type collect = {
+  index: number,
   id: number,
   name: string,
   articleNum: number,
@@ -8,11 +9,19 @@ type collect = {
 
 const props = defineProps<collect>();
 
-const emits = defineEmits(['selectMe']);
+const emits = defineEmits(['selectMe', 'deleteMe']);
 
 function selectMe() {
   emits('selectMe', props.id);
 }
+
+function deleteMe() {
+  emits('deleteMe', props.id, props.index);
+}
+
+onMounted(() => {
+  console.log(props.index);
+})
 </script>
 
 <template>

@@ -4,9 +4,12 @@ import { faker } from '@faker-js/faker';
 import { Bookmark, Book, Person, Archive, AddCircle, RemoveCircle } from '@vicons/ionicons5';
 import { onMounted } from 'vue';
 import { DataGetInfo } from '@/request/responseData';
-import { getUserInfoAPI } from '@/request/api';
+import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
+import { getUserInfoAPI, deleteUserFromFollowAPI ,addUserToFollowAPI } from '@/request/api';
+import { messageDark } from 'naive-ui';
 const userState = useUserStore();
 const router = useRouter();
+const message = useMessage();
 const user: DataGetInfo = reactive({
   name: 'takune',
   description: '',
@@ -49,8 +52,37 @@ function setTopIndex(id: string) {
   document.getElementById(id)?.classList.add('selectedIndexColor');
 }
 
+async function addAttention() {
+  const data: RequestAddFollow = {
+    followed: Number(router.currentRoute.value.query.id)
+  };
+  const res = await addUserToFollowAPI(data, userState);
+  if(res.data.status === 0) {
+    message.success('关注成功');
+  } else {
+    message.error(res.data.message);
+  }
+}
+
+async function removeAttention() {
+  const data: RequestDeleteFollow = {
+    followed: Number(router.currentRoute.value.query.id)
+  };
+  const res = await deleteUserFromFollowAPI(data, userState);
+  if(res.data.status === 0) {
+    message.success('取消关注');
+  } else {
+    message.error(res.data.message);
+  }
+}
+
 function addOrRemoveAttention(key: number) {
   console.log('addAttention', key);
+  if(key === 1) {
+    addAttention();
+  } else if(key === 2) {
+    removeAttention();
+  }
 }
 
 const getUserInfo = async () => {

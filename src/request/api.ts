@@ -359,7 +359,7 @@ export const deleteDraftAPI = (data: requestTypes.RequestDeleteDraft, userState:
  * 
  * url: draft/update
  * 
- *  
+ * test
 * */
 
 export const updateDraftAPI = (data: requestTypes.RequestUpdateDraft, userState: any): Res<responseTypes.ResponseUpdateDraft> => {
@@ -439,7 +439,7 @@ export const addArticleToCollectAPI = (data: requestTypes.RequestAddFavorite, us
  * 
  * url: favorite/getFolderFavorites
  * 
- * 
+ * test
 * */
 
 export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFavorites, userState: any): Res<responseTypes.ResponseGetFolderFavorites> => {
@@ -455,7 +455,7 @@ export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFav
  * 
  * url: favorite/delete
  * 
- *  
+ * test
 * */
 
 export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavorites, userState: any): Res<responseTypes.ResponseAddDraft> => {
@@ -471,7 +471,7 @@ export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavo
  * 
  * url: favoriteFolder/add
  * 
- *  
+ * test
 * */
 
 export const addCollectAPI = (data: requestTypes.RequestAddFavoriteFolder, userState: any): Res<responseTypes.ResponseAddFavoriteFolder> => {
@@ -502,7 +502,7 @@ export const getUserAllCollectAPI = (userState: any): Res<responseTypes.Response
  * 
  * url: favoriteFolder/delete
  * 
- *  
+ * test 
 **/
 
 export const deleteCollectAPI = (data: requestTypes.RequestDeleteFavoriteFolder, userState: any): Res<responseTypes.ResponseDeleteFavoriteFolder> => {
@@ -518,7 +518,7 @@ export const deleteCollectAPI = (data: requestTypes.RequestDeleteFavoriteFolder,
  * 
  * url: follow/add
  * 
- *  
+ * test
 * */
 
 export const addUserToFollowAPI = (data: requestTypes.RequestAddFollow, userState: any): Res<responseTypes.ResponseAddFollow> => {
@@ -534,7 +534,7 @@ export const addUserToFollowAPI = (data: requestTypes.RequestAddFollow, userStat
  * 
  * url: follow/getUserFollowed
  * 
- *  
+ * 
 * */
 
 export const getUserFollowListAPI = (userState: any): Res<responseTypes.ResponseGetUserFollowed> => {
@@ -550,7 +550,7 @@ export const getUserFollowListAPI = (userState: any): Res<responseTypes.Response
  * 
  * url: follow/delete
  * 
- *  
+ * test
 * */
 
 export const deleteUserFromFollowAPI = (data: requestTypes.RequestDeleteFollow, userState: any): Res<responseTypes.ResponseDeleteFollow> => {

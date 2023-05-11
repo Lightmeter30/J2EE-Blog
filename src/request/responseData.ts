@@ -336,6 +336,7 @@ export interface ResponseAddFavoriteFolder {
   code: number;
   message: string;
   status: number;
+  data: number;
 }
 
 // /api/favoriteFolder/getUserFolders
@@ -356,17 +357,17 @@ export interface FavoriteFolder {
 // /api/favoriteFolder/delete
 // 用于删除一个收藏文件夹，一并删除其中的收藏
 export interface ResponseDeleteFavoriteFolder {
-  id: number;
-  name: string;
-  userId: number;
+  code: number;
+  status: number;
+  message: string;
 }
 
 // /api/follow/add
 // 用于添加一个关注
 export interface ResponseAddFollow {
-  id: number;
-  name: string;
-  userId: number;
+  code: number;
+  status: number;
+  message: string;
 }
 
 // /api/follow/getUserFollowed
@@ -381,7 +382,7 @@ export interface ResponseGetUserFollowed {
 // /api/follow/delete
 // 用于取消关注
 export interface ResponseDeleteFollow {
-  id: number;
-  name: string;
-  userId: number;
+  code: number;
+  status: number;
+  message: string;
 }

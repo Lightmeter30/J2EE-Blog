@@ -2,8 +2,8 @@
 import { faker } from '@faker-js/faker';
 import { Person, Time, Star, ChatboxEllipses, Pencil, Trash } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
-import { RequestDeleteArticle, RequestDeleteDraft } from '@/request/requestData';
-import { deleteArticleAPI, deleteDraftAPI } from '@/request/api';
+import { RequestDeleteArticle, RequestDeleteDraft, RequestDeleteFavorites } from '@/request/requestData';
+import { deleteArticleAPI, deleteDraftAPI, deleteArticleFromCollectAPI } from '@/request/api';
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const dialog = useDialog();
@@ -77,6 +77,29 @@ function removeDarft() {
     },
     onNegativeClick: () => {
       message.error('取消');
+    }
+  })
+};
+
+function removeFromCollect() {
+  dialog.warning({
+    title: '警告',
+    content: '此操作将从当前收藏夹中移除该文章,是否确认移除?',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      const data: RequestDeleteFavorites = {
+        id: blog.id
+      }
+      const res = await deleteArticleFromCollectAPI(data, userState);
+      if(res.data.status === 0) {
+        message.success('移除收藏夹成功');
+      } else {
+        message.error(res.data.message);
+      }
+    },
+    onNegativeClick: () => {
+      message.warning('取消');
     }
   })
 };
