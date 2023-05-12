@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { faker } from '@faker-js/faker';
+// import { faker } from '@faker-js/faker';
+import { Comment } from '@/request/responseData';
+import { useUserStore } from '@/stores/user';
+// const comment = {
+//   id: 1,
+//   name: faker.name.firstName(),
+//   avatar: faker.image.avatar(),
+//   time: faker.date.birthdate(),
+//   comment: '114,514,1919810,你是一个一个,114,514,1919810,你是一个一个114,514,1919810,你是一个一个',
+// }
 
-const comment = {
-  id: 1,
-  name: faker.name.firstName(),
-  avatar: faker.image.avatar(),
-  time: faker.date.birthdate(),
-  comment: '114,514,1919810,你是一个一个,114,514,1919810,你是一个一个114,514,1919810,你是一个一个',
-}
-
+const userState = useUserStore();
+const props = defineProps<Comment>();
 function toPersonalPage() {
   console.log('to PersonalPage');
 }
@@ -18,15 +21,15 @@ function toPersonalPage() {
   <div class="commentList">
     <div class="commentHead">
       <div class="avatar">
-        <n-avatar round :size="60" :src="comment.avatar" />
+        <n-avatar round :size="60" :src="userState.staticHead + avatar" />
       </div>
       <div class="info" >
-        <span class="name" @click="toPersonalPage()" ><b>{{ comment.name }}</b></span><br/>
-        <span class="sub" >{{ comment.time }} {{ comment.id }}楼</span>
+        <span class="name" @click="toPersonalPage()" ><b>{{ userName }}</b></span><br/>
+        <span class="sub" >{{ time }} {{ orderNum }}楼</span>
       </div>
     </div>
     <div class="commentContent">
-      {{ comment.comment }}
+      {{ content }}
     </div>
   </div>
 </template>

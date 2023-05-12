@@ -1,41 +1,32 @@
 <script setup lang="ts">
-import { faker } from '@faker-js/faker';
 import { Person, Time, Star, ChatboxEllipses, Pencil, Trash } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
-import { RequestDeleteArticle, RequestDeleteDraft, RequestDeleteFavorites } from '@/request/requestData';
-import { deleteArticleAPI, deleteDraftAPI, deleteArticleFromCollectAPI } from '@/request/api';
+import { RequestDeleteArticle, RequestDeleteFavorites } from '@/request/requestData';
+import { deleteArticleAPI, deleteArticleFromCollectAPI } from '@/request/api';
+import { Article } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const dialog = useDialog();
 const message = useMessage();
 const userState = useUserStore();
-const type: number = 3;
-
-
-
-const blog = {
-  id: 114514,
-  title: 'typescript/javascript学习笔记',
-  description: '这是我学习typescript/javascript的学习笔记，其中以typescript为主，同时会介绍一点javascript里面会有的知识点',
-  author: faker.name.firstName(),
-  time: faker.date.past(),
-  collectNum: 114,
-  commentNum: 10,
-}
+interface ArticleCard extends Article {
+  cardType: number; // 1代表普通状态, 2代表可编辑删除状态,3代表收藏夹状态
+};
+const props = defineProps<ArticleCard>();
 
 function toBlogView() {
   console.log('toBlogView');
-  router.push({path: '/blog' ,query: {id: blog.id}});
+  router.push({ path: '/blog', query: { id: props.id } });
 }
 
 function toPersonView() {
   console.log('toPersonView');
-  router.push({path: '/space/home' ,query: {name: blog.author}});
+  router.push({ path: '/space/home', query: { name: props.author } });
 }
 
 function toEdit() {
   console.log('toEdit');
-  router.push({ path: '/edit', query: { id: blog.id } });
+  router.push({ path: '/edit', query: { id: props.id } });
 }
 
 const removeArticle = () => {
@@ -46,10 +37,10 @@ const removeArticle = () => {
     negativeText: '取消',
     onPositiveClick: async () => {
       const data: RequestDeleteArticle = {
-        id: blog.id
+        id: props.id
       }
       const res = await deleteArticleAPI(data, userState);
-      if(res.data.status === 0) {
+      if (res.data.status === 0) {
         message.success('删除成功');
       } else {
         message.error(res.data.message);
@@ -61,28 +52,6 @@ const removeArticle = () => {
   })
 }
 
-function removeDarft() {
-  dialog.warning({
-    title: '警告',
-    content: '此操作将删除该草稿且不可挽回,是否确认删除?',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: async () => {
-      const data: RequestDeleteDraft = {
-        id: blog.id
-      }
-      const res = await deleteDraftAPI(data, userState);
-      if(res.data.status === 0) {
-        message.success('删除成功');
-      } else {
-        message.error(res.data.message);
-      }
-    },
-    onNegativeClick: () => {
-      message.error('取消');
-    }
-  })
-};
 
 function removeFromCollect() {
   dialog.warning({
@@ -92,10 +61,10 @@ function removeFromCollect() {
     negativeText: '取消',
     onPositiveClick: async () => {
       const data: RequestDeleteFavorites = {
-        id: blog.id
+        id: props.id
       }
       const res = await deleteArticleFromCollectAPI(data, userState);
-      if(res.data.status === 0) {
+      if (res.data.status === 0) {
         message.success('移除收藏夹成功');
       } else {
         message.error(res.data.message);
@@ -112,38 +81,38 @@ function removeFromCollect() {
 <template>
   <div class="blogCard">
     <div class="title">
-      <span @click="toBlogView()"><b>{{ blog.title }}</b></span>
+      <span @click="toBlogView()"><b>{{ title }}</b></span>
     </div>
     <div class="description">
-      {{ blog.description }}
+      {{ description }}
     </div>
-    <!-- ordinal article -->
-    <div class="foot" v-if="type === 1">
+    <!-- Ordinal article -->
+    <div class="foot" v-if="props.cardType === 1">
       <span class="author" @click="toPersonView()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Person />
-          </n-icon></span> {{ blog.author }}</span> &nbsp;<b>|</b>&nbsp;
-      <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 更新于{{ blog.time }}</span>
+          </n-icon></span> {{ authorName }}</span> &nbsp;<b>|</b>&nbsp;
+      <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 更新于{{ updateTime }}</span>
       &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <Star />
-          </n-icon></span> {{ blog.collectNum }}</span> &nbsp;<b>|</b>&nbsp;
+          </n-icon></span> {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <ChatboxEllipses />
-          </n-icon></span> {{ blog.commentNum }}</span>
+          </n-icon></span> {{ commentsNum }}</span>
     </div>
-    <!-- edit article -->
-    <div class="foot" v-else-if="type === 2">
+    <!-- Edit article -->
+    <div class="foot" v-else-if="props.cardType === 2">
       <span class="author" @click="toPersonView()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Person />
-          </n-icon></span> {{ blog.author }}</span> &nbsp;<b>|</b>&nbsp;
-      <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 更新于{{ blog.time }}</span>
+          </n-icon></span> {{ authorName }}</span> &nbsp;<b>|</b>&nbsp;
+      <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 更新于{{ updateTime }}</span>
       &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <Star />
-          </n-icon></span> {{ blog.collectNum }}</span> &nbsp;<b>|</b>&nbsp;
+          </n-icon></span> {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <ChatboxEllipses />
-          </n-icon></span> {{ blog.commentNum }}</span> &nbsp;<b>|</b>&nbsp;
+          </n-icon></span> {{ commentsNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span class="author" @click="toEdit()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Pencil />
           </n-icon></span> 编辑</span> &nbsp;<b>|</b>&nbsp;
@@ -151,19 +120,22 @@ function removeFromCollect() {
             <Trash />
           </n-icon></span> 删除</span>
     </div>
-    <!-- draft -->
-    <div class="foot" v-else>
+    <!-- Favorite Article -->
+    <div class="foot" v-else-if="props.cardType === 3">
       <span class="author" @click="toPersonView()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Person />
-          </n-icon></span> {{ blog.author }}</span> &nbsp;<b>|</b>&nbsp;
-      <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 编辑于{{ blog.time }}</span>
+          </n-icon></span> {{ authorName }}</span> &nbsp;<b>|</b>&nbsp;
+      <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 更新于{{ updateTime }}</span>
       &nbsp;<b>|</b>&nbsp;
-      <span class="author" @click="toEdit()"><span style="position: relative; top: 1.6px;"><n-icon>
-            <Pencil />
-          </n-icon></span> 编辑</span> &nbsp;<b>|</b>&nbsp;
-      <span class="author" @click="removeDarft()"><span style="position: relative; top: 1.6px;"><n-icon>
+      <span><span style="position: relative; top: 1.6px;"><n-icon>
+            <Star />
+          </n-icon></span> {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
+      <span><span style="position: relative; top: 1.6px;"><n-icon>
+            <ChatboxEllipses />
+          </n-icon></span> {{ commentsNum }}</span>
+      <span class="author" @click="removeFromCollect"><span style="position: relative; top: 1.6px;"><n-icon>
             <Trash />
-          </n-icon></span> 删除</span>
+          </n-icon></span> 移除收藏</span>
     </div>
   </div>
 </template>

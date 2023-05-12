@@ -138,7 +138,7 @@ export interface ResponseGetArticle {
 export interface Article {
   author: number;
   authorName: string;
-  commentsNum?: number; // 只在某一个博客的内容界面需要
+  commentsNum: number;
   content?: string;     // 只在某一个博客的内容界面需要
   description?: string; // 只在卡片展示需要
   favoritesNum: number; 
@@ -222,6 +222,8 @@ export interface Comment {
   orderNum: number;
   time: string;
   userId: number;
+  avatar: string;
+  userName: string;
 }
 
 // /api/comment/add
@@ -275,7 +277,7 @@ export interface ResponseGetDraft {
 }
 export interface Draft {
   author: number;
-  content: string;
+  content?: string;
   description: string;
   id: number;
   title: string;

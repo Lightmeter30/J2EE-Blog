@@ -7,16 +7,13 @@
       {{ userInfo.userid }}
     </div> -->
       <div class="homeContent">
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
+        <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="item.authorName"
+          :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
+          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
       </div>
       <div class="homeFoot">
         <n-config-provider :theme="darkTheme">
-          <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+          <n-pagination :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
             <template #goto>
               跳至
             </template>
@@ -29,8 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { NPagination, messageDark } from 'naive-ui';
+import { NPagination } from 'naive-ui';
 import { RequestGetPageArticles } from '@/request/requestData';
+import { Article } from '@/request/responseData';
 import { getHomePageArticlesAPI, getHomePageNumAPI } from '@/request/api';
 import { darkTheme } from 'naive-ui';
 // import 'hover.css';
@@ -38,7 +36,17 @@ import { darkTheme } from 'naive-ui';
 // import { RequestLogin } from '@/request/requestData';
 // import { reactive } from "vue";
 const message = useMessage();
-let total = ref(114);
+
+type homeDataType = {
+  currentArticleList: Article[],
+  total: number,
+};
+
+const homeData = reactive<homeDataType>({
+  currentArticleList: [],
+  total: 1,
+});
+
 
 const changePage = async (page: number) => {
   console.log(`to page ${page}`);
@@ -49,6 +57,7 @@ const changePage = async (page: number) => {
   if (res.data.status === 0) {
     // TODO: 接口对接
     console.log(res);
+    homeData.currentArticleList = res.data.data;
   } else {
     message.error(res.data.message);
   }
@@ -57,7 +66,7 @@ const changePage = async (page: number) => {
 const init = async () => {
   const res = await getHomePageNumAPI();
   if (res.data.status === 0) {
-    total.value = res.data.data;
+    homeData.total = res.data.data;
     changePage(1);
   } else {
     message.error(res.data.message);

@@ -7,16 +7,13 @@
       {{ userInfo.userid }}
     </div> -->
       <div class="searchContent">
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
+        <blog-card v-for="item in searchData.currentArticleList" :author="item.author" :author-name="item.authorName"
+          :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
+          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
       </div>
       <div class="searchFoot">
         <n-config-provider :theme="darkTheme">
-          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="total" show-quick-jumper>
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="searchData.total" show-quick-jumper>
             <template #goto>
               跳至
             </template>
@@ -32,7 +29,7 @@
 import { NPagination, darkTheme } from 'naive-ui';
 import { useUserStore } from '@/stores/user';
 import { useSearchStore } from "@/stores/search";
-import { initCustomFormatter } from 'vue';
+import { Article } from '@/request/responseData';
 import { RequestPageFuzzySearch } from '@/request/requestData';
 import { pageFuzzySearchAPI } from '@/request/api';
 const userState = useUserStore();
@@ -45,7 +42,15 @@ const nowPage = ref(1);
 // import { RequestLogin } from '@/request/requestData';
 // import { reactive } from "vue";
 
-let total = ref(114);
+type searchDataType = {
+  currentArticleList: Article[];
+  total: number;
+};
+
+const searchData = reactive<searchDataType>({
+  currentArticleList: [],
+  total: 1,
+});
 function changePage(page: number) {
   nowPage.value = page;
   searchAPI(page, searchStore.searchText);
@@ -66,6 +71,8 @@ async function searchAPI(curPage: number, searchText: string) {
   if (res.data.status === 0) {
     // TODO: 接口数据对接
     console.log(res.data.data);
+    searchData.currentArticleList = res.data.data.pageArticles;
+    searchData.total = res.data.data.pageNum;
   } else {
     message.error(res.data.message);
   }

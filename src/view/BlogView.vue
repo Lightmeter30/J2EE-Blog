@@ -3,34 +3,48 @@ import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close } from '@vicons/ionicons5';
-import { faker } from '@faker-js/faker';
 import { getArticleAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI } from '@/request/api';
 import { RequestGetArticle, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
-import { FavoriteFolder } from '@/request/responseData';
+import { FavoriteFolder, Article, Comment } from '@/request/responseData';
 import { darkTheme } from 'naive-ui';
 
-const blog = {
-  title: 'typescript/javascript学习笔记',
-  description: '这是我学习typescript/javascript的学习笔记，其中以typescript为主，同时会介绍一点javascript里面会有的知识点',
-  author: faker.name.firstName(),
-  time: '2022-05-01 12:11:11',
-  collectNum: 114,
-  commentNum: 10,
-  comment: [],
-}
-type list = {
+// const blog = {
+//   title: 'typescript/javascript学习笔记',
+//   description: '这是我学习typescript/javascript的学习笔记，其中以typescript为主，同时会介绍一点javascript里面会有的知识点',
+//   author: faker.name.firstName(),
+//   time: '2022-05-01 12:11:11',
+//   collectNum: 114,
+//   commentNum: 10,
+//   comment: [],
+// }
+
+// const folder = reactive(List);
+type blogDataType  = {
+  blog: Article,
   collectList: FavoriteFolder[],
+  commentList: Comment[],
 };
-const List: list = {
+const blogData = reactive<blogDataType>({
+  blog: {
+    author: 0,
+    authorName: '',
+    commentsNum: 0,
+    content: '',
+    favoritesNum: 0,
+    id: 0,
+    title: '',
+    updateTime: '',
+    CommentOrderNum: 0,
+  },
   collectList: [],
-}
-const folder = reactive(List);
+  commentList: [],
+});
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 const message = useMessage();
-const blogContent = ref('');
+// const blogContent = ref('');
 const myComment = ref('');
 const showModal = ref(false);
 
@@ -91,11 +105,12 @@ const getArticle = async () => {
   }
   const res = await getArticleAPI(data, userStore);
   if (res.data.status === 0) {
-    blogContent.value = res.data.data.content;
-    blog.title = res.data.data.title;
-    blog.description = res.data.data.description;
-    blog.time = res.data.data.updateTime;
-    blog.collectNum = res.data.data.favoritesNum;
+    // blogContent.value = res.data.data.content;
+    // blog.title = res.data.data.title;
+    // blog.description = res.data.data.description;
+    // blog.time = res.data.data.updateTime;
+    // blog.collectNum = res.data.data.favoritesNum;
+    blogData.blog = res.data.data;
   } else {
     message.error(res.data.message);
   }
@@ -106,7 +121,7 @@ const getAllFolders = async () => {
   if (res.data.status === 0) {
     // TODO:
     console.log(res.data.data);
-    folder.collectList = res.data.data;
+    blogData.collectList = res.data.data;
   } else {
     message.error(res.data.message);
   }
@@ -116,6 +131,7 @@ onMounted(() => {
   console.log('onMounted');
   getArticle();
   getComments();
+  getAllFolders();
 })
 </script>
 <template>
@@ -126,26 +142,24 @@ onMounted(() => {
       </div>
       <div class="content">
         <div class="titleContent">
-          <h1 style="margin: 0;">{{ blog.title }}</h1>
+          <h1 style="margin: 0;">{{ blogData.blog.title }}</h1>
           <div class="titleInfo">
             <span class="author"><span style="position: relative; top: 1.6px;"><n-icon>
                   <Person />
-                </n-icon></span> {{ blog.author }}</span>
+                </n-icon></span> {{ blogData.blog.author }}</span>
             <span style="margin-left: 10px;"><span
                 style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span>
-              更新于{{ blog.time }}</span>
+              更新于{{ blogData.blog.updateTime }}</span>
             <span class="author" @click="showDialog" style="margin-left: 10px;"><span
                 style="position: relative; top: 1.6px;"><n-icon>
                   <Star />
                 </n-icon></span> 收藏本文</span>
           </div>
         </div>
-        <MdEditor theme="dark" v-model="blogContent" :preview-only="true"></MdEditor>
+        <MdEditor theme="dark" v-model="blogData.blog.content" :preview-only="true"></MdEditor>
         <div class="comment">
           <h1>留言</h1>
-          <comment-list></comment-list>
-          <comment-list></comment-list>
-          <comment-list></comment-list>
+          <comment-list v-for="item in blogData.commentList" :article-id="item.articleId" :content="item.content" :id="item.id" :order-num="item.orderNum" :time="item.time" :user-id="item.userId" :avatar="item.avatar" :user-name="item.userName"></comment-list>
           <div class="myComment">
             <div class="myAvatar">
               <n-avatar round :size="60" :src="userStore.staticHead + userStore.avatar" />
@@ -177,7 +191,7 @@ onMounted(() => {
               </div>
             </template>
             <div class="collectList">
-              <div v-for="item in folder.collectList">
+              <div v-for="item in blogData.collectList">
                 <div class="collectItem">
                   <div class="title">
                     <span>
