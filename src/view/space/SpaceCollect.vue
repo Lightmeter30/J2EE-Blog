@@ -210,6 +210,7 @@ onMounted(() => {
 
     .collectFoot {
       background-color: $github-card-background;
+      min-width: 620px;
       padding: 10px;
       border-radius: 5px;
       display: flex;

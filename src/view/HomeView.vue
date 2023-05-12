@@ -21,6 +21,9 @@
         </n-config-provider>
       </div>
       <div style="height: 20px;"></div>
+      <n-config-provider :theme="darkTheme">
+        <n-back-top :right="'1.3%'" />
+      </n-config-provider>
     </div>
   </div>
 </template>
@@ -91,6 +94,7 @@ onMounted(() => {
 
   .homeFoot {
     background-color: $github-card-background;
+    min-width: 620px;
     padding: 10px;
     border-radius: 5px;
     display: flex;

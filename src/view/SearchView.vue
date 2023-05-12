@@ -21,6 +21,9 @@
         </n-config-provider>
       </div>
       <div style="height: 20px;"></div>
+      <n-config-provider :theme="darkTheme">
+        <n-back-top :right="'1.3%'" />
+      </n-config-provider>
     </div>
   </div>
 </template>
@@ -87,9 +90,9 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .searchView {
-  width: 70%;
+  width: 60%;
   position: relative;
-  left: 15%;
+  left: 20%;
   margin-top: 20px;
   margin-bottom: 20px;
 
@@ -97,6 +100,7 @@ onMounted(() => {
 
   .searchFoot {
     background-color: $github-card-background;
+    min-width: 620px;
     padding: 10px;
     border-radius: 5px;
     display: flex;
@@ -109,7 +113,7 @@ onMounted(() => {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: $scrollbar-color $github-background;
-  background: url('@/assets/img/background.jpg');
+  background: url('@/assets/img/search.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0;

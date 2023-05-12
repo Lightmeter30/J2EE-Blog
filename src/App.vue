@@ -134,7 +134,6 @@ const themeOverrides: GlobalThemeOverrides = {
         <!-- <div class="scrollMe"> -->
           <router-view />
         <!-- </div> -->
-        <n-back-top :right="30" />
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>

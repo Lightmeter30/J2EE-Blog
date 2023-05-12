@@ -6,7 +6,7 @@ import { onMounted } from 'vue';
 import { DataGetInfo } from '@/request/responseData';
 import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
 import { getUserInfoAPI, deleteUserFromFollowAPI, addUserToFollowAPI } from '@/request/api';
-import { messageDark } from 'naive-ui';
+import { darkTheme } from 'naive-ui';
 const userState = useUserStore();
 const router = useRouter();
 const message = useMessage();
@@ -185,6 +185,9 @@ onMounted(() => {
       <div class="Content">
         <RouterView></RouterView>
       </div>
+      <n-config-provider :theme="darkTheme">
+        <n-back-top :right="'3%'" />
+      </n-config-provider>
     </div>
   </div>
 </template>
@@ -280,7 +283,7 @@ onMounted(() => {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: $scrollbar-color $github-background;
-  background: url('@/assets/img/background.jpg');
+  background: url('@/assets/img/personalBackground.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0;

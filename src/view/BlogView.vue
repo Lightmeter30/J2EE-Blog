@@ -20,7 +20,7 @@ import { darkTheme } from 'naive-ui';
 // }
 
 // const folder = reactive(List);
-type blogDataType  = {
+type blogDataType = {
   blog: Article,
   collectList: FavoriteFolder[],
   commentList: Comment[],
@@ -130,7 +130,7 @@ const getAllFolders = async () => {
 };
 
 function goPersonalPage(id: number) {
-  const newPage = router.resolve({path: '/space/home', query: {id: id} });
+  const newPage = router.resolve({ path: '/space/home', query: { id: id } });
   window.open(newPage.href, '_blank');
 }
 
@@ -151,7 +151,8 @@ onMounted(() => {
         <div class="titleContent">
           <h1 style="margin: 0;">{{ blogData.blog.title }}</h1>
           <div class="titleInfo">
-            <span @click="goPersonalPage(blogData.blog.author)" class="author"><span style="position: relative; top: 1.6px;"><n-icon>
+            <span @click="goPersonalPage(blogData.blog.author)" class="author"><span
+                style="position: relative; top: 1.6px;"><n-icon>
                   <Person />
                 </n-icon></span> {{ blogData.blog.author }}</span> <!-- TODO: change author to authorName -->
             <span style="margin-left: 10px;"><span
@@ -166,7 +167,9 @@ onMounted(() => {
         <MdEditor theme="dark" v-model="blogData.blog.content" :preview-only="true"></MdEditor>
         <div class="comment">
           <h1>留言</h1>
-          <comment-list v-for="item in blogData.commentList" :article-id="item.articleId" :content="item.content" :id="item.id" :order-num="item.orderNum" :time="item.time" :user-id="item.userId" :avatar="item.avatar" :user-name="item.userName"></comment-list>
+          <comment-list v-for="item in blogData.commentList" :article-id="item.articleId" :content="item.content"
+            :id="item.id" :order-num="item.orderNum" :time="item.time" :user-id="item.userId" :avatar="item.avatar"
+            :user-name="item.userName"></comment-list>
           <div class="myComment">
             <div class="myAvatar">
               <n-avatar round :size="60" :src="userStore.staticHead + userStore.avatar" />
@@ -220,6 +223,9 @@ onMounted(() => {
           </n-card>
         </n-modal>
       </n-config-provider>
+      <n-config-provider :theme="darkTheme">
+        <n-back-top :right="'1.3%'" />
+      </n-config-provider>
     </div>
   </div>
 </template>
@@ -247,6 +253,7 @@ onMounted(() => {
     h1 {
       color: $github-header-text;
     }
+
     .titleInfo {
       margin-top: 10px;
       padding: 15px;
@@ -338,7 +345,7 @@ onMounted(() => {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: $scrollbar-color $github-background;
-  background: url('@/assets/img/background.jpg');
+  background: url('@/assets/img/blog.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0;
