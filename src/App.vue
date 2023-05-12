@@ -110,6 +110,17 @@ const themeOverrides: GlobalThemeOverrides = {
     "textColor": "#0D263AFF",
     "titleTextColor": "rgba(13, 38, 58, 0.8)",
     "headerBorderBottom": "1px solid rgba(13, 38, 58, 0.09)"
+  },
+  "Dialog": {
+    "color": "rgb(36,36,36)",
+    "titleTextColor": "rgba(255,255,255,0.7)",
+    "textColor": "rgba(255,255,255,0.9)",
+    "fontSize": "16px",
+    "iconColor": "#39c5bb",
+  },
+  "Message": {
+    "textColorInfo": "rgba(255,255,255,0.8)",
+    "colorInfo": "rgb(72, 72, 78)"
   }
 };
 </script>

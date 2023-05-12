@@ -82,9 +82,6 @@ function removeFromCollect() {
         message.error(res.data.message);
       }
     },
-    onNegativeClick: () => {
-      message.warning('取消');
-    }
   })
 };
 

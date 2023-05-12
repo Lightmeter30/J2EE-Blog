@@ -10,12 +10,20 @@ const dialog = useDialog();
 const message = useMessage();
 const userState = useUserStore();
 
-const props = defineProps<Draft>();
+interface draftDataType {
+  author: number;
+  description: string;
+  id: number;
+  title: string;
+  updateTime: string;
+};
+
+const props = defineProps<draftDataType>();
 
 
 function toEdit() {
   console.log('toEdit');
-  router.push({ path: '/edit', query: { id: props.id } });
+  router.push({ path: '/edit', query: { id: props.id, type: '1919' } });
 }
 
 function removeDraft() {
@@ -67,12 +75,15 @@ function removeDraft() {
 
 <style lang="scss" scoped>
 .blogCard {
-  background-color: $github-card-background;
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 15px;
   min-width: 600px;
+  background: url('@/assets/img/card.png') right bottom no-repeat $github-card-background;
 
+  &:hover {
+    background: url('@/assets/img/card.png') right bottom no-repeat $github-card-hover;
+  }
   .title {
     font-size: 22px;
     color: $github-header-text;

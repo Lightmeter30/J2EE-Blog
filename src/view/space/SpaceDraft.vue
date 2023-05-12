@@ -3,9 +3,19 @@ import {darkTheme} from "naive-ui";
 import { useUserStore } from '@/stores/user';
 import { getUserDraftPageNumAPI, getUserDraftPageAPI } from '@/request/api';
 import { RequestGetUserPage, RequestGetUserPageNum } from '@/request/requestData';
+import {Draft} from '@/request/responseData';
 const message = useMessage();
 const userState = useUserStore(); 
-let total = ref(114);
+type draftDataType = {
+  draftList: Draft[];
+  total: number;
+};
+
+const draftData = reactive<draftDataType>({
+  draftList: [],
+  total: 1,
+});
+
 function changePage(page: number) {
   console.log(`to page ${page}`);
   getDraftPage(page);
@@ -20,6 +30,7 @@ async function getDraftPage( page: number ) {
   if(res.data.status === 0) {
     // TODO:
     console.log(res.data.data);
+    draftData.draftList = res.data.data;
   } else {
     message.error(res.data.message);
   }
@@ -31,7 +42,7 @@ onMounted( async () => {
   }
   const res = await getUserDraftPageNumAPI( data, userState );
   if(res.data.status === 0 ) {
-    total.value = res.data.data;
+    draftData.total = res.data.data;
     getDraftPage(1);
   } else {
     message.error(res.data.message);
@@ -42,16 +53,11 @@ onMounted( async () => {
 <template>
   <div class="spaceDraft">
     <div class="draftContent">
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
-      <blog-card></blog-card>
+      <draft-card v-for="item in draftData.draftList" :author="item.author" :description="item.description" :id="item.id" :title="item.title" :update-time="item.updateTime" ></draft-card>
     </div>
-    <div class="draftFoot">
+    <div class="draftFoot" v-show="draftData.total !== 1" >
       <n-config-provider :theme="darkTheme">
-      <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+      <n-pagination :on-update:page="changePage" :item-count="draftData.total" show-quick-jumper>
         <template #goto>
           跳至
         </template>

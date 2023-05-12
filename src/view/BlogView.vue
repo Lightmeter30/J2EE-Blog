@@ -160,7 +160,7 @@ onMounted(() => {
             <span class="author" @click="showDialog" style="margin-left: 10px;"><span
                 style="position: relative; top: 1.6px;"><n-icon>
                   <Star />
-                </n-icon></span> 收藏本文</span>
+                </n-icon></span> 收藏 : {{ blogData.blog.favoritesNum }}</span>
           </div>
         </div>
         <MdEditor theme="dark" v-model="blogData.blog.content" :preview-only="true"></MdEditor>
