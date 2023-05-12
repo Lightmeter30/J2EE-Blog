@@ -491,7 +491,7 @@ export const addCollectAPI = (data: requestTypes.RequestAddFavoriteFolder, userS
 * */
 
 export const getUserAllCollectAPI = (userState: any): Res<responseTypes.ResponseGetUserFolders> => {
-  return axios.post("favoriteFolder/getUserFolders", { headers: {
+  return axios.post("favoriteFolder/getUserFolders", undefined, { headers: {
     id: userState.userId,
     token: userState.token
   } });
@@ -539,7 +539,7 @@ export const addUserToFollowAPI = (data: requestTypes.RequestAddFollow, userStat
 
 export const getUserFollowListAPI = (userState: any): Res<responseTypes.ResponseGetUserFollowed> => {
   // const Data = setData(data);
-  return axios.post("follow/getUserFollowed", { headers: {
+  return axios.post("follow/getUserFollowed", undefined, { headers: {
     id: userState.userId,
     token: userState.token
   } });

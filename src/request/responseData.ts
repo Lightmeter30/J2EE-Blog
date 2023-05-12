@@ -137,14 +137,15 @@ export interface ResponseGetArticle {
 }
 export interface Article {
   author: number;
-  commentsNum: number;
-  content: string;
-  description: string;
-  favoritesNum: number;
+  authorNum: string;
+  commentsNum?: number; // 只在某一个博客的内容界面需要
+  content?: string;     // 只在某一个博客的内容界面需要
+  description?: string; // 只在卡片展示需要
+  favoritesNum: number; 
   id: number;
   title: string;
   updateTime: string;
-  CommentOrderNum: number;
+  CommentOrderNum?: number; // 只在某一个博客的内容界面需要
 }
 
 // /api/article/getPageNum

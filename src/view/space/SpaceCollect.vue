@@ -101,6 +101,7 @@ function removeCollect(id: number, index: number) {
 };
 
 const getAllFolders = async () => {
+  console.log(userStore.userId, userStore.token);
   const res = await getUserAllCollectAPI(userStore);
   if (res.data.status === 0) {
     // TODO:

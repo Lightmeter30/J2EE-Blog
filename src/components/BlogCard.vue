@@ -10,6 +10,9 @@ const dialog = useDialog();
 const message = useMessage();
 const userState = useUserStore();
 const type: number = 3;
+
+
+
 const blog = {
   id: 114514,
   title: 'typescript/javascript学习笔记',
@@ -196,4 +199,5 @@ function removeFromCollect() {
       @include text-hover;
     }
   }
-}</style>
+}
+</style>
