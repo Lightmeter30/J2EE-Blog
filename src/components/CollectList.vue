@@ -12,7 +12,7 @@ const props = defineProps<collect>();
 const emits = defineEmits(['selectMe', 'deleteMe']);
 
 function selectMe() {
-  emits('selectMe', props.id);
+  emits('selectMe', props.id, props.index);
 }
 
 function deleteMe() {
@@ -21,12 +21,17 @@ function deleteMe() {
 
 onMounted(() => {
   console.log(props.index);
+  if (props.index === 0) {
+    const collect = document.getElementById(`folder0`) as HTMLElement;
+    collect.classList.remove('collectHover');
+    collect.classList.add('selectedCollect');
+  }
 })
 </script>
 
 <template>
-  <div class="collectList collectHover" :id="'folder' + id" @click="selectMe()">
-    <div class="title" >
+  <div class="collectList collectHover" :id="'folder' + index" @click="selectMe()">
+    <div class="title">
       <span>
         <n-icon style="position: relative; top: 2px;">
           <Folder />
@@ -50,7 +55,8 @@ onMounted(() => {
 
 .collectHover {
   &:hover {
-    background-color: $cloud-1-hex;
+    background-color: $github-card-hover;
+    color: $github-header-text;
   }
 }
 

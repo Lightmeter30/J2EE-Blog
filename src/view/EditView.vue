@@ -7,7 +7,6 @@ import { RequestAddArticle, RequestUploadImg, RequestUpdateArticle, RequestGetAr
 import { getNowTime } from '@/utils/validate';
 import { useUserStore } from '@/stores/user';
 import { updateArticleAPI, addArticleAPI, getArticleAPI, uploadImgAPI, addDraftAPI, updateDraftAPI, getDraftAPI } from '@/request/api';
-import { call } from 'naive-ui/es/_utils';
 
 let text = ref('');
 const router = useRouter();
@@ -74,19 +73,16 @@ const toolbar = [
 ];
 
 async function save() {
-  const data: RequestAddDraft = {
-    title: blog.title,
-    content: text.value,
-    description: blog.description,
-    updateTime: getNowTime(),
-  };
-  const res = await addDraftAPI(data, userState);
-  if(res.data.status === 0) {
-    // TODO: API test
-    message.success('已保存到草稿箱!');
-    // message.success(res.data.message);
-  } else {
-    message.error(res.data.message);
+  if(articleType === 0 ) {
+    // it's a new article
+    addDraft();
+    articleType = 1;
+  } else if(articleType === 1) {
+    // it's a draft article
+    updateDraft();
+  } else if(articleType === 2) {
+    // it's a old article
+    // TODO: 
   }
 };
 
@@ -119,10 +115,28 @@ const updateArticle = async () => {
   if(res.data.status === 0) {
     console.log(res);
     message.success('发布成功!');
+    router.replace({path: '/blog', query:{ id: router.currentRoute.value.query.id }});
   } else {
     message.error(res.data.message);
   }
 };
+
+async function addDraft() {
+  const data: RequestAddDraft = {
+    title: blog.title,
+    content: text.value,
+    description: blog.description,
+    updateTime: getNowTime(),
+  };
+  const res = await addDraftAPI(data, userState);
+  if(res.data.status === 0) {
+    // TODO: API test
+    message.success('已保存到草稿箱!');
+    // message.success(res.data.message);
+  } else {
+    message.error(res.data.message);
+  }
+}
 
 async function updateDraft() {
   const data: RequestUpdateDraft = {
@@ -171,8 +185,8 @@ const getArticleInfo = async () => {
   if(res.data.status === 0) {
     // TODO:
     blog.title = res.data.data.title;
-    blog.description = res.data.data.description;
-    text.value = res.data.data.content;
+    blog.description = res.data.data.description as string;
+    text.value = res.data.data.content as string;
   } else {
     message.error(res.data.message);
   }
@@ -187,7 +201,7 @@ async function getDraftInfo() {
     // TODO:
     blog.title = res.data.data.title;
     blog.description = res.data.data.description;
-    text.value = res.data.data.content;
+    text.value = res.data.data.content as string;
   } else {
     message.error(res.data.message);
   }
@@ -199,8 +213,10 @@ onMounted(() => {
     articleType = 0;
   } else if(router.currentRoute.value.query.type === '1919') {
     articleType = 1;
+    getDraftInfo();
   } else if(router.currentRoute.value.query.type === '810') {
     articleType = 2;
+    getArticleInfo();
   }
 });
 

@@ -11,7 +11,8 @@ import { useUserStore } from '@/stores/user';
 // }
 
 const userState = useUserStore();
-const props = defineProps<Comment>();
+interface CommentType extends Comment {}; 
+const props = defineProps<CommentType>();
 function toPersonalPage() {
   console.log('to PersonalPage');
 }

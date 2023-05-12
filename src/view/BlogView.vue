@@ -70,6 +70,7 @@ function showDialog() {
 
 function closeModal() {
   showModal.value = false;
+  console.log('closeModal');
 }
 
 async function addBlogToCollect(collectID: number, collectName: string) {
@@ -80,7 +81,7 @@ async function addBlogToCollect(collectID: number, collectName: string) {
   };
   const res = await addArticleToCollectAPI(data, userStore);
   if (res.data.status === 0) {
-    message.success(`成功添加到收藏夹${collectName}!`);
+    message.success(`成功添加到${collectName}!`);
   } else {
     message.error(res.data.message);
   }
@@ -94,6 +95,7 @@ async function getComments() {
   if (res.data.status === 0) {
     // TODO: API test
     console.log(res.data.data);
+    blogData.commentList = res.data.data;
   } else {
     message.error(res.data.message);
   }
@@ -127,6 +129,11 @@ const getAllFolders = async () => {
   }
 };
 
+function goPersonalPage(id: number) {
+  const newPage = router.resolve({path: '/space/home', query: {id: id} });
+  window.open(newPage.href, '_blank');
+}
+
 onMounted(() => {
   console.log('onMounted');
   getArticle();
@@ -144,9 +151,9 @@ onMounted(() => {
         <div class="titleContent">
           <h1 style="margin: 0;">{{ blogData.blog.title }}</h1>
           <div class="titleInfo">
-            <span class="author"><span style="position: relative; top: 1.6px;"><n-icon>
+            <span @click="goPersonalPage(blogData.blog.author)" class="author"><span style="position: relative; top: 1.6px;"><n-icon>
                   <Person />
-                </n-icon></span> {{ blogData.blog.author }}</span>
+                </n-icon></span> {{ blogData.blog.author }}</span> <!-- TODO: change author to authorName -->
             <span style="margin-left: 10px;"><span
                 style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span>
               更新于{{ blogData.blog.updateTime }}</span>
@@ -204,7 +211,7 @@ onMounted(() => {
                     </n-button>
                   </div>
                 </div>
-                <div style="height: 1px;background-color: rgb(240,240,245);"></div>
+                <div style="height: 1px;background-color: rgb(32,32,32)"></div>
               </div>
             </div>
             <!-- <template #footer>
@@ -321,7 +328,7 @@ onMounted(() => {
     }
 
     &:hover {
-      background-color: rgb(245, 246, 247);
+      background-color: $github-card-hover;
     }
   }
 }

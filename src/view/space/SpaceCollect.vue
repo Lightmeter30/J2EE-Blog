@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { AddCircle, CloudUpload } from "@vicons/ionicons5";
-import { FavoriteFolder } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
 import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI } from "@/request/api";
 import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder } from "@/request/requestData";
-import { Favorite } from "@/request/responseData";
+import { FavoriteFolder, Article } from "@/request/responseData";
 import { darkTheme } from "naive-ui";
 
 let collect: HTMLElement;
@@ -13,18 +12,18 @@ const showModal = ref(false);
 const userStore = useUserStore();
 const message = useMessage();
 const dialog = useDialog();
-type list = {
-  collectList: FavoriteFolder[],
-  articleList: Favorite[],
+
+type collectDataType = {
+  currentArticleList: Article[],
+  collectFolderList: FavoriteFolder[],
+  total: number,
 };
-const List: list = {
-  collectList: [],
-  articleList: [],
-}
 
-const folder = reactive(List);
-
-let total = ref(114);
+const collectData = reactive<collectDataType>({
+  currentArticleList: [],
+  collectFolderList: [],
+  total: 1,
+});
 function changePage(page: number) {
   console.log(`to page ${page}`);
 }
@@ -33,10 +32,12 @@ function showDialog() {
   showModal.value = true;
 }
 
-function changeSelectCollect(value: number) {
+function changeSelectCollect(id: number, index: number) {
+  if(collect === undefined)
+    collect = document.getElementById(`folder0`) as HTMLElement;
   collect.classList.remove('selectedCollect');
   collect.classList.add('collectHover');
-  collect = document.getElementById(`folder${value}`) as HTMLElement;
+  collect = document.getElementById(`folder${index}`) as HTMLElement;
   collect.classList.remove('collectHover');
   collect.classList.add('selectedCollect');
   // change collect now
@@ -69,7 +70,7 @@ async function addCollect() {
       articleNum: 0,
       userId: userStore.userId
     }
-    folder.collectList.push(newFolder);
+    collectData.collectFolderList.push(newFolder);
   } else {
     message.error(res.data.message);
   }
@@ -88,7 +89,7 @@ function removeCollect(id: number, index: number) {
       const res = await deleteCollectAPI(data, userStore);
       if (res.data.status === 0) {
         // TODO: test API
-        List.collectList.splice(index, 1);
+        collectData.collectFolderList.splice(index, 1);
         message.success('删除成功');
       } else {
         message.error(res.data.message);
@@ -101,21 +102,21 @@ function removeCollect(id: number, index: number) {
 };
 
 const getAllFolders = async () => {
-  console.log(userStore.userId, userStore.token);
   const res = await getUserAllCollectAPI(userStore);
   if (res.data.status === 0) {
     // TODO:
     console.log(res.data.data);
-    folder.collectList = res.data.data;
+    collectData.collectFolderList = res.data.data;
+    console.log( `folder${collectData.collectFolderList[0].id}`);
+    // collect = document.getElementById(`folder0`) as HTMLElement;
+    // collect.classList.remove('collectHover');
+    // collect.classList.add('selectedCollect');
   } else {
     message.error(res.data.message);
   }
 };
 
 onMounted(() => {
-  // collect = document.getElementById(`folder1`) as HTMLElement;
-  // collect.classList.remove('collectHover');
-  // collect.classList.add('selectedCollect');
   getAllFolders();
 });
 
@@ -129,47 +130,16 @@ onMounted(() => {
           <AddCircle />
         </n-icon> 新建收藏夹
       </div>
-      <n-config-provider :theme="darkTheme">
-        <n-modal v-model:show="showModal" preset="dialog" title="Dialog">
-          <template #header>
-            <div>新建收藏夹</div>
-          </template>
-          <div>
-            <n-form ref="formRef">
-              <n-form-item label="收藏夹名">
-                <n-input v-model:value="newCollect" />
-              </n-form-item>
-            </n-form>
-          </div>
-          <template #action>
-            <div>
-              <n-button color="#39c5bb" @click="addCollect()">
-                <template #icon>
-                  <n-icon>
-                    <cloud-upload />
-                  </n-icon>
-                </template>
-                提交
-              </n-button>
-            </div>
-          </template>
-        </n-modal>
-      </n-config-provider>
-      <CollectList v-for="(item, key) in folder.collectList" :index="key" :id="item.id" :name="item.name"
+      <CollectList v-for="(item, key) in collectData.collectFolderList" :index="key" :id="item.id" :name="item.name"
         :articleNum="item.articleNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
     </div>
     <div class="content">
       <div class="collectContent">
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
-        <blog-card></blog-card>
+        114514
       </div>
-      <div class="collectFoot">
+      <div class="collectFoot" v-show="collectData.total !== 1">
         <n-config-provider :theme="darkTheme">
-          <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+          <n-pagination :on-update:page="changePage" :item-count="collectData.total" show-quick-jumper>
             <template #goto>
               跳至
             </template>
@@ -177,6 +147,32 @@ onMounted(() => {
         </n-config-provider>
       </div>
     </div>
+    <n-config-provider :theme="darkTheme">
+      <n-modal v-model:show="showModal" preset="dialog" title="Dialog">
+        <template #header>
+          <div>新建收藏夹</div>
+        </template>
+        <div>
+          <n-form ref="formRef">
+            <n-form-item label="收藏夹名">
+              <n-input v-model:value="newCollect" />
+            </n-form-item>
+          </n-form>
+        </div>
+        <template #action>
+          <div>
+            <n-button color="#39c5bb" @click="addCollect()">
+              <template #icon>
+                <n-icon>
+                  <cloud-upload />
+                </n-icon>
+              </template>
+              提交
+            </n-button>
+          </div>
+        </template>
+      </n-modal>
+    </n-config-provider>
   </div>
 </template>
 
@@ -201,7 +197,7 @@ onMounted(() => {
     cursor: pointer;
 
     &:hover {
-      background-color: $cloud-1-hex;
+      background-color: $github-card-hover;
       opacity: 0.9;
     }
   }

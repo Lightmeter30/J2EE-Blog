@@ -14,9 +14,9 @@ const user: DataGetInfo = reactive({
   name: 'takune',
   description: '',
   avatar: '',
-  articleNum: 114,
-  followerNum: 514,
-  followedNum: 10,
+  articleNum: 0,
+  followerNum: 0,
+  followedNum: 0,
   birthday: '2001-01-08',
   defaultFavoriteFolder: 1,
   email: 'takune@163.com',
@@ -99,7 +99,20 @@ const getUserInfo = async () => {
 }
 
 onMounted(() => {
-  document.getElementById('indexHome')?.classList.add('selectedIndexColor');
+  const way = router.currentRoute.value.path;
+  if(way === '/router/home') {
+    document.getElementById('indexHome')?.classList.add('selectedIndexColor');
+  } else if(way === '/space/draft') {
+    document.getElementById('indexDraft')?.classList.add('selectedIndexColor');
+  } else if( way === '/space/collect') {
+    document.getElementById('indexCollect')?.classList.add('selectedIndexColor');
+  } else if( way === '/space/info') {
+    document.getElementById('indexInfo')?.classList.add('selectedIndexColor');
+  } else if( way === '/space/attention') {
+    document.getElementById('attention')?.classList.add('selectedIndexColor');
+  } else if( way === '/space/fans') {
+    document.getElementById('fans')?.classList.add('selectedIndexColor');
+  }
   // console.log(router.currentRoute.value.query.id);
   getUserInfo();
 })
@@ -178,11 +191,11 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .personalView {
-  width: 80%;
+  width: 70%;
   min-width: 840px;
   height: auto;
   position: relative;
-  left: 10%;
+  left: 15%;
 
   .head {
     height: 150px;

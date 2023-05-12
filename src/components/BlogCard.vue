@@ -9,24 +9,36 @@ const router = useRouter();
 const dialog = useDialog();
 const message = useMessage();
 const userState = useUserStore();
-interface ArticleCard extends Article {
+interface ArticleCard {
   cardType: number; // 1代表普通状态, 2代表可编辑删除状态,3代表收藏夹状态
+  author: number;
+  authorName: string;
+  commentsNum: number;
+  description?: string; // 只在卡片展示需要
+  favoritesNum: number; 
+  id: number;
+  title: string;
+  updateTime: string;
+  CommentOrderNum?: number; // 只在某一个博客的内容界面需要
 };
 const props = defineProps<ArticleCard>();
 
 function toBlogView() {
-  console.log('toBlogView');
-  router.push({ path: '/blog', query: { id: props.id } });
+  // console.log('toBlogView');
+  const newPage = router.resolve({ path: '/blog', query: { id: props.id } });
+  window.open(newPage.href, '_blank');
 }
 
 function toPersonView() {
   console.log('toPersonView');
-  router.push({ path: '/space/home', query: { name: props.author } });
+  router.push({ path: '/space/home', query: { id: props.author } });
 }
 
 function toEdit() {
-  console.log('toEdit');
-  router.push({ path: '/edit', query: { id: props.id } });
+  // console.log('toEdit');
+
+  const nowPage = router.resolve({ path: '/edit', query: { id: props.id, type: '810' } });
+  window.open(nowPage.href, '_blank');
 }
 
 const removeArticle = () => {
@@ -95,10 +107,10 @@ function removeFromCollect() {
       &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <Star />
-          </n-icon></span> {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
+          </n-icon></span> 收藏 : {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <ChatboxEllipses />
-          </n-icon></span> {{ commentsNum }}</span>
+          </n-icon></span> 评论 : {{ commentsNum }}</span>
     </div>
     <!-- Edit article -->
     <div class="foot" v-else-if="props.cardType === 2">
@@ -109,10 +121,10 @@ function removeFromCollect() {
       &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <Star />
-          </n-icon></span> {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
+          </n-icon></span> 收藏 : {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <ChatboxEllipses />
-          </n-icon></span> {{ commentsNum }}</span> &nbsp;<b>|</b>&nbsp;
+          </n-icon></span> 评论 : {{ commentsNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span class="author" @click="toEdit()"><span style="position: relative; top: 1.6px;"><n-icon>
             <Pencil />
           </n-icon></span> 编辑</span> &nbsp;<b>|</b>&nbsp;
@@ -142,11 +154,15 @@ function removeFromCollect() {
 
 <style lang="scss" scoped>
 .blogCard {
-  background-color: $github-card-background;
+  background: url('@/assets/img/card.png') right bottom no-repeat $github-card-background;
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 15px;
   min-width: 600px;
+
+  &:hover {
+    background: url('@/assets/img/card.png') right bottom no-repeat $github-card-hover;
+  }
 
   .title {
     font-size: 22px;

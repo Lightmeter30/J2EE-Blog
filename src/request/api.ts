@@ -279,7 +279,7 @@ export const uploadImgAPI = (data: requestTypes.RequestUploadImg, userState: any
  * 
  * url: comment/getArticleComments
  * 
- * test
+ * test ok
 * */
 
 export const getArticleCommentsAPI = (data: requestTypes.RequestGetArticleComments, userState: any): Res<responseTypes.ResponseGetArticleComments> => {
@@ -295,7 +295,7 @@ export const getArticleCommentsAPI = (data: requestTypes.RequestGetArticleCommen
  * 
  * url: comment/add
  * 
- * test
+ * test ok
 * */
 
 export const addArticleCommentAPI = (data: requestTypes.RequestAddComment, userState: any): Res<responseTypes.ResponseAddComment> => {
