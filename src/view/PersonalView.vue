@@ -100,7 +100,7 @@ const getUserInfo = async () => {
 
 onMounted(() => {
   const way = router.currentRoute.value.path;
-  if(way === '/router/home') {
+  if(way === '/space/home') {
     document.getElementById('indexHome')?.classList.add('selectedIndexColor');
   } else if(way === '/space/draft') {
     document.getElementById('indexDraft')?.classList.add('selectedIndexColor');
