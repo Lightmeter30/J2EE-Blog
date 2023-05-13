@@ -28,21 +28,27 @@ function routeTo(key: number) {
   // 1: homepage 2: personal 3: login
   if (key === 1) {
     router.replace({ path: '/space/home', query: { id: router.currentRoute.value.query.id } });
+    document.getElementById('selectedBar')?.classList.remove('indexHome', 'indexDraft','indexCollect', 'indexInfo');
     setTopIndex('indexHome');
   } else if (key === 2) {
     router.replace({ path: '/space/draft', query: { id: router.currentRoute.value.query.id } });
+    document.getElementById('selectedBar')?.classList.remove('indexHome', 'indexDraft','indexCollect', 'indexInfo');
     setTopIndex('indexDraft');
   } else if (key === 3) {
     router.replace({ path: '/space/collect', query: { id: router.currentRoute.value.query.id } });
+    document.getElementById('selectedBar')?.classList.remove('indexHome', 'indexDraft','indexCollect', 'indexInfo');
     setTopIndex('indexCollect');
   } else if (key === 4) {
     router.replace({ path: '/space/info', query: { id: router.currentRoute.value.query.id } });
+    document.getElementById('selectedBar')?.classList.remove('indexHome', 'indexDraft','indexCollect', 'indexInfo');
     setTopIndex('indexInfo');
   } else if (key === 5) {
     router.replace({ path: '/space/attention', query: { id: router.currentRoute.value.query.id } });
+    document.getElementById('selectedBar')?.classList.remove('indexHome', 'indexDraft','indexCollect', 'indexInfo');
     setTopIndex('attention');
   } else if (key === 6) {
     router.replace({ path: '/space/fans', query: { id: router.currentRoute.value.query.id } });
+    document.getElementById('selectedBar')?.classList.remove('indexHome', 'indexDraft','indexCollect', 'indexInfo');
     setTopIndex('fans');
   }
 }
@@ -50,6 +56,7 @@ function routeTo(key: number) {
 function setTopIndex(id: string) {
   document.getElementsByClassName('selectedIndexColor')?.item(0)?.classList.remove('selectedIndexColor');
   document.getElementById(id)?.classList.add('selectedIndexColor');
+  document.getElementById('selectedBar')?.classList.add(id);
 }
 
 async function addAttention() {
@@ -102,12 +109,16 @@ onMounted(() => {
   const way = router.currentRoute.value.path;
   if(way === '/space/home') {
     document.getElementById('indexHome')?.classList.add('selectedIndexColor');
+    document.getElementById('selectedBar')?.classList.add('indexHome');
   } else if(way === '/space/draft') {
     document.getElementById('indexDraft')?.classList.add('selectedIndexColor');
+    document.getElementById('selectedBar')?.classList.add('indexDraft');
   } else if( way === '/space/collect') {
     document.getElementById('indexCollect')?.classList.add('selectedIndexColor');
+    document.getElementById('selectedBar')?.classList.add('indexCollect');
   } else if( way === '/space/info') {
     document.getElementById('indexInfo')?.classList.add('selectedIndexColor');
+    document.getElementById('selectedBar')?.classList.add('indexInfo');
   } else if( way === '/space/attention') {
     document.getElementById('attention')?.classList.add('selectedIndexColor');
   } else if( way === '/space/fans') {
@@ -181,6 +192,7 @@ onMounted(() => {
             <div class="content">{{ user.articleNum }}</div>
           </div>
         </div>
+        <div id="selectedBar"></div>
       </div>
       <div class="Content">
         <RouterView></RouterView>
@@ -236,6 +248,7 @@ onMounted(() => {
   }
 
   .headIndex {
+    position: relative;
     background-color: $github-head;
     padding: 12px;
     display: flex;
@@ -296,5 +309,33 @@ onMounted(() => {
   &::-webkit-scrollbar-thumb {
     background-color: $scrollbar-color;
   }
+}
+
+#selectedBar {
+  position: absolute;
+  bottom: 0;
+  height: 4px;
+  background-color: $miku-fans-theme;
+  transition: all .3s;
+}
+
+.indexHome {
+  left: 8px;
+  width: 59px;
+}
+
+.indexDraft {
+  left: 78px;
+  width: 74px;
+}
+
+.indexCollect {
+  left: 163px;
+  width: 72px;
+}
+
+.indexInfo {
+  left: 246px;
+  width: 90px;
 }
 </style>
