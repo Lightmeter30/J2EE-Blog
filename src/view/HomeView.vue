@@ -66,12 +66,13 @@ import { Article } from '@/request/responseData';
 import { getHomePageArticlesAPI, getHomePageNumAPI } from '@/request/api';
 import { darkTheme } from 'naive-ui';
 import { AmericanFootballSharp, Albums, PricetagsSharp } from '@vicons/ionicons5';
+
 // import 'hover.css';
 // import { loginAPI } from '@/request/api';
 // import { RequestLogin } from '@/request/requestData';
 // import { reactive } from "vue";
 const message = useMessage();
-
+const router = useRouter();
 interface Topics {
   id: number;
   name: string;
@@ -244,10 +245,12 @@ const init = async () => {
 
 function tagClick(id: number) {
   console.log(id);
+  router.push({path: "/tags", query:{ id: id }});
 }
 
 function toGroup(id: number) {
   console.log(`to group ${id}`);
+  router.push({path: "/group", query:{ id: id }});
 }
 
 onMounted(() => {

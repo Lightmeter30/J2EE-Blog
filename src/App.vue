@@ -127,6 +127,13 @@ const themeOverrides: GlobalThemeOverrides = {
     iconColorHover: "#39c5bb",
     iconColor: "rgba(255,255,255,0.8)"
   },
+  Dropdown: {
+    color: "rgb(18, 18, 18)",
+    optionColorHover: "rgb(36,36,36)",
+    optionTextColor: "rgba(255,255,255,0.82)",
+    optionTextColorHover: "rgba(255,255,255,0.7)",
+    prefixColor: "rgba(255,255,255,0.82)",
+  }
 };
 </script>
 

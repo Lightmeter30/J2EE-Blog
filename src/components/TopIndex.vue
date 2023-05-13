@@ -18,6 +18,45 @@ const renderIcon = (icon: Component) => {
   }
 }
 
+
+const groupList = [
+  {
+    key: 1,
+    label: '计算机',
+    articleNum: 10,
+  },
+  {
+    key: 2,
+    label: '二次元',
+    articleNum: 8,
+  },
+  {
+    key: 3,
+    label: '生活区',
+    articleNum: 101,
+  },
+  {
+    key: 4,
+    label: '舞蹈区',
+    articleNum: 123,
+  },
+  {
+    key: 5,
+    label: '哲学区',
+    articleNum: 114,
+  },
+  {
+    key: 6,
+    label: '视频区',
+    articleNum: 90,
+  },
+  {
+    key: 7,
+    label: '游戏区',
+    articleNum: 1,
+  },
+];
+
 const options = [
   {
     label: '退出登录',
@@ -51,6 +90,11 @@ function handleSelect(key: string | number) {
     })
   }
 };
+
+function toGroup(key: string | number) {
+  router.push({path: '/group', query: {id: key}});
+};
+
 function routeTo(key: number) {
   // 1: homepage 2: personal 3: login
   if (key === 1) {
@@ -58,7 +102,7 @@ function routeTo(key: number) {
   } else if (key === 2) {
     router.push({ path: '/space/home', query: { id: userState.userId } });
   } else if (key === 3) {
-    router.push({path: '/edit', query: { type: '114514' } });
+    router.push({ path: '/edit', query: { type: '114514' } });
   } else if (key === 4) {
     router.push('/login');
   }
@@ -69,6 +113,11 @@ function routeTo(key: number) {
   <div class="topIndex">
     <div class="index">
       <span @click="routeTo(1)"><b>博客主页</b></span>
+      <span style="margin-left: 10px;">
+          <n-dropdown @select="toGroup" :options="groupList">
+            <b>博客分组</b>
+          </n-dropdown>
+      </span>
       <span v-show="userState.isLogin" @click="routeTo(2)" style="margin-left: 10px;"><b>个人主页</b></span>
       <span v-show="userState.isLogin" @click="routeTo(3)" style="margin-left: 10px;"><b>写博客</b></span>
     </div>
@@ -83,11 +132,9 @@ function routeTo(key: number) {
     </div>
     <div class="info">
       <div class="myInfo" v-if="userState.isLogin">
-        <n-config-provider :theme="darkTheme">
           <n-dropdown :options="options" @select="handleSelect">
             <n-avatar round :src="userState.staticHead + userState.avatar" />
           </n-dropdown>
-        </n-config-provider>
       </div>
       <div v-else @click="routeTo(4)" class="login">登录/注册</div>
     </div>

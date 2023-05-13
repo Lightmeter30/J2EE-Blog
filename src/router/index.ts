@@ -26,6 +26,16 @@ const router = createRouter({
       component: () => import('@/view/SearchView.vue')
     },
     {
+      path: '/group',
+      name: 'group',
+      component: () => import('@/view/GroupView.vue')
+    },
+    {
+      path: '/tags',
+      name: 'tags',
+      component: () => import('@/view/TagsView.vue')
+    },
+    {
       path: '/blog',
       name: 'blog',
       component: () => import('@/view/BlogView.vue')
