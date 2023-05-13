@@ -8,6 +8,7 @@ import { darkTheme } from 'naive-ui';
 const message = useMessage();
 const userState = useUserStore();
 const router = useRouter();
+const loading = ref(true);
 
 type homeDataType = {
   currentArticleList: Article[],
@@ -43,6 +44,7 @@ const init = async () => {
   if (res.data.status === 0) {
     homeData.total = res.data.data;
     changePage(1);
+    loading.value = false;
   } else {
     message.error(res.data.message);
   }
@@ -55,20 +57,27 @@ onMounted(() => {
 
 <template>
   <div class="spaceHome">
-    <div class="homeContent">
-      <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="'takune'"
-        :card-type="userState.userId === Number(router.currentRoute.value.query.id) ? 2 : 1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
-        :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum"></blog-card>
+    <div class="loading" v-if="loading">
+      <n-spin :size="150" stroke="#39c5bb" />
     </div>
-    <div class="homeFoot">
-      <n-config-provider :theme="darkTheme">
-        <n-pagination :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
-          <template #goto>
-            跳至
-          </template>
-        </n-pagination>
-      </n-config-provider>
+    <div v-else>
+      <div class="homeContent">
+        <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="'takune'"
+          :card-type="userState.userId === Number(router.currentRoute.value.query.id) ? 2 : 1"
+          :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
+          :update-time="item.updateTime" :comments-num="item.commentsNum"></blog-card>
+      </div>
+      <div class="homeFoot" v-show="homeData.total !== 1">
+        <n-config-provider :theme="darkTheme">
+          <n-pagination :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
+            <template #goto>
+              跳至
+            </template>
+          </n-pagination>
+        </n-config-provider>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -76,6 +85,7 @@ onMounted(() => {
 .spaceHome {
   background-color: $github-background;
   border-radius: 5px;
+  min-height: 550px;
   padding: 20px;
   margin-bottom: 40px;
 
@@ -89,5 +99,11 @@ onMounted(() => {
     display: flex;
     justify-content: center;
   }
+}
+
+.loading {
+  @include center;
+  position: relative;
+  top: 200px;
 }
 </style>

@@ -62,7 +62,7 @@ const changePage = async (page: number) => {
     console.log(res);
     homeData.currentArticleList = res.data.data;
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -72,7 +72,7 @@ const init = async () => {
     homeData.total = res.data.data;
     changePage(1);
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 

@@ -35,6 +35,8 @@ declare module '@vue/runtime-core' {
     NPopover: typeof import('naive-ui')['NPopover']
     NRadioButton: typeof import('naive-ui')['NRadioButton']
     NRadioGroup: typeof import('naive-ui')['NRadioGroup']
+    NSkeleton: typeof import('naive-ui')['NSkeleton']
+    NSpin: typeof import('naive-ui')['NSpin']
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NUpload: typeof import('naive-ui')['NUpload']

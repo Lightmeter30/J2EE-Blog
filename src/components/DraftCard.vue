@@ -38,14 +38,11 @@ function removeDraft() {
       }
       const res = await deleteDraftAPI(data, userState);
       if(res.data.status === 0) {
-        message.success('删除成功');
+        message.success('删除成功', {duration: 1200});
       } else {
-        message.error(res.data.message);
+        message.error(res.data.message, {duration: 1200});
       }
     },
-    onNegativeClick: () => {
-      message.error('取消');
-    }
   })
 };
 

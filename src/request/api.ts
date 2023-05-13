@@ -391,7 +391,7 @@ export const getDraftAPI = (data: requestTypes.RequestGetDraft, userState: any):
  * 
  * url: draft/getUserPageNum
  * 
- * test
+ * test ok
 * */
 
 export const getUserDraftPageNumAPI = (data: requestTypes.RequestGetUserPageNum, userState: any): Res<responseTypes.ResponseGetUserDraftPageNum> => {
@@ -407,7 +407,7 @@ export const getUserDraftPageNumAPI = (data: requestTypes.RequestGetUserPageNum,
  * 
  * url: draft/getUserPage
  * 
- *  test
+ *  test ok
 * */
 
 export const getUserDraftPageAPI = (data: requestTypes.RequestGetUserPage, userState: any): Res<responseTypes.ResponseGetUserDraftPage> => {
@@ -423,7 +423,7 @@ export const getUserDraftPageAPI = (data: requestTypes.RequestGetUserPage, userS
  * 
  * url: favorite/add
  * 
- *  test
+ *  test ok
 * */
 
 export const addArticleToCollectAPI = (data: requestTypes.RequestAddFavorite, userState: any): Res<responseTypes.ResponseAddFavorite> => {
@@ -471,7 +471,7 @@ export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavo
  * 
  * url: favoriteFolder/add
  * 
- * test
+ * test ok
 * */
 
 export const addCollectAPI = (data: requestTypes.RequestAddFavoriteFolder, userState: any): Res<responseTypes.ResponseAddFavoriteFolder> => {
@@ -487,7 +487,7 @@ export const addCollectAPI = (data: requestTypes.RequestAddFavoriteFolder, userS
  * 
  * url: favoriteFolder/getUserFolders
  * 
- *  test
+ *  test ok
 * */
 
 export const getUserAllCollectAPI = (userState: any): Res<responseTypes.ResponseGetUserFolders> => {
@@ -502,7 +502,7 @@ export const getUserAllCollectAPI = (userState: any): Res<responseTypes.Response
  * 
  * url: favoriteFolder/delete
  * 
- * test 
+ * test ok
 **/
 
 export const deleteCollectAPI = (data: requestTypes.RequestDeleteFavoriteFolder, userState: any): Res<responseTypes.ResponseDeleteFavoriteFolder> => {

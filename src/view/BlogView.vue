@@ -60,7 +60,7 @@ async function comment() {
     // TODO: API test
     console.log(res.data.data);
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -81,9 +81,9 @@ async function addBlogToCollect(collectID: number, collectName: string) {
   };
   const res = await addArticleToCollectAPI(data, userStore);
   if (res.data.status === 0) {
-    message.success(`成功添加到${collectName}!`);
+    message.success(`成功添加到${collectName}!`, {duration: 1200});
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -97,7 +97,7 @@ async function getComments() {
     console.log(res.data.data);
     blogData.commentList = res.data.data;
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 
@@ -114,7 +114,7 @@ const getArticle = async () => {
     // blog.collectNum = res.data.data.favoritesNum;
     blogData.blog = res.data.data;
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 
@@ -125,7 +125,7 @@ const getAllFolders = async () => {
     console.log(res.data.data);
     blogData.collectList = res.data.data;
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 

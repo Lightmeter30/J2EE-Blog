@@ -6,34 +6,41 @@ let total = ref(114);
 function changePage(page: number) {
   console.log(`to page ${page}`);
 }
+const loading = ref(true);
 
 onMounted(() => {
   console.log(router.currentRoute.value);
+  loading.value = false;
 })
 </script>
 
 <template>
   <div class="spaceList">
-    <div class="listContent">
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
-      <user-list />
+    <div class="loading" v-if="loading">
+      <n-spin :size="150" stroke="#39c5bb" />
     </div>
-    <div class="listFoot">
-      <n-config-provider :theme="darkTheme">
-        <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
-          <template #goto>
-            跳至
-          </template>
-        </n-pagination>
-      </n-config-provider>
+    <div v-else>
+      <div class="listContent">
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+      </div>
+      <div class="listFoot">
+        <n-config-provider :theme="darkTheme">
+          <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+            <template #goto>
+              跳至
+            </template>
+          </n-pagination>
+        </n-config-provider>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +51,7 @@ onMounted(() => {
   border-radius: 5px;
   padding: 20px;
   margin-bottom: 40px;
+  min-height: 550px;
 
   .listContent {}
 
@@ -55,5 +63,10 @@ onMounted(() => {
     display: flex;
     justify-content: center;
   }
+}
+.loading {
+  @include center;
+  position: relative;
+  top: 200px;
 }
 </style>

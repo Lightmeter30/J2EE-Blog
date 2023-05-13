@@ -53,14 +53,11 @@ const removeArticle = () => {
       }
       const res = await deleteArticleAPI(data, userState);
       if (res.data.status === 0) {
-        message.success('删除成功');
+        message.success('删除成功', {duration: 1200});
       } else {
-        message.error(res.data.message);
+        message.error(res.data.message, {duration: 1200});
       }
     },
-    onNegativeClick: () => {
-      message.error('取消');
-    }
   })
 }
 
@@ -77,9 +74,9 @@ function removeFromCollect() {
       }
       const res = await deleteArticleFromCollectAPI(data, userState);
       if (res.data.status === 0) {
-        message.success('移除收藏夹成功');
+        message.success('移除收藏夹成功', {duration: 1200});
       } else {
-        message.error(res.data.message);
+        message.error(res.data.message, {duration: 1200});
       }
     },
   })

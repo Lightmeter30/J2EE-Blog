@@ -28,9 +28,9 @@ async function addAttention() {
   };
   const res = await addUserToFollowAPI(data, userState);
   if(res.data.status === 0) {
-    message.success('关注成功');
+    message.success('关注成功', {duration: 1200});
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -40,9 +40,9 @@ async function removeAttention() {
   };
   const res = await deleteUserFromFollowAPI(data, userState);
   if(res.data.status === 0) {
-    message.success('取消关注');
+    message.success('取消关注', {duration: 1200});
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 

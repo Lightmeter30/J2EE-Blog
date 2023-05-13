@@ -46,7 +46,7 @@ function handleSelect(key: string | number) {
       onPositiveClick: () => {
         userState.logout();
         router.push('/');
-        message.success('退出登录');
+        // message.success('退出登录');
       },
     })
   }

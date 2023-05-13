@@ -72,7 +72,18 @@ const toolbar = [
   'catalog'
 ];
 
+function isNull(): boolean {
+  if(blog.title.length === 0 || blog.description.length === 0 || blog.content.length === 0) 
+    return true;
+  else 
+    return false;
+}
+
 async function save() {
+  if(isNull()) {
+    message.error('文章标题,简介或内容不能为空!', {duration: 1200});
+    return;
+  }
   if(articleType === 0 ) {
     // it's a new article
     addDraft();
@@ -97,9 +108,9 @@ const addArticle = async () => {
   if(res.data.status === 0) {
     // router.replace({path: '/blog', query: {code: res.data.code}});
     console.log(res);
-    message.success('发布成功!');
+    message.success('发布成功!', {duration: 1200});
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 
@@ -114,10 +125,10 @@ const updateArticle = async () => {
   const res = await updateArticleAPI(data, userState);
   if(res.data.status === 0) {
     console.log(res);
-    message.success('发布成功!');
+    message.success('发布成功!', {duration: 1200});
     router.replace({path: '/blog', query:{ id: router.currentRoute.value.query.id }});
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 
@@ -131,10 +142,10 @@ async function addDraft() {
   const res = await addDraftAPI(data, userState);
   if(res.data.status === 0) {
     // TODO: API test
-    message.success('已保存到草稿箱!');
+    message.success('已保存到草稿箱!', {duration: 1200});
     // message.success(res.data.message);
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -149,13 +160,17 @@ async function updateDraft() {
   const res = await updateDraftAPI(data, userState);
   if(res.data.status === 0) {
     console.log(res);
-    message.success('发布成功!');
+    message.success('发布成功!', {duration: 1200});
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 };
 
-const upload = async () => {
+const upload = () => {
+  if(isNull()) {
+    message.error('文章标题,简介或内容不能为空!', {duration: 1200});
+    return;
+  }
   if( articleType === 0 || articleType === 1 ) {
     addArticle();
   } else {
@@ -173,7 +188,7 @@ const onUploadImg = async (files: any, callback: any) => {
     const url: Array<string> = [userState.staticHead + res.data.data];
     callback(url);
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -188,7 +203,7 @@ const getArticleInfo = async () => {
     blog.description = res.data.data.description as string;
     text.value = res.data.data.content as string;
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 
@@ -203,7 +218,7 @@ async function getDraftInfo() {
     blog.description = res.data.data.description;
     text.value = res.data.data.content as string;
   } else {
-    message.error(res.data.message);
+    message.error(res.data.message, {duration: 1200});
   }
 }
 

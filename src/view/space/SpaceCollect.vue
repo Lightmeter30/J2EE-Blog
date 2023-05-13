@@ -7,8 +7,10 @@ import { FavoriteFolder, Article } from "@/request/responseData";
 import { darkTheme } from "naive-ui";
 
 let collect: HTMLElement;
+let Delete: HTMLElement;
 const newCollect = ref('');
 const showModal = ref(false);
+const loading = ref(true);
 const userStore = useUserStore();
 const message = useMessage();
 const dialog = useDialog();
@@ -33,13 +35,21 @@ function showDialog() {
 }
 
 function changeSelectCollect(id: number, index: number) {
-  if(collect === undefined)
+  if (collect === undefined) {
     collect = document.getElementById(`folder0`) as HTMLElement;
+    Delete = document.getElementById(`delete0`) as HTMLElement;
+  }
   collect.classList.remove('selectedCollect');
   collect.classList.add('collectHover');
   collect = document.getElementById(`folder${index}`) as HTMLElement;
   collect.classList.remove('collectHover');
   collect.classList.add('selectedCollect');
+
+  Delete.classList.remove('selectDelete');
+  Delete.classList.add('delete');
+  Delete = document.getElementById(`delete${index}`) as HTMLElement;
+  Delete.classList.remove('delete');
+  Delete.classList.add('selectDelete');
   // change collect now
 
 }
@@ -58,6 +68,10 @@ async function getArticlesFromCollect(collectId: number) {
 }
 
 async function addCollect() {
+  if (newCollect.value === '') {
+    message.error('收藏夹名字不能为空');
+    return;
+  }
   const data: RequestAddFavoriteFolder = {
     name: newCollect.value,
   }
@@ -95,9 +109,6 @@ function removeCollect(id: number, index: number) {
         message.error(res.data.message);
       }
     },
-    onNegativeClick: () => {
-      message.error('取消');
-    }
   })
 };
 
@@ -107,10 +118,11 @@ const getAllFolders = async () => {
     // TODO:
     console.log(res.data.data);
     collectData.collectFolderList = res.data.data;
-    console.log( `folder${collectData.collectFolderList[0].id}`);
+    console.log(`folder${collectData.collectFolderList[0].id}`);
     // collect = document.getElementById(`folder0`) as HTMLElement;
     // collect.classList.remove('collectHover');
     // collect.classList.add('selectedCollect');
+    loading.value = false;
   } else {
     message.error(res.data.message);
   }
@@ -124,55 +136,60 @@ onMounted(() => {
 
 <template>
   <div class="spaceCollect">
-    <div class="sideIndex">
-      <div class="addCollect" @click="showDialog">
-        <n-icon style="position: relative; top: 2px;">
-          <AddCircle />
-        </n-icon> 新建收藏夹
-      </div>
-      <CollectList v-for="(item, key) in collectData.collectFolderList" :index="key" :id="item.id" :name="item.name"
-        :articleNum="item.articleNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
+    <div class="loading" v-if="loading">
+      <n-spin :size="150" stroke="#39c5bb" />
     </div>
-    <div class="content">
-      <div class="collectContent">
-        114514
-      </div>
-      <div class="collectFoot" v-show="collectData.total !== 1">
-        <n-config-provider :theme="darkTheme">
-          <n-pagination :on-update:page="changePage" :item-count="collectData.total" show-quick-jumper>
-            <template #goto>
-              跳至
-            </template>
-          </n-pagination>
-        </n-config-provider>
-      </div>
-    </div>
-    <n-config-provider :theme="darkTheme">
-      <n-modal v-model:show="showModal" preset="dialog" title="Dialog">
-        <template #header>
-          <div>新建收藏夹</div>
-        </template>
-        <div>
-          <n-form ref="formRef">
-            <n-form-item label="收藏夹名">
-              <n-input v-model:value="newCollect" />
-            </n-form-item>
-          </n-form>
+    <div class="container" v-else>
+      <div class="sideIndex">
+        <div class="addCollect" @click="showDialog">
+          <n-icon style="position: relative; top: 2px;">
+            <AddCircle />
+          </n-icon> 新建收藏夹
         </div>
-        <template #action>
-          <div>
-            <n-button color="#39c5bb" @click="addCollect()">
-              <template #icon>
-                <n-icon>
-                  <cloud-upload />
-                </n-icon>
+        <CollectList v-for="(item, key) in collectData.collectFolderList" :index="key" :id="item.id" :name="item.name"
+          :articleNum="item.articleNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
+      </div>
+      <div class="content">
+        <div class="collectContent">
+          114514
+        </div>
+        <div class="collectFoot" v-show="collectData.total !== 1">
+          <n-config-provider :theme="darkTheme">
+            <n-pagination :on-update:page="changePage" :item-count="collectData.total" show-quick-jumper>
+              <template #goto>
+                跳至
               </template>
-              提交
-            </n-button>
+            </n-pagination>
+          </n-config-provider>
+        </div>
+      </div>
+      <n-config-provider :theme="darkTheme">
+        <n-modal v-model:show="showModal" preset="dialog" title="Dialog">
+          <template #header>
+            <div>新建收藏夹</div>
+          </template>
+          <div>
+            <n-form ref="formRef">
+              <n-form-item label="收藏夹名">
+                <n-input v-model:value="newCollect" />
+              </n-form-item>
+            </n-form>
           </div>
-        </template>
-      </n-modal>
-    </n-config-provider>
+          <template #action>
+            <div>
+              <n-button color="#39c5bb" @click="addCollect()">
+                <template #icon>
+                  <n-icon>
+                    <cloud-upload />
+                  </n-icon>
+                </template>
+                提交
+              </n-button>
+            </div>
+          </template>
+        </n-modal>
+      </n-config-provider>
+    </div>
   </div>
 </template>
 
@@ -181,8 +198,12 @@ onMounted(() => {
   background-color: $github-background;
   border-radius: 5px;
   padding: 20px;
-  display: flex;
   margin-bottom: 40px;
+  min-height: 550px;
+
+  .container {
+    display: flex;
+  }
 
   .sideIndex {
     width: 20%;
@@ -218,5 +239,11 @@ onMounted(() => {
     }
   }
 
+}
+
+.loading {
+  @include center;
+  position: relative;
+  top: 200px;
 }
 </style>
