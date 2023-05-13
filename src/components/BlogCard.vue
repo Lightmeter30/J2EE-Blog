@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Person, Time, Star, ChatboxEllipses, Pencil, Trash } from '@vicons/ionicons5';
+import { Person, Time, Star, ChatboxEllipses, Pencil, Trash, PricetagsSharp } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
 import { RequestDeleteArticle, RequestDeleteFavorites } from '@/request/requestData';
 import { deleteArticleAPI, deleteArticleFromCollectAPI } from '@/request/api';
@@ -15,14 +15,35 @@ interface ArticleCard {
   authorName: string;
   commentsNum: number;
   description?: string; // 只在卡片展示需要
-  favoritesNum: number; 
+  favoritesNum: number;
   id: number;
   title: string;
   updateTime: string;
   CommentOrderNum?: number; // 只在某一个博客的内容界面需要
 };
 const props = defineProps<ArticleCard>();
-
+const tags = [
+  {
+    id: 1,
+    name: 'vue'
+  },
+  {
+    id: 2,
+    name: 'html'
+  },
+  {
+    id: 3,
+    name: 'css'
+  },
+  {
+    id: 4,
+    name: 'SQL'
+  },
+  {
+    id: 5,
+    name: 'python'
+  },
+];
 function toBlogView() {
   // console.log('toBlogView');
   const newPage = router.resolve({ path: '/blog', query: { id: props.id } });
@@ -53,9 +74,9 @@ const removeArticle = () => {
       }
       const res = await deleteArticleAPI(data, userState);
       if (res.data.status === 0) {
-        message.success('删除成功', {duration: 1200});
+        message.success('删除成功', { duration: 1200 });
       } else {
-        message.error(res.data.message, {duration: 1200});
+        message.error(res.data.message, { duration: 1200 });
       }
     },
   })
@@ -74,9 +95,9 @@ function removeFromCollect() {
       }
       const res = await deleteArticleFromCollectAPI(data, userState);
       if (res.data.status === 0) {
-        message.success('移除收藏夹成功', {duration: 1200});
+        message.success('移除收藏夹成功', { duration: 1200 });
       } else {
-        message.error(res.data.message, {duration: 1200});
+        message.error(res.data.message, { duration: 1200 });
       }
     },
   })
@@ -91,6 +112,14 @@ function removeFromCollect() {
     </div>
     <div class="description">
       {{ description }}
+    </div>
+    <div class="tags">
+      <n-icon style="position: relative; top: 3px;padding-right: 8px;">
+        <PricetagsSharp />
+      </n-icon>
+      <span v-for="(item, index) in tags" class="tagItem">
+        <span class="name" >{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1" >·</span>
+      </span>
     </div>
     <!-- Ordinal article -->
     <div class="foot" v-if="props.cardType === 1">
@@ -172,14 +201,40 @@ function removeFromCollect() {
     font-size: medium;
   }
 
+  .tags {
+    padding-top: 5px;
+    font-size: 14px;
+    color: $cloud-1-hex;
+    line-height: 14px;
+
+    .tagItem {
+      .name {
+        cursor: pointer;
+        font-weight: bold;
+        &:hover {
+          color: $miku-fans-theme;
+          text-decoration-line: underline;
+        }
+      }
+
+      .split {
+        font-weight: bold;
+        padding-left: 4px;
+        padding-right: 4px;
+        position: relative;
+        top: 0.6px;
+      }
+    }
+  }
+
   .foot {
     margin-top: 10px;
     color: $cloud-1-hex;
     line-height: normal;
+    // font-weight: bold;
 
     .author {
       @include text-hover;
     }
   }
-}
-</style>
+}</style>

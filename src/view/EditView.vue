@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-import type {FormRules} from "naive-ui";
+import type { FormRules } from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
+import { darkTheme } from "naive-ui";
 import { RequestAddArticle, RequestUploadImg, RequestUpdateArticle, RequestGetArticle, RequestAddDraft, RequestUpdateDraft, RequestGetDraft } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { useUserStore } from '@/stores/user';
@@ -12,13 +13,46 @@ let text = ref('');
 const router = useRouter();
 const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
-const userState = useUserStore(); 
+const userState = useUserStore();
 let articleType: number = 0; // 0 is new, 1 is draft, 2 is old article 
 const blog = reactive({
   title: '',
   description: '',
+  Group: 0,
   content: '',
+  tags: []
 });
+
+const groupOptions = [
+  {
+    label: '计算机',
+    value: 0,
+  },
+  {
+    label: '二次元',
+    value: 1,
+  },
+  {
+    label: '生活区',
+    value: 2,
+  },
+  {
+    label: '舞蹈区',
+    value: 3,
+  },
+  {
+    label: '哲学区',
+    value: 4,
+  },
+  {
+    label: '视频区',
+    value: 5,
+  },
+  {
+    label: '游戏区',
+    value: 6,
+  },
+];
 const ruleBlog: FormRules = {
   title: {
     required: true,
@@ -29,7 +63,7 @@ const ruleBlog: FormRules = {
       }
     }
   },
-    description: {
+  description: {
     required: true,
     trigger: ['focus', 'input'],
     validator() {
@@ -73,25 +107,25 @@ const toolbar = [
 ];
 
 function isNull(): boolean {
-  if(blog.title.length === 0 || blog.description.length === 0 || blog.content.length === 0) 
+  if (blog.title.length === 0 || blog.description.length === 0 || blog.content.length === 0 || blog.tags.length === 0)
     return true;
-  else 
+  else
     return false;
 }
 
 async function save() {
-  if(isNull()) {
-    message.error('文章标题,简介或内容不能为空!', {duration: 1200});
+  if (isNull()) {
+    message.error('文章标题,简介,标签或内容不能为空!', { duration: 1200 });
     return;
   }
-  if(articleType === 0 ) {
+  if (articleType === 0) {
     // it's a new article
     addDraft();
     articleType = 1;
-  } else if(articleType === 1) {
+  } else if (articleType === 1) {
     // it's a draft article
     updateDraft();
-  } else if(articleType === 2) {
+  } else if (articleType === 2) {
     // it's a old article
     // TODO: 
   }
@@ -105,12 +139,12 @@ const addArticle = async () => {
     description: blog.description
   }
   const res = await addArticleAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     // router.replace({path: '/blog', query: {code: res.data.code}});
     console.log(res);
-    message.success('发布成功!', {duration: 1200});
+    message.success('发布成功!', { duration: 1200 });
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 };
 
@@ -123,12 +157,12 @@ const updateArticle = async () => {
     description: blog.description
   };
   const res = await updateArticleAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     console.log(res);
-    message.success('发布成功!', {duration: 1200});
-    router.replace({path: '/blog', query:{ id: router.currentRoute.value.query.id }});
+    message.success('发布成功!', { duration: 1200 });
+    router.replace({ path: '/blog', query: { id: router.currentRoute.value.query.id } });
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 };
 
@@ -140,12 +174,12 @@ async function addDraft() {
     updateTime: getNowTime(),
   };
   const res = await addDraftAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     // TODO: API test
-    message.success('已保存到草稿箱!', {duration: 1200});
+    message.success('已保存到草稿箱!', { duration: 1200 });
     // message.success(res.data.message);
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -158,20 +192,20 @@ async function updateDraft() {
     description: blog.description
   };
   const res = await updateDraftAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     console.log(res);
-    message.success('发布成功!', {duration: 1200});
+    message.success('发布成功!', { duration: 1200 });
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 };
 
 const upload = () => {
-  if(isNull()) {
-    message.error('文章标题,简介或内容不能为空!', {duration: 1200});
+  if (isNull()) {
+    message.error('文章标题,简介,标签或内容不能为空!', { duration: 1200 });
     return;
   }
-  if( articleType === 0 || articleType === 1 ) {
+  if (articleType === 0 || articleType === 1) {
     addArticle();
   } else {
     updateArticle();
@@ -183,12 +217,12 @@ const onUploadImg = async (files: any, callback: any) => {
     articleImg: files[0],
   };
   const res = await uploadImgAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     console.log(res.data);
     const url: Array<string> = [userState.staticHead + res.data.data];
     callback(url);
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -197,13 +231,13 @@ const getArticleInfo = async () => {
     id: Number(router.currentRoute.value.query.id)
   }
   const res = await getArticleAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     // TODO:
     blog.title = res.data.data.title;
     blog.description = res.data.data.description as string;
     text.value = res.data.data.content as string;
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -212,24 +246,24 @@ async function getDraftInfo() {
     id: Number(router.currentRoute.value.query.id)
   }
   const res = await getDraftAPI(data, userState);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     // TODO:
     blog.title = res.data.data.title;
     blog.description = res.data.data.description;
     text.value = res.data.data.content as string;
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
 onMounted(() => {
   //  114514 is the new(0), 1919 is the draft(1), 810 is the old(2)
-  if( router.currentRoute.value.query.type === '114514') {
+  if (router.currentRoute.value.query.type === '114514') {
     articleType = 0;
-  } else if(router.currentRoute.value.query.type === '1919') {
+  } else if (router.currentRoute.value.query.type === '1919') {
     articleType = 1;
     getDraftInfo();
-  } else if(router.currentRoute.value.query.type === '810') {
+  } else if (router.currentRoute.value.query.type === '810') {
     articleType = 2;
     getArticleInfo();
   }
@@ -248,9 +282,22 @@ onMounted(() => {
           <NInput maxlength="30" placeholder="请输入简介" v-model:value="blog.description" />
         </NFormItemRow>
       </NForm>
+      <n-config-provider :theme="darkTheme">
+        <div class="tagAndGroup">
+          <div class="group">
+            <div>博客分组</div>
+            <n-select v-model:value="blog.Group" :options="groupOptions" />
+          </div>
+          <div class="tags">
+            <div>文章标签<span style="color: #d03050;" > *</span></div>
+            <n-dynamic-tags v-model:value="blog.tags" />
+          </div>
+        </div>
+
+      </n-config-provider>
     </div>
     <div class="editContent">
-      <MdEditor theme="dark" v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg" >
+      <MdEditor theme="dark" v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg">
         <template #defToolbars>
           <NormalToolbar title="保存到草稿箱" @onClick="save()">
             <template #trigger>
@@ -289,8 +336,29 @@ onMounted(() => {
     padding-top: 40px;
   }
 
-  .editContent {
+  .tagAndGroup {
+    display: flex;
+    color: rgba(255, 255, 255, 0.82);
+
+    .group {
+      width: 100px;
+      margin-right: 40px;
+
+      div {
+        padding-bottom: 5px;
+      }
+    }
+
+    .tags {
+      width: auto;
+
+      div {
+        padding-bottom: 5px;
+      }
+    }
   }
+
+  .editContent {}
 
   .editSubmit {}
 }
