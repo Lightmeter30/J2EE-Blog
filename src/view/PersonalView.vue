@@ -201,7 +201,7 @@ onMounted(() => {
   left: 15%;
 
   .head {
-    height: 150px;
+    height: 128px;
     background-image: url('@/assets/img/personal.jpg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -209,7 +209,7 @@ onMounted(() => {
     padding: 20px;
 
     .infoList {
-      margin-top: 100px;
+      margin-top: 78px;
       display: flex;
 
       .info {

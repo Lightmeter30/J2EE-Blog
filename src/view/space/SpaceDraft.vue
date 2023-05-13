@@ -32,6 +32,7 @@ async function getDraftPage(page: number) {
     // TODO:
     console.log(res.data.data);
     draftData.draftList = res.data.data;
+    loading.value = false;
   } else {
     message.error(res.data.message);
   }
@@ -45,7 +46,6 @@ onMounted(async () => {
   if (res.data.status === 0) {
     draftData.total = res.data.data;
     getDraftPage(1);
-    loading.value = false;
   } else {
     message.error(res.data.message);
   }
@@ -58,18 +58,24 @@ onMounted(async () => {
       <n-spin :size="150" stroke="#39c5bb" />
     </div>
     <div v-else>
-      <div class="draftContent">
-        <draft-card v-for="item in draftData.draftList" :author="item.author" :description="item.description"
-          :id="item.id" :title="item.title" :update-time="item.updateTime"></draft-card>
+      <div class="empty" v-if="draftData.draftList.length === 0">
+        <img style="height: 300px;margin-top: 100px;" src="@/assets/img/null-search.svg" />
+        <div>勇敢的少年啊快去打草稿吧!</div>
       </div>
-      <div class="draftFoot" v-show="draftData.total !== 1">
-        <n-config-provider :theme="darkTheme">
-          <n-pagination :on-update:page="changePage" :item-count="draftData.total" show-quick-jumper>
-            <template #goto>
-              跳至
-            </template>
-          </n-pagination>
-        </n-config-provider>
+      <div v-else>
+        <div class="draftContent">
+          <draft-card v-for="item in draftData.draftList" :author="item.author" :description="item.description"
+            :id="item.id" :title="item.title" :update-time="item.updateTime"></draft-card>
+        </div>
+        <div class="draftFoot" v-show="draftData.total !== 1">
+          <n-config-provider :theme="darkTheme">
+            <n-pagination :on-update:page="changePage" :item-count="draftData.total" show-quick-jumper>
+              <template #goto>
+                跳至
+              </template>
+            </n-pagination>
+          </n-config-provider>
+        </div>
       </div>
     </div>
   </div>
@@ -82,6 +88,12 @@ onMounted(async () => {
   padding: 20px;
   margin-bottom: 40px;
   min-height: 550px;
+
+  .empty {
+    font-size: 20px;
+    color: $github-header-text;
+    text-align: center;
+  }
 
   .draftContent {}
 

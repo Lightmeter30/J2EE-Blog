@@ -149,7 +149,13 @@ onMounted(() => {
         <CollectList v-for="(item, key) in collectData.collectFolderList" :index="key" :id="item.id" :name="item.name"
           :articleNum="item.articleNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
       </div>
-      <div class="content">
+      <div class="content" v-if="collectData.currentArticleList.length === 0">
+        <div class="empty">
+          <img  style="height: 300px;margin-top: 100px;" src="@/assets/img/null-search.svg" />
+          <div>勇敢的少年啊快去收藏博客!</div>
+        </div>
+      </div>
+      <div class="content" v-else>
         <div class="collectContent">
           114514
         </div>
@@ -228,6 +234,12 @@ onMounted(() => {
     padding-left: 10px;
 
     .collectContent {}
+
+    .empty {
+      font-size: 20px;
+      color: $github-header-text;
+      text-align: center;
+    }
 
     .collectFoot {
       background-color: $github-card-background;
