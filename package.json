@@ -12,6 +12,8 @@
     "@faker-js/faker": "^7.6.0",
     "@types/node": "^18.15.11",
     "axios": "^1.3.5",
+    "echarts": "^5.4.2",
+    "echarts-wordcloud": "^2.1.0",
     "hover.css": "^2.3.2",
     "md-editor-v3": "^2.11.2",
     "naive-ui": "^2.34.3",

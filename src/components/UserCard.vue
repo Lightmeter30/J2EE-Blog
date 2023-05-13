@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { addUserToFollowAPI, deleteUserFromFollowAPI } from '@/request/api';
+import { addUserToFollowAPI, deleteUserFromFollowAPI, getUserInfoAPI } from '@/request/api';
 import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
+import { ResponseGetInfo } from '@/request/responseData';
 import router from '@/router';
 import { useUserStore } from '@/stores/user';
 import { faker } from '@faker-js/faker';

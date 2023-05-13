@@ -45,6 +45,7 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SignUp: typeof import('./components/svg/SignUp.vue')['default']
+    TagsCloud: typeof import('./components/TagsCloud.vue')['default']
     TopIndex: typeof import('./components/TopIndex.vue')['default']
     UserCard: typeof import('./components/UserCard.vue')['default']
     UserList: typeof import('./components/UserList.vue')['default']
