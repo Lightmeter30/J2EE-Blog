@@ -37,6 +37,18 @@ export interface RequestHeader {
 // 用于获取用户信息
 // 请求体中无参数
 
+// /api/user/getOtherInfo
+// 用于获取其他用户信息
+export interface RequestGetOtherInfo {
+  id: number
+}
+
+// /api/user/getOtherBriefInfos
+// 用于获取用户id列表对应的用户名、头像
+export interface RequestGetOtherBriefInfos {
+  ids: number[]
+}
+
 // /api/user/updateInfo
 // 用于更改用户信息
 export interface RequestUpdateInfo{
@@ -66,6 +78,8 @@ export interface RequestAddArticle{
   content: string,
   updateTime: string  // yyyy-MM-dd HH:mm:ss
   description?: string,
+  themeId: number,
+  labelNames: string[]
 }
 
 // /api/article/delete
@@ -124,6 +138,54 @@ export interface RequestPageFuzzySearch {
 // 用于上传文章图片
 export interface RequestUploadImg {
   articleImg: any
+}
+
+// /api/article/getTheme
+// 用于获取文章主题
+export interface RequestGetTheme {
+  id: number
+}
+
+// /api/article/getLabels
+// 用于获取文章标签
+export interface RequestGetLabels {
+  id: number
+}
+
+// /api/label/getHotLabels
+// 用于获取热门标签
+// 请求体中无参数
+
+// /api/article/getThemeArticlePageNum
+// 用于获取某主题的文章的页数
+export interface RequestGetThemeArticlePageNum {
+  themeId: number
+}
+
+// /api/article/getPageThemeArticleIds
+// 用于获取某主题某页的文章的id列表
+export interface RequestGetPageThemeArticleIds {
+  themeId: number,
+  currentPage: number
+}
+
+// /api/article/getLabelArticlePageNum
+// 用于获取某标签的文章的页数
+export interface RequestGetLabelArticlePageNum {
+  labelId: number
+}
+
+// /api/article/getPageLabelArticleIds
+// 用于获取某标签某页的文章的id列表
+export interface RequestGetLabelArticleIds{
+  labelId: number,
+  currentPage: number
+}
+
+// /api/article/getByIdList
+// 用于获取文章id列表对应的文章信息
+export interface RequestGetByIdList {
+  ids: number[]
 }
 
 // /api/comment/getArticleComments

@@ -77,6 +77,30 @@ export interface DataGetInfo {
   followerNum: number;
   name: string;
   sex: boolean; // 0女 1男
+  followed: boolean
+}
+
+// /api/user/getOtherInfo
+// 用于获取其他用户信息
+export interface ResponseGetOtherInfo {
+  code: number;
+  data: DataGetInfo;
+  message: string;
+  status: number;
+}
+
+// /api/user/getOtherBriefInfos
+// 用于获取用户id列表对应的用户名、头像
+export interface ResponseGetOtherBriefInfos {
+  code: number;
+  data: BriefInfo[];
+  message: string;
+  status: number;
+}
+
+export interface BriefInfo {
+  avatar: string;
+  name: string;
 }
 
 // /api/user/updateInfo
@@ -203,6 +227,89 @@ export interface DataPageFuzzySearch {
 export interface ResponseUploadImg {
   code: number;
   data: string;   // 图片相对路径 /static/ + data
+  message: string;
+  status: number;
+}
+
+// /api/article/getTheme
+// 用于获取文章主题
+export interface ResponseGetTheme {
+  code: number;
+  data: Theme;
+  message: string;
+  status: number;
+}
+
+export interface Theme {
+  id: number;
+  name: string;
+}
+
+// /api/article/getLabels
+// 用于获取文章标签
+export interface ResponseGetLabels {
+  code: number;
+  data: Label[];
+  message: string;
+  status: number;
+}
+
+export interface Label {
+  articleNum: number;
+  id: number;
+  name: string;
+}
+
+// /api/label/getHotLabels
+// 用于获取热门标签
+export interface ResponseGetHotLabels {
+  code: number;
+  data: Label[];
+  message: string;
+  status: number;
+}
+
+// /api/article/getThemeArticlePageNum
+// 用于获取某主题的文章的页数
+export interface ResponseGetThemeArticlePageNum {
+  code: number;
+  data: number; // 页数
+  message: string;
+  status: number;
+}
+
+// /api/article/getPageThemeArticleIds
+// 用于获取某主题某页的文章的id列表
+export interface ResponseGetPageThemeArticleIds {
+  code: number;
+  data: number[]; // id列表
+  message: string;
+  status: number;
+}
+
+// /api/article/getLabelArticlePageNum
+// 用于获取某标签的文章的页数
+export interface ResponseGetLabelArticlePageNum {
+  code: number;
+  data: number; // 页数
+  message: string;
+  status: number;
+}
+
+// /api/article/getPageLabelArticleIds
+// 用于获取某标签某页的文章的id列表
+export interface ResponseGetPageLabelArticleIds {
+  code: number;
+  data: number[]; // id列表
+  message: string;
+  status: number;
+}
+
+// /api/article/getByIdList
+// 用于获取文章id列表对应的文章信息
+export interface ResponseGetByIdList {
+  code: number;
+  data: Article[];
   message: string;
   status: number;
 }
