@@ -1,26 +1,28 @@
 <script setup lang="ts">
-import { addUserToFollowAPI, deleteUserFromFollowAPI, getUserInfoAPI } from '@/request/api';
+import { addUserToFollowAPI, deleteUserFromFollowAPI } from '@/request/api';
 import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
-import { ResponseGetInfo } from '@/request/responseData';
 import router from '@/router';
 import { useUserStore } from '@/stores/user';
-import { faker } from '@faker-js/faker';
-import { AddCircle, RemoveCircle } from '@vicons/ionicons5';
+// import { faker } from '@faker-js/faker';
+import { AddCircle, RemoveCircle, Home } from '@vicons/ionicons5';
 
 const userState = useUserStore();
 const message = useMessage();
-const authorInfo = {
-  url: faker.image.avatar(),
-  name: faker.name.firstName(),
-  id: 1,
-  blog: 10,
-  fans: 114,
-  attention: 514,
-  isAttention: false,
-}
+interface authorInfo {
+  url: string;
+  name: string;
+  id: number;
+  blog: number;
+  fans: number;
+  attention: number;
+  isAttention: boolean;
+};
+
+
+const props = defineProps<authorInfo>();
 
 function toPersonalPage() {
-  console.log('toPersonalPage');
+  router.push({ path: '/space/home', query: { id: props.id } });
 }
 
 async function addAttention() {
@@ -28,10 +30,10 @@ async function addAttention() {
     followed: Number(router.currentRoute.value.query.id)
   };
   const res = await addUserToFollowAPI(data, userState);
-  if(res.data.status === 0) {
-    message.success('关注成功', {duration: 1200});
+  if (res.data.status === 0) {
+    message.success('关注成功', { duration: 1200 });
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -40,18 +42,18 @@ async function removeAttention() {
     followed: Number(router.currentRoute.value.query.id)
   };
   const res = await deleteUserFromFollowAPI(data, userState);
-  if(res.data.status === 0) {
-    message.success('取消关注', {duration: 1200});
+  if (res.data.status === 0) {
+    message.success('取消关注', { duration: 1200 });
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
 function addOrRemoveAttention(key: number) {
   console.log('addAttention', key);
-  if(key === 1) {
+  if (key === 1) {
     addAttention();
-  } else if(key === 2) {
+  } else if (key === 2) {
     removeAttention();
   }
 }
@@ -60,16 +62,16 @@ function addOrRemoveAttention(key: number) {
 <template>
   <div class="userCard">
     <div class="avatar">
-      <n-avatar size="100" round :src="authorInfo.url" />
+      <n-avatar :size="130" round :src="userState.staticHead + url" />
     </div>
     <div class="name">
-      <n-popover trigger="hover" placement="bottom" >
+      <n-popover trigger="hover" placement="bottom">
         <template #trigger>
           <span @click="toPersonalPage()">
-            <b>{{ authorInfo.name }}</b>
+            <b>{{ name }}</b>
           </span>
         </template>
-        <span>{{ authorInfo.name }}的个人主页</span>
+        <span>{{ name }}的个人主页</span>
       </n-popover>
     </div>
     <div class="userInfo">
@@ -78,7 +80,7 @@ function addOrRemoveAttention(key: number) {
           粉丝
         </div>
         <div class="number">
-          {{ authorInfo.fans }}
+          {{ fans }}
         </div>
       </div>
       <div class="info">
@@ -86,7 +88,7 @@ function addOrRemoveAttention(key: number) {
           博客
         </div>
         <div class="number">
-          {{ authorInfo.blog }}
+          {{ blog }}
         </div>
       </div>
       <div class="info">
@@ -94,12 +96,22 @@ function addOrRemoveAttention(key: number) {
           关注
         </div>
         <div class="number">
-          {{ authorInfo.attention }}
+          {{ attention }}
         </div>
       </div>
     </div>
-    <div class="attention">
-      <n-button v-if="!authorInfo.isAttention" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
+    <div v-if="id === userState.userId" class="attention">
+      <n-button @click="toPersonalPage" color="#39c5bb" block>
+        <template #icon>
+          <n-icon>
+            <home />
+          </n-icon>
+        </template>
+        个人主页
+      </n-button>
+    </div>
+    <div v-else class="attention">
+      <n-button v-if="!isAttention" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
         <template #icon>
           <n-icon>
             <add-circle />

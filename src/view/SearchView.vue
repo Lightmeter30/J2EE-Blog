@@ -11,7 +11,7 @@
           :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
           :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
       </div>
-      <div class="searchFoot">
+      <div class="searchFoot" v-show="searchData.total > 1" >
         <n-config-provider :theme="darkTheme">
           <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="searchData.total" show-quick-jumper>
             <template #goto>
@@ -25,6 +25,7 @@
         <n-back-top :right="'1.3%'" />
       </n-config-provider>
     </div>
+    <side-content />
   </div>
 </template>
 
@@ -91,10 +92,9 @@ onMounted(() => {
 <style scoped lang="scss">
 .searchView {
   width: 60%;
-  position: relative;
-  left: 20%;
   margin-top: 20px;
   margin-bottom: 20px;
+  margin-right: 40px;
 
   .searchContent {}
 
@@ -118,6 +118,8 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: 0;
   opacity: 0.8;
+  display: flex;
+  justify-content: center;
 
   &::-webkit-scrollbar {
     width: 10px;

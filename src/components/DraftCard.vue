@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Person, Time, Star, ChatboxEllipses, Pencil, Trash } from '@vicons/ionicons5';
+import { Person, Time, Star, ChatboxEllipses, Pencil, Trash,PricetagsSharp, Albums } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
 import {  RequestDeleteDraft } from '@/request/requestData';
 import {  deleteDraftAPI } from '@/request/api';
@@ -20,6 +20,28 @@ interface draftDataType {
 
 const props = defineProps<draftDataType>();
 
+const tags = [
+  {
+    id: 1,
+    name: 'vue'
+  },
+  {
+    id: 2,
+    name: 'html'
+  },
+  {
+    id: 3,
+    name: 'css'
+  },
+  {
+    id: 4,
+    name: 'SQL'
+  },
+  {
+    id: 5,
+    name: 'python'
+  },
+];
 
 function toEdit() {
   console.log('toEdit');
@@ -56,6 +78,22 @@ function removeDraft() {
     <div class="description">
       {{ description }}
     </div>
+    <div class="tags">
+      <span class="topic">
+        <n-icon style="position: relative; top: 3px;padding-right: 4px;">
+          <Albums />
+        </n-icon>
+        <span>Computer Science</span></span> &nbsp;
+      <span v-show="tags.length !== 0" >
+        <b>|</b>&nbsp;
+        <n-icon style="position: relative; top: 3px;padding-right: 8px;">
+          <PricetagsSharp />
+        </n-icon>
+        <span v-for="(item, index) in tags" class="tagItem">
+          <span class="name">{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
+        </span>
+      </span>
+    </div>
     <!-- draft -->
     <div class="foot">
       <span><span style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span> 编辑于{{ updateTime }}</span>
@@ -84,6 +122,7 @@ function removeDraft() {
   .title {
     font-size: 22px;
     color: $github-header-text;
+    width: calc(100% - 170px);
 
     span {
       @include text-hover;
@@ -93,6 +132,26 @@ function removeDraft() {
   .description {
     color: $cloud-1-hex;
     font-size: medium;
+    width: calc(100% - 170px);
+  }
+
+  .tags {
+    padding-top: 5px;
+    font-size: 14px;
+    color: $cloud-1-hex;
+    line-height: 14px;
+    width: calc(100% - 170px);
+    font-weight: bold;
+
+    .tagItem {
+
+      .split {
+        padding-left: 4px;
+        padding-right: 4px;
+        position: relative;
+        top: 0.6px;
+      }
+    }
   }
 
   .foot {

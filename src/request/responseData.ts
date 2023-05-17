@@ -101,6 +101,8 @@ export interface ResponseGetOtherBriefInfos {
 export interface BriefInfo {
   avatar: string;
   name: string;
+  description: string;
+  followed: boolean;
 }
 
 // /api/user/updateInfo
@@ -133,6 +135,7 @@ export interface ResponseAddArticle {
   code: number;
   message: string;
   status: number;
+  data: number,
 }
 
 // /api/article/delete
@@ -161,7 +164,7 @@ export interface ResponseGetArticle {
 }
 export interface Article {
   author: number;
-  authorName: string;
+  authorName?: string;
   commentsNum: number;
   content?: string;     // 只在某一个博客的内容界面需要
   description?: string; // 只在卡片展示需要
@@ -356,6 +359,7 @@ export interface ResponseAddDraft {
   code: number;
   message: string;
   status: number;
+  data: number;
 }
 
 // /api/draft/delete
@@ -461,7 +465,7 @@ export interface FavoriteFolder {
   id: number;
   name: string;
   userId: number;
-  articleNum: number;
+  favoritesNum: number;
 }
 
 // /api/favoriteFolder/delete

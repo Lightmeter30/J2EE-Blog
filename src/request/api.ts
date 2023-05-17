@@ -106,6 +106,39 @@ export const updateUserAvatarAPI = (data: requestTypes.RequestUpdateAvatar, user
 }
 
 /**
+ * 用于获取其他用户信息
+ * 
+ * url: user/getOtherInfo
+ * 
+ * 
+* */
+
+export const getOtherInfoAPI = (data: requestTypes.RequestGetOtherInfo, userState: any): Res<responseTypes.ResponseGetOtherInfo> => {
+  const Data = setData(data);
+  return axios.post("user/getOtherInfo", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取对应id列表的用户名，头像，简介等
+ * 
+ * url: user/getOtherBriefInfos
+ * 
+ * 
+* */
+
+export const getOtherBriefInfosAPI = (data: requestTypes.RequestGetOtherBriefInfos, userState: any): Res<responseTypes.ResponseGetOtherBriefInfos> => {
+  const Data = setData(data);
+  return axios.post("user/getOtherBriefInfos", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+
+/**
  * 用于更改用户密码
  * 
  * url: user/updatePassword
@@ -458,9 +491,9 @@ export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFav
  * test
 * */
 
-export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavorites, userState: any): Res<responseTypes.ResponseAddDraft> => {
+export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavorites, userState: any): Res<responseTypes.ResponseDeleteFavorite> => {
   const Data = setData(data);
-  return axios.post("draft/add", Data, { headers: {
+  return axios.post("favorite/delete", Data, { headers: {
     id: userState.userId,
     token: userState.token
   } });
@@ -556,6 +589,22 @@ export const getUserFollowListAPI = (userState: any): Res<responseTypes.Response
 export const deleteUserFromFollowAPI = (data: requestTypes.RequestDeleteFollow, userState: any): Res<responseTypes.ResponseDeleteFollow> => {
   const Data = setData(data);
   return axios.post("draft/add", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取文章id列表对应的文章信息
+ * 
+ * url: article/getByIdList
+ * 
+ * test
+* */
+
+export const getArticleByListAPI = (data: requestTypes.RequestGetByIdList, userState: any): Res<responseTypes.ResponseGetByIdList> => {
+  const Data = setData(data);
+  return axios.post("article/getByIdList", Data, { headers: {
     id: userState.userId,
     token: userState.token
   } });

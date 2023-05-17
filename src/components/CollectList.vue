@@ -57,7 +57,7 @@ onMounted(() => {
         {{ name }}
       </span>
     </div>
-    <div class="articleNum"><span><!--{{ articleNum }}-->114</span></div>
+    <div class="articleNum"><span>{{ articleNum }}</span></div>
     <div class="delete" @click="deleteMe" v-show="isShowDelete" :id="'delete' + index">
       <n-icon>
         <Trash />

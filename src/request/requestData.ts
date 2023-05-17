@@ -96,6 +96,8 @@ export interface RequestUpdateArticle {
   content: string,
   updateTime: string  // yyyy-MM-dd HH:mm:ss
   description?: string,
+  themeId: number,
+  labelNames: string[]
 }
 
 // /api/article/get
@@ -215,6 +217,8 @@ export interface RequestAddDraft {
   description: string,
   content: string,
   updateTime: string  // yyyy-MM-dd HH:mm:ss
+  themeId: number,
+  labelNames: string[]
 }
 
 // /api/draft/delete
@@ -231,6 +235,8 @@ export interface RequestUpdateDraft {
   description: string,
   content: string,
   updateTime: string  // yyyy-MM-dd HH:mm:ss
+  themeId: number,
+  labelNames: string[]
 }
 
 // /api/draft/get

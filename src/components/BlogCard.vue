@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Person, Time, Star, ChatboxEllipses, Pencil, Trash, PricetagsSharp } from '@vicons/ionicons5';
+import { Person, Time, Star, ChatboxEllipses, Pencil, Trash, PricetagsSharp, Albums, } from '@vicons/ionicons5';
 import { useMessage, useDialog } from 'naive-ui';
 import { RequestDeleteArticle, RequestDeleteFavorites } from '@/request/requestData';
 import { deleteArticleAPI, deleteArticleFromCollectAPI } from '@/request/api';
@@ -20,7 +20,9 @@ interface ArticleCard {
   title: string;
   updateTime: string;
   CommentOrderNum?: number; // 只在某一个博客的内容界面需要
+  favoriteId?: number; // 收藏夹中某一收藏的id,在删除时调用
 };
+const isDelete = ref(false);
 const props = defineProps<ArticleCard>();
 const tags = [
   {
@@ -91,10 +93,11 @@ function removeFromCollect() {
     negativeText: '取消',
     onPositiveClick: async () => {
       const data: RequestDeleteFavorites = {
-        id: props.id
+        id: props.favoriteId as number,
       }
       const res = await deleteArticleFromCollectAPI(data, userState);
       if (res.data.status === 0) {
+        isDelete.value = true;
         message.success('移除收藏夹成功', { duration: 1200 });
       } else {
         message.error(res.data.message, { duration: 1200 });
@@ -106,7 +109,7 @@ function removeFromCollect() {
 </script>
 
 <template>
-  <div class="blogCard">
+  <div class="blogCard" v-show="!isDelete" >
     <div class="title">
       <span @click="toBlogView()"><b>{{ title }}</b></span>
     </div>
@@ -114,11 +117,19 @@ function removeFromCollect() {
       {{ description }}
     </div>
     <div class="tags">
-      <n-icon style="position: relative; top: 3px;padding-right: 8px;">
-        <PricetagsSharp />
-      </n-icon>
-      <span v-for="(item, index) in tags" class="tagItem">
-        <span class="name" >{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1" >·</span>
+      <span class="author topic">
+        <n-icon style="position: relative; top: 3px;padding-right: 4px;">
+          <Albums />
+        </n-icon>
+        <span>Computer Science</span></span> &nbsp;
+      <span v-show="tags.length !== 0" >
+        <b>|</b>&nbsp;
+        <n-icon style="position: relative; top: 3px;padding-right: 8px;">
+          <PricetagsSharp />
+        </n-icon>
+        <span v-for="(item, index) in tags" class="tagItem">
+          <span class="name">{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
+        </span>
       </span>
     </div>
     <!-- Ordinal article -->
@@ -167,7 +178,7 @@ function removeFromCollect() {
           </n-icon></span> {{ favoritesNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span><span style="position: relative; top: 1.6px;"><n-icon>
             <ChatboxEllipses />
-          </n-icon></span> {{ commentsNum }}</span>
+          </n-icon></span> {{ commentsNum }}</span> &nbsp;<b>|</b>&nbsp;
       <span class="author" @click="removeFromCollect"><span style="position: relative; top: 1.6px;"><n-icon>
             <Trash />
           </n-icon></span> 移除收藏</span>
@@ -199,6 +210,7 @@ function removeFromCollect() {
   .description {
     color: $cloud-1-hex;
     font-size: medium;
+    width: calc(100% - 170px);
   }
 
   .tags {
@@ -206,11 +218,13 @@ function removeFromCollect() {
     font-size: 14px;
     color: $cloud-1-hex;
     line-height: 14px;
+    width: calc(100% - 170px);
 
     .tagItem {
       .name {
         cursor: pointer;
         font-weight: bold;
+
         &:hover {
           color: $miku-fans-theme;
           text-decoration-line: underline;
@@ -232,9 +246,14 @@ function removeFromCollect() {
     color: $cloud-1-hex;
     line-height: normal;
     // font-weight: bold;
-
-    .author {
-      @include text-hover;
-    }
   }
-}</style>
+
+  .author {
+    @include text-hover;
+  }
+}
+
+.topic {
+  font-weight: bold;
+}
+</style>

@@ -3,10 +3,10 @@ import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close } from '@vicons/ionicons5';
-import { getArticleAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI } from '@/request/api';
-import { RequestGetArticle, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
+import { getArticleAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI } from '@/request/api';
+import { RequestGetArticle, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
-import { FavoriteFolder, Article, Comment } from '@/request/responseData';
+import { FavoriteFolder, Article, Comment, DataGetInfo } from '@/request/responseData';
 import { darkTheme } from 'naive-ui';
 
 // const blog = {
@@ -22,6 +22,7 @@ import { darkTheme } from 'naive-ui';
 // const folder = reactive(List);
 type blogDataType = {
   blog: Article,
+  cardInfo: DataGetInfo,
   collectList: FavoriteFolder[],
   commentList: Comment[],
 };
@@ -36,6 +37,19 @@ const blogData = reactive<blogDataType>({
     title: '',
     updateTime: '',
     CommentOrderNum: 0,
+  },
+  cardInfo: {
+    articleNum: 0,
+    avatar: '',
+    birthday: '',
+    defaultFavoriteFolder: 0,
+    description: '',
+    email: '',
+    followedNum: 0,
+    followerNum: 0,
+    name: '',
+    sex: false, // 0女 1男
+    followed: false
   },
   collectList: [],
   commentList: [],
@@ -60,7 +74,7 @@ async function comment() {
     // TODO: API test
     console.log(res.data.data);
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -81,9 +95,9 @@ async function addBlogToCollect(collectID: number, collectName: string) {
   };
   const res = await addArticleToCollectAPI(data, userStore);
   if (res.data.status === 0) {
-    message.success(`成功添加到${collectName}!`, {duration: 1200});
+    message.success(`成功添加到${collectName}!`, { duration: 1200 });
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -94,12 +108,33 @@ async function getComments() {
   const res = await getArticleCommentsAPI(data, userStore);
   if (res.data.status === 0) {
     // TODO: API test
-    console.log(res.data.data);
+    // console.log(res.data.data);
     blogData.commentList = res.data.data;
+    const ids: number[] = [];
+    for(const item of res.data.data) {
+      ids.push(item.id);
+    }
+    getBriefInfo(ids);
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 };
+
+async function getBriefInfo(ids: number[]) {
+  const data: RequestGetOtherBriefInfos = {
+    ids: ids
+  };
+  const res = await getOtherBriefInfosAPI(data, userStore);
+  if(res.data.status === 0) {
+    const temp = res.data.data;
+    for(let i = 0; i < temp.length; i++) {
+      blogData.commentList[i].avatar = temp[i].avatar;
+      blogData.commentList[i].userName = temp[i].name;
+    }
+  } else {
+    message.error(res.data.message)
+  }
+}
 
 const getArticle = async () => {
   const data: RequestGetArticle = {
@@ -107,14 +142,22 @@ const getArticle = async () => {
   }
   const res = await getArticleAPI(data, userStore);
   if (res.data.status === 0) {
-    // blogContent.value = res.data.data.content;
-    // blog.title = res.data.data.title;
-    // blog.description = res.data.data.description;
-    // blog.time = res.data.data.updateTime;
-    // blog.collectNum = res.data.data.favoritesNum;
     blogData.blog = res.data.data;
+    getUserCardInfo();
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
+  }
+};
+
+const getUserCardInfo = async () => {
+  const data: RequestGetOtherInfo = {
+    id: blogData.blog.author,
+  };
+  const res = await getOtherInfoAPI(data, userStore);
+  if (res.data.status === 0) {
+    blogData.cardInfo = res.data.data;
+  } else {
+    message.error(res.data.message, { duration: 1200 });
   }
 };
 
@@ -125,7 +168,7 @@ const getAllFolders = async () => {
     console.log(res.data.data);
     blogData.collectList = res.data.data;
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 };
 
@@ -134,8 +177,9 @@ function goPersonalPage(id: number) {
   window.open(newPage.href, '_blank');
 }
 
+
+
 onMounted(() => {
-  console.log('onMounted');
   getArticle();
   getComments();
   getAllFolders();
@@ -145,7 +189,7 @@ onMounted(() => {
   <div class="scrollMe">
     <div class="blogContent">
       <div class="card">
-        <user-card></user-card>
+        <user-card :id="blogData.blog.author" :attention="blogData.cardInfo.followedNum" :blog="blogData.cardInfo.articleNum" :fans="blogData.cardInfo.followerNum" :name="blogData.cardInfo.name" :is-attention="blogData.cardInfo.followed" :url="blogData.cardInfo.avatar" ></user-card>
       </div>
       <div class="content">
         <div class="titleContent">
@@ -154,7 +198,7 @@ onMounted(() => {
             <span @click="goPersonalPage(blogData.blog.author)" class="author"><span
                 style="position: relative; top: 1.6px;"><n-icon>
                   <Person />
-                </n-icon></span> {{ blogData.blog.author }}</span> <!-- TODO: change author to authorName -->
+                </n-icon></span> {{ blogData.cardInfo.name }}</span> <!-- TODO: change author to authorName -->
             <span style="margin-left: 10px;"><span
                 style="position: relative; top: 1.6px;"><n-icon><Time /></n-icon></span>
               更新于{{ blogData.blog.updateTime }}</span>

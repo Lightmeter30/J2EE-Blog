@@ -9,12 +9,22 @@ import { useUserStore } from '@/stores/user';
 //   time: faker.date.birthdate(),
 //   comment: '114,514,1919810,你是一个一个,114,514,1919810,你是一个一个114,514,1919810,你是一个一个',
 // }
-
+const router = useRouter();
 const userState = useUserStore();
-interface CommentType extends Comment {}; 
+interface CommentType {
+  articleId: number;
+  content: string;
+  id: number;
+  orderNum: number;
+  time: string;
+  userId: number;
+  avatar: string;
+  userName: string;
+}; 
 const props = defineProps<CommentType>();
 function toPersonalPage() {
-  console.log('to PersonalPage');
+  const newPage = router.resolve({ path: '/space/home', query: { id: props.id } });
+  window.open(newPage.href, '_blank');
 }
 </script>
 
@@ -26,7 +36,7 @@ function toPersonalPage() {
       </div>
       <div class="info" >
         <span class="name" @click="toPersonalPage()" ><b>{{ userName }}</b></span><br/>
-        <span class="sub" >{{ time }} {{ orderNum }}楼</span>
+        <span class="sub" >{{ orderNum }}楼 发布时间：{{ time }}</span>
       </div>
     </div>
     <div class="commentContent">

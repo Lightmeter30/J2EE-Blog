@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { AddCircle, CloudUpload } from "@vicons/ionicons5";
 import { useUserStore } from '@/stores/user';
-import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI } from "@/request/api";
-import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder } from "@/request/requestData";
+import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI, getArticleByListAPI, getOtherBriefInfosAPI } from "@/request/api";
+import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder, RequestGetByIdList, RequestGetOtherBriefInfos } from "@/request/requestData";
 import { FavoriteFolder, Article } from "@/request/responseData";
 import { darkTheme } from "naive-ui";
 
@@ -62,8 +62,32 @@ async function getArticlesFromCollect(collectId: number) {
   if (res.data.status == 0) {
     // TODO: test API
     console.log(res.data.data);
+    const favorites = res.data.data;
+    const articleNum: number[] = [];
+    const favoriteID: number[] = [];
+    for( let i = 0; i < favorites.length; i++) {
+      articleNum[i] = favorites[i].articleId;
+      favoriteID[i] = favorites[i].id;
+    }
+    getArticles(articleNum, favoriteID);
   } else {
     message.error(res.data.message);
+  }
+}
+
+async function getArticles(ids: number[], favoriteID: number[]) {
+  const data: RequestGetByIdList = {
+    ids: ids
+  }
+  const res = await getArticleByListAPI(data, userStore);
+  if(res.data.status === 0) {
+    collectData.currentArticleList = res.data.data;
+    for(let i = 0; i < collectData.currentArticleList.length; i++) {
+      collectData.currentArticleList[i].favoritesNum = favoriteID[i];
+      collectData.currentArticleList[i].authorName = 'takune';
+    }
+    // TODO: 添加用户名
+    loading.value = false;
   }
 }
 
@@ -81,7 +105,7 @@ async function addCollect() {
     const newFolder: FavoriteFolder = {
       id: res.data.data,
       name: newCollect.value,
-      articleNum: 0,
+      favoritesNum: 0,
       userId: userStore.userId
     }
     collectData.collectFolderList.push(newFolder);
@@ -122,7 +146,7 @@ const getAllFolders = async () => {
     // collect = document.getElementById(`folder0`) as HTMLElement;
     // collect.classList.remove('collectHover');
     // collect.classList.add('selectedCollect');
-    loading.value = false;
+    getArticlesFromCollect(collectData.collectFolderList[0].id);
   } else {
     message.error(res.data.message);
   }
@@ -147,7 +171,7 @@ onMounted(() => {
           </n-icon> 新建收藏夹
         </div>
         <CollectList v-for="(item, key) in collectData.collectFolderList" :index="key" :id="item.id" :name="item.name"
-          :articleNum="item.articleNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
+          :articleNum="item.favoritesNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
       </div>
       <div class="content" v-if="collectData.currentArticleList.length === 0">
         <div class="empty">
@@ -157,7 +181,10 @@ onMounted(() => {
       </div>
       <div class="content" v-else>
         <div class="collectContent">
-          114514
+          <blog-card v-for="item in collectData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
+            :card-type="3"
+            :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
+            :update-time="item.updateTime" :comments-num="item.commentsNum" :favorite-id="item.favoritesNum"></blog-card>
         </div>
         <div class="collectFoot" v-show="collectData.total !== 1">
           <n-config-provider :theme="darkTheme">

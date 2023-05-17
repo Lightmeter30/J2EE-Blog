@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import { RequestGetUserPageNum, RequestGetUserPage } from '@/request/requestData';
+import { RequestGetUserPageNum, RequestGetUserPage, RequestGetOtherBriefInfos,  } from '@/request/requestData';
 import { Article } from '@/request/responseData';
-import { getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
+import { getOtherBriefInfosAPI, getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
 import { useUserStore } from '@/stores/user';
 import { darkTheme } from 'naive-ui';
 const message = useMessage();
@@ -20,6 +20,21 @@ const homeData = reactive<homeDataType>({
   total: 1,
 });
 
+async function getBriefInfo(ids: number[]) {
+  const data: RequestGetOtherBriefInfos = {
+    ids: ids
+  };
+  const res = await getOtherBriefInfosAPI(data, userState);
+  if(res.data.status === 0) {
+    const temp = res.data.data;
+    for(let i = 0; i < temp.length; i++) {
+      homeData.currentArticleList[i].authorName = temp[i].name;
+    }
+  } else {
+    message.error(res.data.message)
+  }
+}
+
 const changePage = async (page: number) => {
   console.log(`to page ${page}`);
   const data: RequestGetUserPage = {
@@ -31,6 +46,11 @@ const changePage = async (page: number) => {
     // TODO: 接口对接
     console.log(res);
     homeData.currentArticleList = res.data.data;
+    const ids: number[] = [];
+    for(const item of res.data.data) {
+      ids.push(item.author);
+    }
+    getBriefInfo(ids);
     loading.value = false;
   } else {
     message.error(res.data.message);
@@ -67,7 +87,7 @@ onMounted(() => {
       </div>
       <div v-else>
         <div class="homeContent">
-          <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="'takune'"
+          <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
             :card-type="userState.userId === Number(router.currentRoute.value.query.id) ? 2 : 1"
             :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
             :update-time="item.updateTime" :comments-num="item.commentsNum"></blog-card>
