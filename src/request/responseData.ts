@@ -105,6 +105,16 @@ export interface BriefInfo {
   followed: boolean;
 }
 
+// /api/user/getUserNames
+// 用于获取id列表对应的用户名
+export interface ResponseGetUserNames {
+  code: number;
+  data: string[];
+  message: string;
+  status: number;
+}
+
+
 // /api/user/updateInfo
 // 用于更改用户信息
 export interface ResponseUpdateInfo {
@@ -248,6 +258,15 @@ export interface Theme {
   name: string;
 }
 
+// /api/article/getThemeByIds
+// 用于获取文章id列表对应的主题列表
+export interface ResponseGetThemeByIds {
+  code: number;
+  data: Theme[];
+  message: string;
+  status: number;
+}
+
 // /api/article/getLabels
 // 用于获取文章标签
 export interface ResponseGetLabels {
@@ -261,6 +280,15 @@ export interface Label {
   value: number;
   id: number;
   name: string;
+}
+
+// /api/article/getLabelsByIds
+// 用于获取文章id列表对应的标签列表
+export interface ResponseGetLabelsByIds {
+  code: number;
+  data: Array<Label[]>;
+  message: string;
+  status: number;
 }
 
 // /api/label/getHotLabels
@@ -413,6 +441,51 @@ export interface ResponseGetUserDraftPage {
   status: number;
 }
 
+// /api/draft/publishDraft
+// 用于将草稿发布为文章
+export interface ResponsePublishDraft {
+  code: number;
+  data: number;   // 文章id
+  message: string;
+  status: number;
+}
+
+// /api/draft/getTheme
+// 用于获取某草稿的主题
+export interface ResponseGetTheme {
+  code: number;
+  data: Theme;
+  message: string;
+  status: number;
+}
+
+// /api/draft/getThemeByIds
+// 用于获取草稿id列表对应的主题列表
+export interface ResponseGetThemeByIds {
+  code: number;
+  data: Theme[];
+  message: string;
+  status: number;
+}
+
+// /api/draft/getLabels
+// 用于获取草稿id列表对应的标签列表
+export interface ResponseGetLabels {
+  code: number;
+  data: Label[];
+  message: string;
+  status: number;
+}
+
+// /api/draft/getLabelsByIds
+// 用于获取草稿id列表对应的标签列表
+export interface ResponseGetLabelsByIds {
+  code: number;
+  data: Array<Label[]>;
+  message: string;
+  status: number;
+}
+
 // /api/favorite/add
 // 用于添加一个收藏
 export interface ResponseAddFavorite {
@@ -442,6 +515,38 @@ export interface ResponseDeleteFavorite {
   code: number;
   message: string;
   status: number;
+}
+
+// /api/favorite/checkArticleInFolders
+// 用于获取某文章是否在当前用户收藏夹中
+export interface ResponseCheckArticleInFolders {
+  code: number;
+  data: boolean[];
+  message: string;
+  status: number;
+}
+
+// /api/favorite/getFolderFavoritesPageNum
+// 用于获取某收藏夹的分页数量
+export interface ResponseGetFolderFavoritesPageNum {
+  code: number;
+  data: number; // 分页数
+  message: string;
+  status: number;
+}
+
+// /api/favorite/getPageFolderFavorites
+// 用于获取某收藏夹某页的收藏
+export interface ResponseGetPageFolderFavorites {
+  code: number;
+  data: FavoriteArticle[];
+  message: string;
+  status: number;
+}
+
+export interface FavoriteArticle {
+  article: Article;
+  favorite: Favorite;
 }
 
 // /api/favoriteFolder/add

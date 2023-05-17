@@ -49,6 +49,12 @@ export interface RequestGetOtherBriefInfos {
   ids: number[]
 }
 
+// /api/user/getUserNames
+// 用于获取id列表对应的用户名
+export interface RequestGetUserNames {
+  ids: number[]
+}
+
 // /api/user/updateInfo
 // 用于更改用户信息
 export interface RequestUpdateInfo{
@@ -148,10 +154,22 @@ export interface RequestGetTheme {
   id: number
 }
 
+// /api/article/getThemeByIds
+// 用于获取文章id列表对应的主题列表
+export interface RequestGetThemeByIds {
+  ids: number[]
+}
+
 // /api/article/getLabels
 // 用于获取文章标签
 export interface RequestGetLabels {
   id: number
+}
+
+// /api/article/getLabelsByIds
+// 用于获取文章id列表对应的标签列表
+export interface RequestGetLabelsByIds {
+  ids: number[]
 }
 
 // /api/label/getHotLabels
@@ -257,6 +275,37 @@ export interface RequestGetUserPage {
   currentPage: number
 }
 
+// /api/draft/publishDraft
+// 用于将草稿发布为文章
+export interface RequestPublishDraft {
+  id: number,
+  updateTime: string  // yyyy-MM-dd HH:mm:ss
+}
+
+// /api/draft/getTheme
+// 用于获取某草稿的主题
+export interface RequestGetTheme {
+  id: number
+}
+
+// /api/draft/getThemeByIds
+// 用于获取草稿id列表对应的主题列表
+export interface RequestGetThemeByIds {
+  ids: number[]
+}
+
+// /api/draft/getLabels
+// 用于获取草稿id列表对应的标签列表
+export interface RequestGetLabels {
+  id: number
+}
+
+// /api/draft/getLabelsByIds
+// 用于获取草稿id列表对应的标签列表
+export interface RequestGetLabelsByIds {
+  ids: number[]
+}
+
 // /api/favorite/add
 // 用于添加一个收藏
 export interface RequestAddFavorite {
@@ -274,6 +323,25 @@ export interface RequestGetFolderFavorites {
 // 用于删除一个收藏
 export interface RequestDeleteFavorites {
   id: number
+}
+
+// /api/favorite/checkArticleInFolders
+// 用于获取某文章是否在当前用户收藏夹中
+export interface RequestCheckArticleInFolders {
+  articleId: number
+}
+
+// /api/favorite/getFolderFavoritesPageNum
+// 用于获取某收藏夹的分页数量
+export interface RequestGetFolderFavoritesPageNum {
+  folderId: number
+}
+
+// /api/favorite/getPageFolderFavorites
+// 用于获取某收藏夹某页的收藏
+export interface RequestGetPageFolderFavorites {
+  folderId: number,
+  currentPage: number
 }
 
 // /api/favoriteFolder/add
