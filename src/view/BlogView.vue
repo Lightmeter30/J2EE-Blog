@@ -2,7 +2,7 @@
 import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
-import { Send, Person, Time, Star, Close, PricetagsSharp, Albums } from '@vicons/ionicons5';
+import { Send, Person, Time, Star, Close, PricetagsSharp, Albums, Balloon } from '@vicons/ionicons5';
 import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI } from '@/request/api';
 import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
@@ -96,6 +96,11 @@ function closeModal() {
 
 function toTheme() {
   const newPage = router.resolve({ path: '/group', query: { id: blogData.topic.id } });
+  window.open(newPage.href, '_blank');
+}
+
+function toTags(id: number) {
+  const newPage = router.resolve({ path: '/tags', query: { id: id } });
   window.open(newPage.href, '_blank');
 }
 
@@ -226,6 +231,15 @@ onMounted(() => {
         <user-card :id="blogData.blog.author" :attention="blogData.cardInfo.followedNum"
           :blog="blogData.cardInfo.articleNum" :fans="blogData.cardInfo.followerNum" :name="blogData.cardInfo.name"
           :is-attention="(blogData.cardInfo.followed as boolean)" :url="blogData.cardInfo.avatar"></user-card>
+        <div class="sideCard">
+          <div class="sideCardTitle">
+            <n-icon color="#C70002" style="position: relative; top: 3px;"><Balloon/></n-icon>
+            博客简介
+          </div>
+          <div class="sideCardContent">
+            {{ blogData.blog.description }}
+          </div>
+        </div>
       </div>
       <div class="content">
         <div class="titleContent">
@@ -252,8 +266,9 @@ onMounted(() => {
               <n-icon style="position: relative; top: 3px;padding-right: 8px;">
                 <PricetagsSharp />
               </n-icon>
-              <span v-for="(item, index) in blogData.tags" class="tagItem">
-                <span class="name">{{ item.name }}</span><span class="split" v-show="index !== blogData.tags.length - 1">·</span>
+              <span v-for="(item, index) in blogData.tags" class="tagItem" @click="toTags(item.id)">
+                <span class="name">{{ item.name }}</span><span class="split"
+                  v-show="index !== blogData.tags.length - 1">·</span>
               </span>
             </span>
           </div>
@@ -338,6 +353,28 @@ onMounted(() => {
     position: relative;
     left: -20px;
     padding-top: 40px;
+
+    .sideCard {
+      background-color: $github-card-background;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 250px;
+
+      .sideCardTitle {
+        font-size: 19px;
+        line-height: 19px;
+        color: white;
+        font-weight: bold;
+      }
+
+      .sideCardContent {
+        margin-top: 20px;
+        font-size: 16px;
+        line-height: 20px;
+        color: $github-header-text;
+      }
+    }
   }
 
   .titleContent {
@@ -356,24 +393,25 @@ onMounted(() => {
       color: $cloud-1-hex;
 
       .tagItem {
-      .name {
-        cursor: pointer;
-        font-weight: bold;
+        .name {
+          cursor: pointer;
+          font-weight: bold;
 
-        &:hover {
-          color: $miku-fans-theme;
-          text-decoration-line: underline;
+          &:hover {
+            color: $miku-fans-theme;
+            text-decoration-line: underline;
+          }
+        }
+
+        .split {
+          font-weight: bold;
+          padding-left: 4px;
+          padding-right: 4px;
+          position: relative;
+          top: 0.6px;
         }
       }
 
-      .split {
-        font-weight: bold;
-        padding-left: 4px;
-        padding-right: 4px;
-        position: relative;
-        top: 0.6px;
-      }
-    }
       .author {
         @include text-hover;
       }

@@ -15,7 +15,7 @@ const router = useRouter();
 const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
 const userState = useUserStore();
-let articleType: number = 0; // 0 is new, 1 is draft, 2 is old article 
+let articleType: number = 0; // 0 is new, 1 is draft, 2 is old article , 3表示由旧文章转变为草稿
 interface blogType {
   title: string,
   description: string,
@@ -143,19 +143,21 @@ function isNull(): boolean {
 
 async function save() {
   if (isNull()) {
-    message.error('文章标题,简介,标签或内容不能为空!', { duration: 1200 });
+    message.error('文章标题,简介或内容不能为空!', { duration: 1200 });
     return;
   }
   if (articleType === 0) {
     // it's a new article
     addDraft();
     articleType = 1;
-  } else if (articleType === 1) {
+  } else if (articleType === 1 || articleType === 3) {
     // it's a draft article
     updateDraft();
   } else if (articleType === 2) {
     // it's a old article
     // TODO: 
+    addDraft();
+    articleType = 3;
   }
 };
 
@@ -239,12 +241,15 @@ async function updateDraft() {
 
 const upload = () => {
   if (isNull()) {
-    message.error('文章标题,简介,标签或内容不能为空!', { duration: 1200 });
+    message.error('文章标题,简介或内容不能为空!', { duration: 1200 });
     return;
   }
   if (articleType === 0 || articleType === 1) {
     addArticle();
-  } else {
+  } else if(articleType === 2) {
+    updateArticle();
+  } else if(articleType === 3) {
+    // TODO: 此时应该先更新文章,再删除对应的草稿
     updateArticle();
   }
 }
@@ -343,10 +348,10 @@ onMounted(() => {
     <div class="editTitle">
       <NForm :rules="ruleBlog">
         <NFormItemRow label="标题" path="title">
-          <NInput maxlength="10" placeholder="请输入文章标题" v-model:value="blog.title" />
+          <NInput maxlength="20" placeholder="请输入文章标题(限20字)" v-model:value="blog.title" />
         </NFormItemRow>
         <NFormItemRow label="简介" path="description">
-          <NInput maxlength="30" placeholder="请输入简介" v-model:value="blog.description" />
+          <NInput maxlength="50" placeholder="请输入简介(限50字)" v-model:value="blog.description" />
         </NFormItemRow>
       </NForm>
       <n-config-provider :theme="darkTheme">

@@ -595,22 +595,6 @@ export const deleteUserFromFollowAPI = (data: requestTypes.RequestDeleteFollow, 
 }
 
 /**
- * 用于获取文章id列表对应的文章信息
- * 
- * url: article/getByIdList
- * 
- * test
-* */
-
-export const getArticleByListAPI = (data: requestTypes.RequestGetByIdList, userState: any): Res<responseTypes.ResponseGetByIdList> => {
-  const Data = setData(data);
-  return axios.post("article/getByIdList", Data, { headers: {
-    id: userState.userId,
-    token: userState.token
-  } });
-}
-
-/**
  * 用于获取文章主题
  * 
  * url: article/getTheme
@@ -635,3 +619,82 @@ export const getArticleLabelsAPI = (data: requestTypes.RequestGetLabels): Res<re
   const Data = setData(data);
   return axios.post("article/getLabels", Data);
 }
+
+/**
+ * 用于获取热门标签
+ * 
+ * url: label/getHotLabels
+ * 
+ * test 
+* */
+
+export const getHotTagsAPI = (): Res<responseTypes.ResponseGetHotLabels> => {
+  // const Data = setData(data);
+  return axios.post("label/getHotLabels", undefined);
+}
+
+/**
+ * 用于获取某主题的文章的页数
+ * 
+ * url: article/getThemeArticlePageNum
+ * 
+ * 
+* */
+
+export const getThemeArticlePageNumAPI = (data: requestTypes.RequestGetThemeArticlePageNum): Res<responseTypes.ResponseGetThemeArticlePageNum> => {
+  const Data = setData(data);
+  return axios.post("article/getThemeArticlePageNum", Data);
+}
+
+/**
+ * 用于获取某主题某页的文章的id列表
+ * 
+ * url: article/getPageThemeArticleIds
+ * 
+ * 
+* */
+
+export const getPageThemeArticleIdsAPI = (data: requestTypes.RequestGetPageThemeArticleIds): Res<responseTypes.ResponseGetPageThemeArticleIds> => {
+  const Data = setData(data);
+  return axios.post("article/getPageThemeArticleIds", Data);
+}
+
+/**
+ * 用于获取某标签的文章的页数
+ * 
+ * url: article/getLabelArticlePageNum
+ * 
+ * 
+* */
+
+export const getLabelArticlePageNumAPI = (data: requestTypes.RequestGetLabelArticlePageNum): Res<responseTypes.ResponseGetLabelArticlePageNum> => {
+  const Data = setData(data);
+  return axios.post("article/getLabelArticlePageNum", Data);
+}
+
+/**
+ * 用于获取某主题某页的文章的id列表
+ * 
+ * url: article/getPageLabelArticleIds
+ * 
+ * 
+* */
+
+export const getPageLabelArticleIdsAPI = (data: requestTypes.RequestGetLabelArticleIds): Res<responseTypes.ResponseGetPageLabelArticleIds> => {
+  const Data = setData(data);
+  return axios.post("article/getPageLabelArticleIds", Data);
+}
+
+/**
+ * 通过文章id列表获取对应的文章信息
+ * 
+ * url: article/getByIdList
+ * 
+ * 
+* */
+
+export const getArticleByIdListAPI = (data: requestTypes.RequestGetByIdList): Res<responseTypes.ResponseGetByIdList> => {
+  const Data = setData(data);
+  return axios.post("article/getByIdList", Data);
+}
+
