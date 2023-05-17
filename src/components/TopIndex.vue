@@ -22,39 +22,52 @@ const renderIcon = (icon: Component) => {
 const groupList = [
   {
     key: 1,
-    label: '计算机',
-    articleNum: 10,
+    label: '生活',
   },
   {
     key: 2,
-    label: '二次元',
-    articleNum: 8,
+    label: '技术',
   },
   {
     key: 3,
-    label: '生活区',
-    articleNum: 101,
+    label: '工作'
   },
   {
     key: 4,
-    label: '舞蹈区',
-    articleNum: 123,
+    label: '理财',
   },
   {
     key: 5,
-    label: '哲学区',
-    articleNum: 114,
+    label: '育儿' 
   },
   {
     key: 6,
-    label: '视频区',
-    articleNum: 90,
+    label: '设计',
   },
   {
     key: 7,
-    label: '游戏区',
-    articleNum: 1,
+    label: '产品'
   },
+  {
+    key: 8,
+    label: '创业'
+  },
+  {
+    key: 9,
+    label: '读书'
+  },
+  {
+    key: 10,
+    label: '旅行'
+  },
+  {
+    key: 11,
+    label: '影视'
+  },
+  {
+    key: 12,
+    label: '音乐'
+  }
 ];
 
 const options = [

@@ -609,3 +609,29 @@ export const getArticleByListAPI = (data: requestTypes.RequestGetByIdList, userS
     token: userState.token
   } });
 }
+
+/**
+ * 用于获取文章主题
+ * 
+ * url: article/getTheme
+ * 
+ * test ok
+* */
+
+export const getArticleThemeAPI = (data: requestTypes.RequestGetTheme): Res<responseTypes.ResponseGetTheme> => {
+  const Data = setData(data);
+  return axios.post("article/getTheme", Data);
+}
+
+/**
+ * 用于获取文章标签
+ * 
+ * url: article/getLabels
+ * 
+ * test ok
+* */
+
+export const getArticleLabelsAPI = (data: requestTypes.RequestGetLabels): Res<responseTypes.ResponseGetLabels> => {
+  const Data = setData(data);
+  return axios.post("article/getLabels", Data);
+}

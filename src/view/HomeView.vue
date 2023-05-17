@@ -8,7 +8,7 @@
       {{ userInfo.userid }}
     </div> -->
       <div class="homeContent">
-        <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="item.authorName"
+        <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
           :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
           :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
       </div>
@@ -33,7 +33,7 @@ import { RequestGetOtherBriefInfos, RequestGetPageArticles } from '@/request/req
 import { Article } from '@/request/responseData';
 import { getHomePageArticlesAPI, getHomePageNumAPI, getOtherBriefInfosAPI } from '@/request/api';
 import { darkTheme } from 'naive-ui';
-import SideContent from '@/components/sideContent.vue';
+import SideContent from '@/components/SideContent.vue';
 
 // import 'hover.css';
 // import { loginAPI } from '@/request/api';
@@ -49,97 +49,7 @@ type homeDataType = {
 };
 
 const homeData = reactive<homeDataType>({
-  currentArticleList: [{
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 12,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 11,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 122,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 111,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 11,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 122,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 111,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 11,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 122,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-  {
-    author: 1,
-    authorName: 'takune',
-    commentsNum: 12,
-    id: 122,
-    favoritesNum: 15,
-    title: 'Hello World',
-    updateTime: '2022-01-02 13:00:00',
-  },
-],
+  currentArticleList: [],
   total: 1,
 });
 

@@ -51,7 +51,7 @@ function changeSelectCollect(id: number, index: number) {
   Delete.classList.remove('delete');
   Delete.classList.add('selectDelete');
   // change collect now
-
+  getArticlesFromCollect(id);
 }
 
 async function getArticlesFromCollect(collectId: number) {
@@ -82,12 +82,29 @@ async function getArticles(ids: number[], favoriteID: number[]) {
   const res = await getArticleByListAPI(data, userStore);
   if(res.data.status === 0) {
     collectData.currentArticleList = res.data.data;
+    const ids: number[] = [];
     for(let i = 0; i < collectData.currentArticleList.length; i++) {
       collectData.currentArticleList[i].favoritesNum = favoriteID[i];
-      collectData.currentArticleList[i].authorName = 'takune';
+      ids.push(collectData.currentArticleList[i].author);
     }
     // TODO: 添加用户名
+    getBriefInfo(ids);
+  }
+}
+
+async function getBriefInfo(ids: number[]) {
+  const data: RequestGetOtherBriefInfos = {
+    ids: ids
+  };
+  const res = await getOtherBriefInfosAPI(data, userStore);
+  if(res.data.status === 0) {
+    const temp = res.data.data;
+    for(let i = 0; i < temp.length; i++) {
+      collectData.currentArticleList[i].authorName = temp[i].name;
+    }
     loading.value = false;
+  } else {
+    message.error(res.data.message)
   }
 }
 

@@ -2,11 +2,11 @@
 import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
-import { Send, Person, Time, Star, Close } from '@vicons/ionicons5';
-import { getArticleAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI } from '@/request/api';
-import { RequestGetArticle, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
+import { Send, Person, Time, Star, Close, PricetagsSharp, Albums } from '@vicons/ionicons5';
+import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI } from '@/request/api';
+import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
-import { FavoriteFolder, Article, Comment, DataGetInfo } from '@/request/responseData';
+import { FavoriteFolder, Article, Comment, DataGetInfo, Theme, Label } from '@/request/responseData';
 import { darkTheme } from 'naive-ui';
 
 // const blog = {
@@ -25,6 +25,8 @@ type blogDataType = {
   cardInfo: DataGetInfo,
   collectList: FavoriteFolder[],
   commentList: Comment[],
+  topic: Theme,
+  tags: Label[]
 };
 const blogData = reactive<blogDataType>({
   blog: {
@@ -53,6 +55,11 @@ const blogData = reactive<blogDataType>({
   },
   collectList: [],
   commentList: [],
+  topic: {
+    id: 1,
+    name: '',
+  },
+  tags: []
 });
 const userStore = useUserStore();
 const route = useRoute();
@@ -87,6 +94,11 @@ function closeModal() {
   console.log('closeModal');
 }
 
+function toTheme() {
+  const newPage = router.resolve({ path: '/group', query: { id: blogData.topic.id } });
+  window.open(newPage.href, '_blank');
+}
+
 async function addBlogToCollect(collectID: number, collectName: string) {
   console.log(collectID);
   const data: RequestAddFavorite = {
@@ -111,7 +123,7 @@ async function getComments() {
     // console.log(res.data.data);
     blogData.commentList = res.data.data;
     const ids: number[] = [];
-    for(const item of res.data.data) {
+    for (const item of res.data.data) {
       ids.push(item.id);
     }
     getBriefInfo(ids);
@@ -125,9 +137,9 @@ async function getBriefInfo(ids: number[]) {
     ids: ids
   };
   const res = await getOtherBriefInfosAPI(data, userStore);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     const temp = res.data.data;
-    for(let i = 0; i < temp.length; i++) {
+    for (let i = 0; i < temp.length; i++) {
       blogData.commentList[i].avatar = temp[i].avatar;
       blogData.commentList[i].userName = temp[i].name;
     }
@@ -143,6 +155,7 @@ const getArticle = async () => {
   const res = await getArticleAPI(data, userStore);
   if (res.data.status === 0) {
     blogData.blog = res.data.data;
+    getGroupAndTags(Number(router.currentRoute.value.query.id));
     getUserCardInfo();
   } else {
     message.error(res.data.message, { duration: 1200 });
@@ -172,6 +185,27 @@ const getAllFolders = async () => {
   }
 };
 
+const getGroupAndTags = async (id: number) => {
+  const data: RequestGetTheme = {
+    id: id,
+  }
+  const res = await getArticleThemeAPI(data);
+  if (res.data.status === 0) {
+    blogData.topic = res.data.data;
+  } else {
+    message.error(res.data.message);
+  }
+  const data1: RequestGetLabels = {
+    id: id
+  };
+  const res1 = await getArticleLabelsAPI(data1);
+  if (res1.data.status === 0) {
+    blogData.tags = res1.data.data;
+  } else {
+    message.error(res.data.message);
+  }
+};
+
 function goPersonalPage(id: number) {
   const newPage = router.resolve({ path: '/space/home', query: { id: id } });
   window.open(newPage.href, '_blank');
@@ -189,7 +223,9 @@ onMounted(() => {
   <div class="scrollMe">
     <div class="blogContent">
       <div class="card">
-        <user-card :id="blogData.blog.author" :attention="blogData.cardInfo.followedNum" :blog="blogData.cardInfo.articleNum" :fans="blogData.cardInfo.followerNum" :name="blogData.cardInfo.name" :is-attention="blogData.cardInfo.followed" :url="blogData.cardInfo.avatar" ></user-card>
+        <user-card :id="blogData.blog.author" :attention="blogData.cardInfo.followedNum"
+          :blog="blogData.cardInfo.articleNum" :fans="blogData.cardInfo.followerNum" :name="blogData.cardInfo.name"
+          :is-attention="(blogData.cardInfo.followed as boolean)" :url="blogData.cardInfo.avatar"></user-card>
       </div>
       <div class="content">
         <div class="titleContent">
@@ -205,7 +241,21 @@ onMounted(() => {
             <span class="author" @click="showDialog" style="margin-left: 10px;"><span
                 style="position: relative; top: 1.6px;"><n-icon>
                   <Star />
-                </n-icon></span> 收藏 : {{ blogData.blog.favoritesNum }}</span>
+                </n-icon></span> 收藏 : {{ blogData.blog.favoritesNum }}</span> <br />
+            <span @click="toTheme" class="author topic">
+              <n-icon style="position: relative; top: 3px;padding-right: 4px;">
+                <Albums />
+              </n-icon>
+              <span>{{ blogData.topic.name }}</span></span> &nbsp;
+            <span v-show="blogData.tags.length !== 0">
+              <b>|</b>&nbsp;
+              <n-icon style="position: relative; top: 3px;padding-right: 8px;">
+                <PricetagsSharp />
+              </n-icon>
+              <span v-for="(item, index) in blogData.tags" class="tagItem">
+                <span class="name">{{ item.name }}</span><span class="split" v-show="index !== blogData.tags.length - 1">·</span>
+              </span>
+            </span>
           </div>
         </div>
         <MdEditor theme="dark" v-model="blogData.blog.content" :preview-only="true"></MdEditor>
@@ -305,6 +355,25 @@ onMounted(() => {
       background-color: $github-card-background;
       color: $cloud-1-hex;
 
+      .tagItem {
+      .name {
+        cursor: pointer;
+        font-weight: bold;
+
+        &:hover {
+          color: $miku-fans-theme;
+          text-decoration-line: underline;
+        }
+      }
+
+      .split {
+        font-weight: bold;
+        padding-left: 4px;
+        padding-right: 4px;
+        position: relative;
+        top: 0.6px;
+      }
+    }
       .author {
         @include text-hover;
       }
@@ -402,5 +471,9 @@ onMounted(() => {
   &::-webkit-scrollbar-thumb {
     background-color: $scrollbar-color;
   }
+}
+
+.topic {
+  font-weight: bold;
 }
 </style>

@@ -4,10 +4,11 @@ import 'md-editor-v3/lib/style.css';
 import type { FormRules } from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
 import { darkTheme } from "naive-ui";
-import { RequestAddArticle, RequestUploadImg, RequestUpdateArticle, RequestGetArticle, RequestAddDraft, RequestUpdateDraft, RequestGetDraft } from '@/request/requestData';
+import { RequestAddArticle, RequestGetTheme, RequestGetLabels, RequestUploadImg, RequestUpdateArticle, RequestGetArticle, RequestAddDraft, RequestUpdateDraft, RequestGetDraft } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { useUserStore } from '@/stores/user';
-import { updateArticleAPI, addArticleAPI, getArticleAPI, uploadImgAPI, addDraftAPI, updateDraftAPI, getDraftAPI } from '@/request/api';
+import { updateArticleAPI, getArticleThemeAPI, addArticleAPI, getArticleLabelsAPI, getArticleAPI, uploadImgAPI, addDraftAPI, updateDraftAPI, getDraftAPI } from '@/request/api';
+import { VolumeHigh } from '@vicons/ionicons5';
 
 let text = ref('');
 const router = useRouter();
@@ -15,44 +16,71 @@ const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
 const userState = useUserStore();
 let articleType: number = 0; // 0 is new, 1 is draft, 2 is old article 
-const blog = reactive({
+interface blogType {
+  title: string,
+  description: string,
+  Group: number,
+  tags: string[],
+  draftID: number,
+}
+const blog = reactive<blogType>({
   title: '',
   description: '',
-  Group: 0,
-  content: '',
-  tags: []
+  Group: 1,
+  tags: [],
+  draftID: -1, // 如果说新建了草稿,则会通过后端获取其ID,否则默认为-1
 });
 
 const groupOptions = [
   {
-    label: '计算机',
-    value: 0,
-  },
-  {
-    label: '二次元',
     value: 1,
+    label: '生活',
   },
   {
-    label: '生活区',
     value: 2,
+    label: '技术',
   },
   {
-    label: '舞蹈区',
     value: 3,
+    label: '工作'
   },
   {
-    label: '哲学区',
     value: 4,
+    label: '理财',
   },
   {
-    label: '视频区',
     value: 5,
+    label: '育儿' 
   },
   {
-    label: '游戏区',
     value: 6,
+    label: '设计',
   },
-];
+  {
+    value: 7,
+    label: '产品'
+  },
+  {
+    value: 8,
+    label: '创业'
+  },
+  {
+    value: 9,
+    label: '读书'
+  },
+  {
+    value: 10,
+    label: '旅行'
+  },
+  {
+    value: 11,
+    label: '影视'
+  },
+  {
+    value: 12,
+    label: '音乐'
+  }
+]
 const ruleBlog: FormRules = {
   title: {
     required: true,
@@ -107,7 +135,7 @@ const toolbar = [
 ];
 
 function isNull(): boolean {
-  if (blog.title.length === 0 || blog.description.length === 0 || blog.content.length === 0 || blog.tags.length === 0)
+  if (blog.title.length === 0 || blog.description.length === 0 || text.value.length === 0)
     return true;
   else
     return false;
@@ -136,7 +164,9 @@ const addArticle = async () => {
     title: blog.title,
     content: text.value,
     updateTime: getNowTime(),
-    description: blog.description
+    description: blog.description,
+    themeId: blog.Group,
+    labelNames: blog.tags
   }
   const res = await addArticleAPI(data, userState);
   if (res.data.status === 0) {
@@ -154,7 +184,9 @@ const updateArticle = async () => {
     title: blog.title,
     content: text.value,
     updateTime: getNowTime(),
-    description: blog.description
+    description: blog.description,
+    themeId: blog.Group,
+    labelNames: blog.tags
   };
   const res = await updateArticleAPI(data, userState);
   if (res.data.status === 0) {
@@ -172,11 +204,14 @@ async function addDraft() {
     content: text.value,
     description: blog.description,
     updateTime: getNowTime(),
+    themeId: blog.Group,
+    labelNames: blog.tags
   };
   const res = await addDraftAPI(data, userState);
   if (res.data.status === 0) {
     // TODO: API test
     message.success('已保存到草稿箱!', { duration: 1200 });
+    blog.draftID = res.data.data;
     // message.success(res.data.message);
   } else {
     message.error(res.data.message, { duration: 1200 });
@@ -189,7 +224,9 @@ async function updateDraft() {
     title: blog.title,
     content: text.value,
     updateTime: getNowTime(),
-    description: blog.description
+    description: blog.description,
+    themeId: blog.Group,
+    labelNames: blog.tags
   };
   const res = await updateDraftAPI(data, userState);
   if (res.data.status === 0) {
@@ -236,10 +273,39 @@ const getArticleInfo = async () => {
     blog.title = res.data.data.title;
     blog.description = res.data.data.description as string;
     text.value = res.data.data.content as string;
+    getGroupAndTags(Number(router.currentRoute.value.query.id), 2);
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
 }
+// id表示要查询的文章/草稿ID;type=1为草稿,type=2为文章
+const getGroupAndTags = async (id: number, type: number) => {
+  if(type === 1) {
+    // TODO: draft topic and tags
+  } else if(type === 2) {
+    const data: RequestGetTheme = {
+      id: id,
+    }
+    const res = await getArticleThemeAPI(data);
+    if(res.data.status === 0) {
+      blog.Group = res.data.data.id;
+    } else {
+      message.error(res.data.message);
+    }
+    const data1: RequestGetLabels = {
+      id: id
+    };
+    const res1 = await getArticleLabelsAPI(data1);
+    if(res1.data.status === 0) {
+      const labels = res1.data.data;
+      for(let i = 0; i < labels.length; i++) {
+        blog.tags[i] = labels[i].name;
+      }
+    } else {
+      message.error(res.data.message);
+    }
+  }
+};
 
 async function getDraftInfo() {
   const data: RequestGetDraft = {
@@ -262,6 +328,7 @@ onMounted(() => {
     articleType = 0;
   } else if (router.currentRoute.value.query.type === '1919') {
     articleType = 1;
+    blog.draftID = Number(router.currentRoute.value.query.id);
     getDraftInfo();
   } else if (router.currentRoute.value.query.type === '810') {
     articleType = 2;
@@ -285,11 +352,11 @@ onMounted(() => {
       <n-config-provider :theme="darkTheme">
         <div class="tagAndGroup">
           <div class="group">
-            <div>博客分组</div>
+            <div>博客分组<span style="color: #d03050;" > *</span></div>
             <n-select v-model:value="blog.Group" :options="groupOptions" />
           </div>
           <div class="tags">
-            <div>文章标签<span style="color: #d03050;" > *</span></div>
+            <div>文章标签</div>
             <n-dynamic-tags v-model:value="blog.tags" />
           </div>
         </div>

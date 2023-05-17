@@ -77,7 +77,7 @@ export interface DataGetInfo {
   followerNum: number;
   name: string;
   sex: boolean; // 0女 1男
-  followed: boolean
+  followed?: boolean
 }
 
 // /api/user/getOtherInfo
@@ -258,7 +258,7 @@ export interface ResponseGetLabels {
 }
 
 export interface Label {
-  articleNum: number;
+  value: number;
   id: number;
   name: string;
 }

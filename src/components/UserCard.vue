@@ -27,7 +27,7 @@ function toPersonalPage() {
 
 async function addAttention() {
   const data: RequestAddFollow = {
-    followed: Number(router.currentRoute.value.query.id)
+    followed: props.id,
   };
   const res = await addUserToFollowAPI(data, userState);
   if (res.data.status === 0) {
@@ -39,7 +39,7 @@ async function addAttention() {
 
 async function removeAttention() {
   const data: RequestDeleteFollow = {
-    followed: Number(router.currentRoute.value.query.id)
+    followed: props.id,
   };
   const res = await deleteUserFromFollowAPI(data, userState);
   if (res.data.status === 0) {
@@ -119,7 +119,7 @@ function addOrRemoveAttention(key: number) {
         </template>
         关注
       </n-button>
-      <n-button v-else color="#39c5bb" @click="addOrRemoveAttention(2)" block>
+      <n-button v-else color="#8E2C2D" @click="addOrRemoveAttention(2)" block>
         <template #icon>
           <n-icon>
             <remove-circle />

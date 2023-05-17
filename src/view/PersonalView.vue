@@ -21,6 +21,7 @@ const user: DataGetInfo = reactive({
   defaultFavoriteFolder: 1,
   email: 'takune@163.com',
   sex: true,
+  followed: false,
 });
 
 
@@ -141,7 +142,7 @@ onMounted(() => {
             <span class="description">{{ user.description }}</span>
           </div>
           <div v-show="Number(router.currentRoute.value.query.id) !== userState.userId" class="attentionButton">
-            <n-button v-if="true" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
+            <n-button v-if="user.followed" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
               <template #icon>
                 <n-icon>
                   <add-circle />
@@ -149,7 +150,7 @@ onMounted(() => {
               </template>
               关注
             </n-button>
-            <n-button v-else color="#39c5bb" @click="addOrRemoveAttention(2)" block>
+            <n-button v-else color="#8E2C2D" @click="addOrRemoveAttention(2)" block>
               <template #icon>
                 <n-icon>
                   <remove-circle />
@@ -169,7 +170,7 @@ onMounted(() => {
             @click="routeTo(2)" style="margin-left: 15px;"><n-icon style="position: relative; top: 2px;">
               <Archive />
             </n-icon> <b>草稿箱</b></span>
-          <span id="indexCollect" @click="routeTo(3)" style="margin-left: 15px;"><n-icon
+          <span v-show="Number(router.currentRoute.value.query.id) === userState.userId" id="indexCollect" @click="routeTo(3)" style="margin-left: 15px;"><n-icon
               style="position: relative; top: 2px;">
               <Bookmark />
             </n-icon> <b>收藏夹</b></span>
