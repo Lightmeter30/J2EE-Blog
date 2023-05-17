@@ -1,0 +1,95 @@
+<script setup lang="ts">
+import { darkTheme } from "naive-ui";
+import { getUserFollowListAPI } from "@/request/api";
+import { useUserStore } from "@/stores/user";
+const router = useRouter();
+const nowPage = ref(1);
+const loading = ref(true);
+const userState = useUserStore();
+interface followedDataType {
+  total: number;
+  
+};
+
+const followedData = reactive<followedDataType>({
+  total: 1,
+});
+
+function changePage(page: number) {
+  console.log(`to page ${page}`);
+}
+
+async function init() {
+  const res = await getUserFollowListAPI(userState);
+  if(res.data.status === 0) {
+    const ids = res.data.data;
+    console.log(ids);
+  } else {
+    console.log(res.data.message);
+  }
+}
+
+
+onMounted(() => {
+  console.log(router.currentRoute.value);
+  init();
+  loading.value = false;
+})
+</script>
+
+<template>
+  <div class="spaceList">
+    <div class="loading" v-if="loading">
+      <n-spin :size="150" stroke="#39c5bb" />
+    </div>
+    <div v-else>
+      <div class="listContent">
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+        <user-list />
+      </div>
+      <div class="listFoot"  >
+        <n-config-provider :theme="darkTheme">
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="followedData.total" show-quick-jumper>
+            <template #goto>
+              跳至
+            </template>
+          </n-pagination>
+        </n-config-provider>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.spaceList {
+  background-color: $github-background;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 40px;
+  min-height: 550px;
+
+  .listContent {}
+
+  .listFoot {
+    background-color: $github-card-background;
+    min-width: 620px;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+  }
+}
+.loading {
+  @include center;
+  position: relative;
+  top: 200px;
+}
+</style>

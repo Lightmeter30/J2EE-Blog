@@ -53,12 +53,12 @@ const router = createRouter({
         {
           path: 'attention',
           name: 'spaceAttention',
-          component: () => import('@/view/space/SpaceList.vue')
+          component: () => import('@/view/space/SpaceFollowed.vue')
         },
         {
           path: 'fans',
           name: 'spaceFans',
-          component: () => import('@/view/space/SpaceList.vue')
+          component: () => import('@/view/space/SpaceFans.vue')
         },
         {
           path: 'info',
