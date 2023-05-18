@@ -7,9 +7,9 @@
       {{ userInfo.userid }}
     </div> -->
       <div class="searchContent">
-        <blog-card v-for="item in searchData.currentArticleList" :author="item.author" :author-name="item.authorName"
+        <blog-card v-for="(item, index) in searchData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
           :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
-          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
+          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" :topic="searchData.topicList[index]" :tags="searchData.tagsList[index]" ></blog-card>
       </div>
       <div class="searchFoot" v-show="searchData.total > 1" >
         <n-config-provider :theme="darkTheme">
@@ -33,9 +33,9 @@
 import { NPagination, darkTheme } from 'naive-ui';
 import { useUserStore } from '@/stores/user';
 import { useSearchStore } from "@/stores/search";
-import { Article } from '@/request/responseData';
-import { RequestGetUserNames, RequestPageFuzzySearch } from '@/request/requestData';
-import { getUserNamesAPI, pageFuzzySearchAPI } from '@/request/api';
+import { Article, Theme, Label } from '@/request/responseData';
+import { RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames, RequestPageFuzzySearch } from '@/request/requestData';
+import { getArticleLabelListAPI, getArticleThemeListAPI, getUserNamesAPI, pageFuzzySearchAPI } from '@/request/api';
 const userState = useUserStore();
 const message = useMessage();
 const router = useRouter();
@@ -48,13 +48,18 @@ const nowPage = ref(1);
 
 type searchDataType = {
   currentArticleList: Article[];
+    topicList: Theme[],
+  tagsList: Array<Label[]>,
   total: number;
 };
 
 const searchData = reactive<searchDataType>({
   currentArticleList: [],
   total: 1,
+    topicList: [],
+  tagsList: [],
 });
+
 function changePage(page: number) {
   nowPage.value = page;
   searchAPI(page, searchStore.searchText);
@@ -76,11 +81,15 @@ async function searchAPI(curPage: number, searchText: string) {
     // TODO: 接口数据对接
     console.log(res.data.data);
     searchData.currentArticleList = res.data.data.pageArticles;
+    const author: Array<number> = [];
     const ids: Array<number> = [];
     for(let i = 0; i <searchData.currentArticleList.length; i++) {
-      ids.push(searchData.currentArticleList[i].author);
+      author.push(searchData.currentArticleList[i].author);
+      ids.push(searchData.currentArticleList[i].id);
     }
-    getUserName(ids);
+    getUserName(author);
+    getLabelList(ids);
+    getThemeList(ids);
     searchData.total = res.data.data.pageNum;
   } else {
     message.error(res.data.message);
@@ -97,6 +106,30 @@ async function getUserName(ids: number[]) {
     for(let i = 0; i < author.length; i++) {
       searchData.currentArticleList[i].authorName = author[i];
     }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getArticleThemeListAPI(data);
+  if(res.data.status === 0) {
+    searchData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if(res.data.status === 0) {
+    searchData.tagsList = res.data.data;
   } else {
     console.error(res.data.message);
   }

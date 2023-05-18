@@ -35,10 +35,6 @@ import { getHomePageArticlesAPI, getHomePageNumAPI, getUserNamesAPI, getArticleL
 import { darkTheme } from 'naive-ui';
 import SideContent from '@/components/SideContent.vue';
 
-// import 'hover.css';
-// import { loginAPI } from '@/request/api';
-// import { RequestLogin } from '@/request/requestData';
-// import { reactive } from "vue";
 const message = useMessage();
 const router = useRouter();
 
@@ -56,7 +52,6 @@ const homeData = reactive<homeDataType>({
   topicList: [],
   tagsList: [],
 });
-
 
 const changePage = async (page: number) => {
   console.log(`to page ${page}`);

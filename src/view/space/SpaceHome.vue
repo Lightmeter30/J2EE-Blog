@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import { RequestGetUserPageNum, RequestGetUserPage, RequestGetOtherBriefInfos,  } from '@/request/requestData';
-import { Article } from '@/request/responseData';
-import { getOtherBriefInfosAPI, getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
+import { RequestGetUserPageNum, RequestGetUserPage, RequestGetOtherBriefInfos, RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames,  } from '@/request/requestData';
+import { Article, Theme, Label } from '@/request/responseData';
+import { getArticleLabelListAPI, getArticleThemeListAPI, getOtherBriefInfosAPI, getUserNamesAPI, getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
 import { useUserStore } from '@/stores/user';
 import { darkTheme } from 'naive-ui';
 const message = useMessage();
@@ -13,27 +13,17 @@ const loading = ref(true);
 type homeDataType = {
   currentArticleList: Article[],
   total: number,
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
 };
 
 const homeData = reactive<homeDataType>({
   currentArticleList: [],
   total: 1,
+  topicList: [],
+  tagsList: [],
 });
 
-async function getBriefInfo(ids: number[]) {
-  const data: RequestGetOtherBriefInfos = {
-    ids: ids
-  };
-  const res = await getOtherBriefInfosAPI(data, userState);
-  if(res.data.status === 0) {
-    const temp = res.data.data;
-    for(let i = 0; i < temp.length; i++) {
-      homeData.currentArticleList[i].authorName = temp[i].name;
-    }
-  } else {
-    message.error(res.data.message)
-  }
-}
 
 const changePage = async (page: number) => {
   console.log(`to page ${page}`);
@@ -47,13 +37,56 @@ const changePage = async (page: number) => {
     console.log(res);
     homeData.currentArticleList = res.data.data;
     const ids: number[] = [];
+    const author: number[] = [];
     for(const item of res.data.data) {
-      ids.push(item.author);
+      author.push(item.author);
+      ids.push(item.id);
     }
-    getBriefInfo(ids);
+    getUserName(author);
+    getThemeList(ids);
+    getLabelList(ids);
     loading.value = false;
   } else {
     message.error(res.data.message);
+  }
+}
+
+async function getUserName(ids: number[]) {
+  const data: RequestGetUserNames = {
+    ids: ids
+  }
+  const res = await getUserNamesAPI(data);
+  if(res.data.status == 0) {
+    const author = res.data.data;
+    for(let i = 0; i < author.length; i++) {
+      homeData.currentArticleList[i].authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getArticleThemeListAPI(data);
+  if(res.data.status === 0) {
+    homeData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if(res.data.status === 0) {
+    homeData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
   }
 }
 
@@ -87,10 +120,10 @@ onMounted(() => {
       </div>
       <div v-else>
         <div class="homeContent">
-          <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
+          <blog-card v-for="(item, index) in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
             :card-type="userState.userId === Number(router.currentRoute.value.query.id) ? 2 : 1"
             :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
-            :update-time="item.updateTime" :comments-num="item.commentsNum"></blog-card>
+            :update-time="item.updateTime" :comments-num="item.commentsNum" :tags="homeData.tagsList[index]" :topic="homeData.topicList[index]"></blog-card>
         </div>
         <div class="homeFoot" v-show="homeData.total !== 1">
           <n-config-provider :theme="darkTheme">

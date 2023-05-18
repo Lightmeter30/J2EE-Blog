@@ -8,9 +8,9 @@
       {{ userInfo.userid }}
     </div> -->
       <div class="searchContent">
-        <blog-card v-for="item in groupData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
+        <blog-card v-for="(item, index) in groupData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
           :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
-          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
+          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" :tags="groupData.tagsList[index]" :topic="groupData.topicList[index]" ></blog-card>
       </div>
       <div class="searchFoot" v-show="groupData.total > 1">
         <n-config-provider :theme="darkTheme">
@@ -33,9 +33,9 @@
 import { NPagination, darkTheme } from 'naive-ui';
 import { useUserStore } from '@/stores/user';
 import { useSearchStore } from "@/stores/search";
-import { Article } from '@/request/responseData';
-import { RequestGetThemeArticlePageNum, RequestGetPageThemeArticleIds, RequestGetByIdList } from '@/request/requestData';
-import { getThemeArticlePageNumAPI, getPageThemeArticleIdsAPI, getArticleByIdListAPI } from '@/request/api';
+import { Article, Theme, Label } from '@/request/responseData';
+import { RequestGetThemeArticlePageNum, RequestGetPageThemeArticleIds, RequestGetByIdList, RequestGetUserNames, RequestGetLabelsByIds, RequestGetThemeByIds } from '@/request/requestData';
+import { getThemeArticlePageNumAPI, getPageThemeArticleIdsAPI, getArticleByIdListAPI, getUserNamesAPI, getArticleLabelListAPI, getArticleThemeListAPI } from '@/request/api';
 const userState = useUserStore();
 const message = useMessage();
 const router = useRouter();
@@ -49,10 +49,14 @@ const nowPage = ref(1);
 type groupDataType = {
   currentArticleList: Article[];
   total: number;
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
 };
 
 const groupData = reactive<groupDataType>({
   currentArticleList: [],
+  topicList: [],
+  tagsList: [],
   total: 1,
 });
 
@@ -78,8 +82,57 @@ async function getArticle(ids: number[]) {
   if( res.data.status === 0 ) {
     groupData.currentArticleList = res.data.data;
     // TODO: 查询作者姓名
+    const author: number[] = [];
+    const ids: number[] = [];
+    for( let i = 0; i < groupData.currentArticleList.length; i++) {
+      author[i] = groupData.currentArticleList[i].author;
+      ids[i] = groupData.currentArticleList[i].id;
+    }
+    getUserName(author);
+    getThemeList(ids);
+    getLabelList(ids);
   } else {
     console.log(res.data);
+  }
+}
+
+async function getUserName(ids: number[]) {
+  const data: RequestGetUserNames = {
+    ids: ids
+  }
+  const res = await getUserNamesAPI(data);
+  if(res.data.status == 0) {
+    const author = res.data.data;
+    for(let i = 0; i < author.length; i++) {
+      groupData.currentArticleList[i].authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getArticleThemeListAPI(data);
+  if(res.data.status === 0) {
+    groupData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if(res.data.status === 0) {
+    groupData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
   }
 }
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { AddCircle, CloudUpload } from "@vicons/ionicons5";
 import { useUserStore } from '@/stores/user';
-import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI, getArticleByListAPI, getOtherBriefInfosAPI } from "@/request/api";
-import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder, RequestGetByIdList, RequestGetOtherBriefInfos } from "@/request/requestData";
-import { FavoriteFolder, Article } from "@/request/responseData";
+import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI, getArticleByIdListAPI, getOtherBriefInfosAPI, getArticleLabelListAPI, getArticleThemeListAPI, getUserNamesAPI } from "@/request/api";
+import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder, RequestGetByIdList, RequestGetOtherBriefInfos, RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames } from "@/request/requestData";
+import { FavoriteFolder, Article, Theme, Label } from "@/request/responseData";
 import { darkTheme } from "naive-ui";
 
 let collect: HTMLElement;
@@ -19,12 +19,16 @@ type collectDataType = {
   currentArticleList: Article[],
   collectFolderList: FavoriteFolder[],
   total: number,
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
 };
 
 const collectData = reactive<collectDataType>({
   currentArticleList: [],
   collectFolderList: [],
   total: 1,
+  topicList: [],
+  tagsList: [],
 });
 function changePage(page: number) {
   console.log(`to page ${page}`);
@@ -79,32 +83,59 @@ async function getArticles(ids: number[], favoriteID: number[]) {
   const data: RequestGetByIdList = {
     ids: ids
   }
-  const res = await getArticleByListAPI(data, userStore);
+  const res = await getArticleByIdListAPI(data);
   if(res.data.status === 0) {
     collectData.currentArticleList = res.data.data;
+    const author: number[] = [];
     const ids: number[] = [];
     for(let i = 0; i < collectData.currentArticleList.length; i++) {
       collectData.currentArticleList[i].favoritesNum = favoriteID[i];
-      ids.push(collectData.currentArticleList[i].author);
+      author.push(collectData.currentArticleList[i].author);
+      ids.push(collectData.currentArticleList[i].id);
     }
     // TODO: 添加用户名
-    getBriefInfo(ids);
+    getUserName(author);
+    getThemeList(ids);
+    getLabelList(ids);
   }
 }
 
-async function getBriefInfo(ids: number[]) {
-  const data: RequestGetOtherBriefInfos = {
+async function getUserName(ids: number[]) {
+  const data: RequestGetUserNames = {
+    ids: ids
+  }
+  const res = await getUserNamesAPI(data);
+  if(res.data.status == 0) {
+    const author = res.data.data;
+    for(let i = 0; i < author.length; i++) {
+      collectData.currentArticleList[i].authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
     ids: ids
   };
-  const res = await getOtherBriefInfosAPI(data, userStore);
+  const res = await getArticleThemeListAPI(data);
   if(res.data.status === 0) {
-    const temp = res.data.data;
-    for(let i = 0; i < temp.length; i++) {
-      collectData.currentArticleList[i].authorName = temp[i].name;
-    }
-    loading.value = false;
+    collectData.topicList = res.data.data;
   } else {
-    message.error(res.data.message)
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if(res.data.status === 0) {
+    collectData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
   }
 }
 
@@ -198,10 +229,10 @@ onMounted(() => {
       </div>
       <div class="content" v-else>
         <div class="collectContent">
-          <blog-card v-for="item in collectData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
+          <blog-card v-for="(item, index) in collectData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
             :card-type="3"
             :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
-            :update-time="item.updateTime" :comments-num="item.commentsNum" :favorite-id="item.favoritesNum"></blog-card>
+            :update-time="item.updateTime" :comments-num="item.commentsNum" :favorite-id="item.favoritesNum" :tags="collectData.tagsList[index]" :topic="collectData.topicList[index]" ></blog-card>
         </div>
         <div class="collectFoot" v-show="collectData.total !== 1">
           <n-config-provider :theme="darkTheme">
