@@ -8,9 +8,9 @@
       {{ userInfo.userid }}
     </div> -->
       <div class="homeContent">
-        <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
+        <blog-card v-for="(item, index) in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
           :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
-          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" ></blog-card>
+          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" :tags="homeData.tagsList[index]" :topic="homeData.topicList[index]" ></blog-card>
       </div>
       <div class="homeFoot" v-show="homeData.total > 1" >
         <n-config-provider :theme="darkTheme">
@@ -29,9 +29,9 @@
 
 <script setup lang="ts">
 import { NPagination } from 'naive-ui';
-import { RequestGetOtherBriefInfos, RequestGetPageArticles } from '@/request/requestData';
-import { Article } from '@/request/responseData';
-import { getHomePageArticlesAPI, getHomePageNumAPI, getOtherBriefInfosAPI } from '@/request/api';
+import { RequestGetUserNames, RequestGetPageArticles, RequestGetLabelsByIds, RequestGetThemeByIds } from '@/request/requestData';
+import { Article, Theme, Label } from '@/request/responseData';
+import { getHomePageArticlesAPI, getHomePageNumAPI, getUserNamesAPI, getArticleLabelListAPI, getArticleThemeListAPI } from '@/request/api';
 import { darkTheme } from 'naive-ui';
 import SideContent from '@/components/SideContent.vue';
 
@@ -45,12 +45,16 @@ const router = useRouter();
 
 type homeDataType = {
   currentArticleList: Article[],
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
   total: number,
 };
 
 const homeData = reactive<homeDataType>({
   currentArticleList: [],
   total: 1,
+  topicList: [],
+  tagsList: [],
 });
 
 
@@ -64,8 +68,56 @@ const changePage = async (page: number) => {
     // TODO: 接口对接
     console.log(res);
     homeData.currentArticleList = res.data.data;
+    const author: Array<number> = [];
+    const ids: number[] = []; 
+    for(let i = 0; i <homeData.currentArticleList.length; i++) {
+      author.push(homeData.currentArticleList[i].author);
+      ids.push(homeData.currentArticleList[i].id);
+    }
+    getUserName(author);
+    getThemeList(ids);
+    getLabelList(ids);
   } else {
     message.error(res.data.message, {duration: 1200});
+  }
+}
+
+async function getUserName(ids: number[]) {
+  const data: RequestGetUserNames = {
+    ids: ids
+  }
+  const res = await getUserNamesAPI(data);
+  if(res.data.status == 0) {
+    const author = res.data.data;
+    for(let i = 0; i < author.length; i++) {
+      homeData.currentArticleList[i].authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getArticleThemeListAPI(data);
+  if(res.data.status === 0) {
+    homeData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if(res.data.status === 0) {
+    homeData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
   }
 }
 

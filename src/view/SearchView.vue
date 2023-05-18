@@ -34,8 +34,8 @@ import { NPagination, darkTheme } from 'naive-ui';
 import { useUserStore } from '@/stores/user';
 import { useSearchStore } from "@/stores/search";
 import { Article } from '@/request/responseData';
-import { RequestPageFuzzySearch } from '@/request/requestData';
-import { pageFuzzySearchAPI } from '@/request/api';
+import { RequestGetUserNames, RequestPageFuzzySearch } from '@/request/requestData';
+import { getUserNamesAPI, pageFuzzySearchAPI } from '@/request/api';
 const userState = useUserStore();
 const message = useMessage();
 const router = useRouter();
@@ -76,9 +76,29 @@ async function searchAPI(curPage: number, searchText: string) {
     // TODO: 接口数据对接
     console.log(res.data.data);
     searchData.currentArticleList = res.data.data.pageArticles;
+    const ids: Array<number> = [];
+    for(let i = 0; i <searchData.currentArticleList.length; i++) {
+      ids.push(searchData.currentArticleList[i].author);
+    }
+    getUserName(ids);
     searchData.total = res.data.data.pageNum;
   } else {
     message.error(res.data.message);
+  }
+}
+
+async function getUserName(ids: number[]) {
+  const data: RequestGetUserNames = {
+    ids: ids
+  }
+  const res = await getUserNamesAPI(data);
+  if(res.data.status == 0) {
+    const author = res.data.data;
+    for(let i = 0; i < author.length; i++) {
+      searchData.currentArticleList[i].authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
   }
 }
 
