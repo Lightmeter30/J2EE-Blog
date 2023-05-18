@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { darkTheme } from "naive-ui";
-import { getUserFollowListAPI } from "@/request/api";
+import { getUserFollowListAPI, getOtherBriefInfosAPI } from "@/request/api";
+import { RequestGetOtherBriefInfos } from "@/request/requestData";
 import { useUserStore } from "@/stores/user";
+import { BriefInfo } from "@/request/responseData";
+
 const router = useRouter();
 const nowPage = ref(1);
 const loading = ref(true);
 const userState = useUserStore();
 interface followedDataType {
   total: number;
-  
+  ids: number[];
+  userList: BriefInfo[];
 };
 
 const followedData = reactive<followedDataType>({
   total: 1,
+  ids: [],
+  userList: [],
 });
 
 function changePage(page: number) {
@@ -22,18 +28,28 @@ function changePage(page: number) {
 async function init() {
   const res = await getUserFollowListAPI(userState);
   if(res.data.status === 0) {
-    const ids = res.data.data;
-    console.log(ids);
+    followedData.ids = res.data.data;
+    getBriefInfo(followedData.ids);
   } else {
     console.log(res.data.message);
   }
 }
 
+async function getBriefInfo(ids:number[]) {
+  const data: RequestGetOtherBriefInfos = {
+    ids: ids
+  };
+  const res = await getOtherBriefInfosAPI(data, userState);
+  if(res.data.status === 0) {
+    followedData.userList = res.data.data;
+    loading.value = false;
+  } else {
+    console.error(res.data);
+  }
+}
 
 onMounted(() => {
-  console.log(router.currentRoute.value);
   init();
-  loading.value = false;
 })
 </script>
 
@@ -44,18 +60,9 @@ onMounted(() => {
     </div>
     <div v-else>
       <div class="listContent">
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
+        <user-list v-for="(item, index) in followedData.userList" :id="followedData.ids[index]" :avatar="item.avatar" :name="item.name" :description="item.description" :is-attention="item.followed" />
       </div>
-      <div class="listFoot"  >
+      <div class="listFoot" v-show="false" >
         <n-config-provider :theme="darkTheme">
           <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="followedData.total" show-quick-jumper>
             <template #goto>

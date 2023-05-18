@@ -1,16 +1,48 @@
 <script setup lang="ts">
+import { getOtherBriefInfosAPI } from "@/request/api";
+import { RequestGetOtherBriefInfos } from "@/request/requestData";
+import { BriefInfo } from "@/request/responseData";
+import { useUserStore } from "@/stores/user";
 import { darkTheme } from "naive-ui";
+
+const userState = useUserStore();
 const router = useRouter();
 
-let total = ref(114);
+interface fansDataType {
+  total: number;
+  ids: number[];
+  userList: BriefInfo[];
+}
+const fansData = reactive<fansDataType>({
+  total: 1,
+  ids: [],
+  userList: [],
+});
 function changePage(page: number) {
   console.log(`to page ${page}`);
 }
 const loading = ref(true);
 
+async function init() {
+  console.log(`111`);
+}
+
+async function getBriefInfo(ids:number[]) {
+  const data: RequestGetOtherBriefInfos = {
+    ids: ids
+  };
+  const res = await getOtherBriefInfosAPI(data, userState);
+  if(res.data.status === 0) {
+    fansData.userList = res.data.data;
+    loading.value = false;
+  } else {
+    console.error(res.data);
+  }
+}
+
 onMounted(() => {
   console.log(router.currentRoute.value);
-  loading.value = false;
+  init();
 })
 </script>
 
@@ -21,20 +53,11 @@ onMounted(() => {
     </div>
     <div v-else>
       <div class="listContent">
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
-        <user-list />
+        <user-list v-for="(item, index) in fansData.userList" :id="fansData.ids[index]" :avatar="item.avatar" :name="item.name" :description="item.description" :is-attention="item.followed" />
       </div>
-      <div class="listFoot">
+      <div class="listFoot" v-show="false" >
         <n-config-provider :theme="darkTheme">
-          <n-pagination :on-update:page="changePage" :item-count="total" show-quick-jumper>
+          <n-pagination :on-update:page="changePage" :item-count="fansData.total" show-quick-jumper>
             <template #goto>
               跳至
             </template>

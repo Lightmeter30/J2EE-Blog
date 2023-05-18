@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { AddCircle, CloudUpload } from "@vicons/ionicons5";
 import { useUserStore } from '@/stores/user';
-import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI, getArticleByIdListAPI, getOtherBriefInfosAPI, getArticleLabelListAPI, getArticleThemeListAPI, getUserNamesAPI } from "@/request/api";
-import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder, RequestGetByIdList, RequestGetOtherBriefInfos, RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames } from "@/request/requestData";
-import { FavoriteFolder, Article, Theme, Label } from "@/request/responseData";
+import { addCollectAPI, deleteCollectAPI, getUserAllCollectAPI,  getArticleLabelListAPI, getArticleThemeListAPI, getUserNamesAPI, getFolderFavoritesPageNumAPI, getPageFolderFavoritesAPI } from "@/request/api";
+import { RequestAddFavoriteFolder, RequestDeleteFavoriteFolder,  RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames, RequestGetFolderFavoritesPageNum, RequestGetPageFolderFavorites } from "@/request/requestData";
+import { FavoriteFolder, FavoriteArticle, Theme, Label } from "@/request/responseData";
 import { darkTheme } from "naive-ui";
 
 let collect: HTMLElement;
@@ -14,9 +14,11 @@ const loading = ref(true);
 const userStore = useUserStore();
 const message = useMessage();
 const dialog = useDialog();
+const nowPage = ref(1);
+let nowFolderID = -1;
 
 type collectDataType = {
-  currentArticleList: Article[],
+  currentArticleList: FavoriteArticle[],
   collectFolderList: FavoriteFolder[],
   total: number,
   topicList: Theme[],
@@ -31,8 +33,11 @@ const collectData = reactive<collectDataType>({
   tagsList: [],
 });
 function changePage(page: number) {
-  console.log(`to page ${page}`);
+  nowPage.value = page;
+  getOnePage(page);
 }
+
+
 
 function showDialog() {
   showModal.value = true;
@@ -55,49 +60,10 @@ function changeSelectCollect(id: number, index: number) {
   Delete.classList.remove('delete');
   Delete.classList.add('selectDelete');
   // change collect now
-  getArticlesFromCollect(id);
-}
-
-async function getArticlesFromCollect(collectId: number) {
-  const data: RequestGetFolderFavorites = {
-    folderId: collectId
-  };
-  const res = await getArticlesFromCollectAPI(data, userStore);
-  if (res.data.status == 0) {
-    // TODO: test API
-    console.log(res.data.data);
-    const favorites = res.data.data;
-    const articleNum: number[] = [];
-    const favoriteID: number[] = [];
-    for( let i = 0; i < favorites.length; i++) {
-      articleNum[i] = favorites[i].articleId;
-      favoriteID[i] = favorites[i].id;
-    }
-    getArticles(articleNum, favoriteID);
-  } else {
-    message.error(res.data.message);
-  }
-}
-
-async function getArticles(ids: number[], favoriteID: number[]) {
-  const data: RequestGetByIdList = {
-    ids: ids
-  }
-  const res = await getArticleByIdListAPI(data);
-  if(res.data.status === 0) {
-    collectData.currentArticleList = res.data.data;
-    const author: number[] = [];
-    const ids: number[] = [];
-    for(let i = 0; i < collectData.currentArticleList.length; i++) {
-      collectData.currentArticleList[i].favoritesNum = favoriteID[i];
-      author.push(collectData.currentArticleList[i].author);
-      ids.push(collectData.currentArticleList[i].id);
-    }
-    // TODO: 添加用户名
-    getUserName(author);
-    getThemeList(ids);
-    getLabelList(ids);
-  }
+  nowPage.value = 1;
+  nowFolderID = id;
+  getFolderPageNum();
+  getOnePage(nowPage.value);
 }
 
 async function getUserName(ids: number[]) {
@@ -108,7 +74,7 @@ async function getUserName(ids: number[]) {
   if(res.data.status == 0) {
     const author = res.data.data;
     for(let i = 0; i < author.length; i++) {
-      collectData.currentArticleList[i].authorName = author[i];
+      collectData.currentArticleList[i].article.authorName = author[i];
     }
   } else {
     console.error(res.data.message);
@@ -136,6 +102,37 @@ async function getLabelList(ids: number[]) {
     collectData.tagsList = res.data.data;
   } else {
     console.error(res.data.message);
+  }
+}
+
+async function getFolderPageNum() {
+  const data: RequestGetFolderFavoritesPageNum = {
+    folderId: nowFolderID,
+  };
+  const res = await getFolderFavoritesPageNumAPI(data, userStore);
+  if(res.data.status === 0) {
+    collectData.total = res.data.data;
+  }
+}
+
+async function getOnePage(page:number) {
+  const data: RequestGetPageFolderFavorites = {
+    folderId: nowFolderID,
+    currentPage: page,
+  };
+  const res = await getPageFolderFavoritesAPI(data, userStore);
+  if(res.data.status === 0) {
+    collectData.currentArticleList = res.data.data
+    const author: number[] = [];
+    const ids: number[] = [];
+    for(let i = 0; i < collectData.currentArticleList.length; i++) {
+      author.push(collectData.currentArticleList[i].article.author);
+      ids.push(collectData.currentArticleList[i].article.id);
+    }
+    // TODO: 添加用户名
+    getUserName(author);
+    getThemeList(ids);
+    getLabelList(ids);
   }
 }
 
@@ -194,7 +191,9 @@ const getAllFolders = async () => {
     // collect = document.getElementById(`folder0`) as HTMLElement;
     // collect.classList.remove('collectHover');
     // collect.classList.add('selectedCollect');
-    getArticlesFromCollect(collectData.collectFolderList[0].id);
+    nowFolderID = collectData.collectFolderList[0].id;
+    getFolderPageNum();
+    getOnePage(1);
   } else {
     message.error(res.data.message);
   }
@@ -229,14 +228,14 @@ onMounted(() => {
       </div>
       <div class="content" v-else>
         <div class="collectContent">
-          <blog-card v-for="(item, index) in collectData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
+          <blog-card v-for="(item, index) in collectData.currentArticleList" :author="item.article.author" :author-name="(item.article.authorName as string)"
             :card-type="3"
-            :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
-            :update-time="item.updateTime" :comments-num="item.commentsNum" :favorite-id="item.favoritesNum" :tags="collectData.tagsList[index]" :topic="collectData.topicList[index]" ></blog-card>
+            :description="item.article.description" :favorites-num="item.article.favoritesNum" :id="item.article.id" :title="item.article.title"
+            :update-time="item.article.updateTime" :comments-num="item.article.commentsNum" :favorite-id="item.favorite.id" :tags="collectData.tagsList[index]" :topic="collectData.topicList[index]" ></blog-card>
         </div>
-        <div class="collectFoot" v-show="collectData.total !== 1">
+        <div class="collectFoot" v-show="collectData.total > 1">
           <n-config-provider :theme="darkTheme">
-            <n-pagination :on-update:page="changePage" :item-count="collectData.total" show-quick-jumper>
+            <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="collectData.total" show-quick-jumper>
               <template #goto>
                 跳至
               </template>

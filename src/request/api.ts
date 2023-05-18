@@ -604,7 +604,7 @@ export const checkArticleInFoldersAPI = (data: requestTypes.RequestCheckArticleI
  * 
 * */
 
-export const getFolderFavoritesPageNumAPI = (data: requestTypes.RequestGetFolderFavoritesPageNum, userState: any): Res<responseTypes.ResponseCheckArticleInFolders> => {
+export const getFolderFavoritesPageNumAPI = (data: requestTypes.RequestGetFolderFavoritesPageNum, userState: any): Res<responseTypes.ResponseGetFolderFavoritesPageNum> => {
   const Data = setData(data);
   return axios.post("favorite/getFolderFavoritesPageNum", Data, { headers: {
     id: userState.userId,

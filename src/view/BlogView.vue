@@ -3,8 +3,8 @@ import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close, PricetagsSharp, Albums, Balloon } from '@vicons/ionicons5';
-import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI } from '@/request/api';
-import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
+import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI, checkArticleInFoldersAPI } from '@/request/api';
+import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite, RequestCheckArticleInFolders } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { FavoriteFolder, Article, Comment, DataGetInfo, Theme, Label } from '@/request/responseData';
 import { darkTheme } from 'naive-ui';
@@ -24,6 +24,7 @@ type blogDataType = {
   blog: Article,
   cardInfo: DataGetInfo,
   collectList: FavoriteFolder[],
+  isInFolder: boolean[],
   commentList: Comment[],
   topic: Theme,
   tags: Label[]
@@ -59,7 +60,8 @@ const blogData = reactive<blogDataType>({
     id: 1,
     name: '',
   },
-  tags: []
+  tags: [],
+  isInFolder: [],
 });
 const userStore = useUserStore();
 const route = useRoute();
@@ -190,6 +192,18 @@ const getAllFolders = async () => {
   }
 };
 
+const checkArticleInFolders = async () => {
+  const data: RequestCheckArticleInFolders = {
+    articleId: Number(router.currentRoute.value.query.id)
+  }
+  const res = await checkArticleInFoldersAPI(data, userStore);
+  if(res.data.status === 0) {
+    blogData.isInFolder = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+};
+
 const getGroupAndTags = async (id: number) => {
   const data: RequestGetTheme = {
     id: id,
@@ -222,6 +236,7 @@ onMounted(() => {
   getArticle();
   getComments();
   getAllFolders();
+  checkArticleInFolders();
 })
 </script>
 <template>
@@ -310,14 +325,19 @@ onMounted(() => {
               </div>
             </template>
             <div class="collectList">
-              <div v-for="item in blogData.collectList">
+              <div v-for="(item, index) in blogData.collectList">
                 <div class="collectItem">
                   <div class="title">
                     <span>
                       {{ item.name }}
                     </span>
                   </div>
-                  <div class="collectButton">
+                  <div v-if="blogData.isInFolder[index]" class="collectButton">
+                    <n-button color="#8E2C2D" @click="addBlogToCollect(item.id, item.name)">
+                      移除收藏
+                    </n-button>
+                  </div>
+                  <div v-else class="collectButton">
                     <n-button color="#39c5bb" @click="addBlogToCollect(item.id, item.name)">
                       收藏
                     </n-button>

@@ -14,7 +14,7 @@
       </div>
       <div class="homeFoot" v-show="homeData.total > 1" >
         <n-config-provider :theme="darkTheme">
-          <n-pagination :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
             <template #goto>
               跳至
             </template>
@@ -37,7 +37,7 @@ import SideContent from '@/components/SideContent.vue';
 
 const message = useMessage();
 const router = useRouter();
-
+const nowPage = ref(1);
 
 type homeDataType = {
   currentArticleList: Article[],
@@ -54,7 +54,7 @@ const homeData = reactive<homeDataType>({
 });
 
 const changePage = async (page: number) => {
-  console.log(`to page ${page}`);
+  nowPage.value = page;
   const data: RequestGetPageArticles = {
     currentPage: page,
   }
