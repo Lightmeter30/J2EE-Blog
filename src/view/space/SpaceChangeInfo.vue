@@ -69,6 +69,7 @@ const uploadAvatar = async ({
   console.log(avatar);
   const res = await updateUserAvatarAPI(avatar, userState);
   if(res.data.status === 0) {
+    userState.avatar = res.data.data;
     message.success('头像修改成功');
   } else {
     message.error(res.data.message);

@@ -24,6 +24,7 @@ interface ArticleCard {
   topic: Theme;
   tags: Label[]; 
 };
+
 const isDelete = ref(false);
 const props = defineProps<ArticleCard>();
 function toBlogView() {

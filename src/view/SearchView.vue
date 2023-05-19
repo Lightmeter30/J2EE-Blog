@@ -80,23 +80,24 @@ async function searchAPI(curPage: number, searchText: string) {
   if (res.data.status === 0) {
     // TODO: 接口数据对接
     console.log(res.data.data);
-    searchData.currentArticleList = res.data.data.pageArticles;
+    const currentArticleList = res.data.data.pageArticles;
     const author: Array<number> = [];
     const ids: Array<number> = [];
-    for(let i = 0; i <searchData.currentArticleList.length; i++) {
-      author.push(searchData.currentArticleList[i].author);
-      ids.push(searchData.currentArticleList[i].id);
+    for(let i = 0; i <currentArticleList.length; i++) {
+      author.push(currentArticleList[i].author);
+      ids.push(currentArticleList[i].id);
     }
-    getUserName(author);
-    getLabelList(ids);
-    getThemeList(ids);
+    await getUserName(author, currentArticleList);
+    await getLabelList(ids);
+    await getThemeList(ids);
+    searchData.currentArticleList = currentArticleList;
     searchData.total = res.data.data.pageNum;
   } else {
     message.error(res.data.message);
   }
 }
 
-async function getUserName(ids: number[]) {
+async function getUserName(ids: number[], currentArticleList: Article[]) {
   const data: RequestGetUserNames = {
     ids: ids
   }
@@ -104,7 +105,7 @@ async function getUserName(ids: number[]) {
   if(res.data.status == 0) {
     const author = res.data.data;
     for(let i = 0; i < author.length; i++) {
-      searchData.currentArticleList[i].authorName = author[i];
+      currentArticleList[i].authorName = author[i];
     }
   } else {
     console.error(res.data.message);

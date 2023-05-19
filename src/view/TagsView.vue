@@ -76,17 +76,18 @@ async function getArticle(ids: number[]) {
   }
   const res = await getArticleByIdListAPI(data);
   if( res.data.status === 0 ) {
-    tagsData.currentArticleList = res.data.data;
+    const currentArticleList = res.data.data;
     // TODO: 查询作者姓名
     const author: number[] = [];
     const ids: number[] = [];
-    for(let i = 0; i < tagsData.currentArticleList.length; i++) {
-      author.push(tagsData.currentArticleList[i].author);
-      ids.push(tagsData.currentArticleList[i].id);
+    for(let i = 0; i < currentArticleList.length; i++) {
+      author.push(currentArticleList[i].author);
+      ids.push(currentArticleList[i].id);
     }
-    getUserName(author);
-    getThemeList(ids);
-    getLabelList(ids);
+    await getUserName(author, currentArticleList);
+    await getThemeList(ids);
+    await getLabelList(ids);
+    tagsData.currentArticleList = currentArticleList;
   } else {
     console.log(res.data);
   }
@@ -104,7 +105,7 @@ async function init() {
   }
 }
 
-async function getUserName(ids: number[]) {
+async function getUserName(ids: number[], currentArticleList: Article[]) {
   const data: RequestGetUserNames = {
     ids: ids
   }
@@ -112,7 +113,7 @@ async function getUserName(ids: number[]) {
   if(res.data.status == 0) {
     const author = res.data.data;
     for(let i = 0; i < author.length; i++) {
-      tagsData.currentArticleList[i].authorName = author[i];
+      currentArticleList[i].authorName = author[i];
     }
   } else {
     console.error(res.data.message);

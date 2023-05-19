@@ -66,7 +66,7 @@ function changeSelectCollect(id: number, index: number) {
   getOnePage(nowPage.value);
 }
 
-async function getUserName(ids: number[]) {
+async function getUserName(ids: number[], currentArticleList: FavoriteArticle[]) {
   const data: RequestGetUserNames = {
     ids: ids
   }
@@ -74,7 +74,7 @@ async function getUserName(ids: number[]) {
   if(res.data.status == 0) {
     const author = res.data.data;
     for(let i = 0; i < author.length; i++) {
-      collectData.currentArticleList[i].article.authorName = author[i];
+      currentArticleList[i].article.authorName = author[i];
     }
   } else {
     console.error(res.data.message);
@@ -122,17 +122,19 @@ async function getOnePage(page:number) {
   };
   const res = await getPageFolderFavoritesAPI(data, userStore);
   if(res.data.status === 0) {
-    collectData.currentArticleList = res.data.data
+    const currentArticleList = res.data.data
     const author: number[] = [];
     const ids: number[] = [];
-    for(let i = 0; i < collectData.currentArticleList.length; i++) {
-      author.push(collectData.currentArticleList[i].article.author);
-      ids.push(collectData.currentArticleList[i].article.id);
+    for(let i = 0; i < currentArticleList.length; i++) {
+      author.push(currentArticleList[i].article.author);
+      ids.push(currentArticleList[i].article.id);
     }
     // TODO: 添加用户名
-    getUserName(author);
-    getThemeList(ids);
-    getLabelList(ids);
+    await getUserName(author, currentArticleList);
+    await getThemeList(ids);
+    await getLabelList(ids);
+    collectData.currentArticleList = currentArticleList;
+    loading.value = false;
   }
 }
 

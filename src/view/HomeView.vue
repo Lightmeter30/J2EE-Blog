@@ -62,22 +62,23 @@ const changePage = async (page: number) => {
   if (res.data.status === 0) {
     // TODO: 接口对接
     console.log(res);
-    homeData.currentArticleList = res.data.data;
+    const currentArticleList = res.data.data;
     const author: Array<number> = [];
     const ids: number[] = []; 
-    for(let i = 0; i <homeData.currentArticleList.length; i++) {
-      author.push(homeData.currentArticleList[i].author);
-      ids.push(homeData.currentArticleList[i].id);
+    for(let i = 0; i < currentArticleList.length; i++) {
+      author.push(currentArticleList[i].author);
+      ids.push(currentArticleList[i].id);
     }
-    getUserName(author);
-    getThemeList(ids);
-    getLabelList(ids);
+    await getUserName(author, currentArticleList);
+    await getThemeList(ids);
+    await getLabelList(ids);
+    homeData.currentArticleList = currentArticleList;
   } else {
     message.error(res.data.message, {duration: 1200});
   }
 }
 
-async function getUserName(ids: number[]) {
+async function getUserName(ids: number[], currentArticleList: Article[]) {
   const data: RequestGetUserNames = {
     ids: ids
   }
@@ -85,7 +86,7 @@ async function getUserName(ids: number[]) {
   if(res.data.status == 0) {
     const author = res.data.data;
     for(let i = 0; i < author.length; i++) {
-      homeData.currentArticleList[i].authorName = author[i];
+      currentArticleList[i].authorName = author[i];
     }
   } else {
     console.error(res.data.message);

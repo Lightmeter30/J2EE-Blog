@@ -35,13 +35,14 @@ async function getDraftPage(page: number) {
   if (res.data.status === 0) {
     // TODO:
     console.log(res.data.data);
-    draftData.draftList = res.data.data;
+    const draftList = res.data.data;
     const ids: number[] = [];
-    for(let i = 0; i < draftData.draftList.length; i++) {
-      ids.push(draftData.draftList[i].id);
+    for(let i = 0; i < draftList.length; i++) {
+      ids.push(draftList[i].id);
     }
-    getLabelList(ids);
-    getThemeList(ids);
+    await getLabelList(ids);
+    await getThemeList(ids);
+    draftData.draftList = draftList;
     loading.value = false;
   } else {
     message.error(res.data.message);

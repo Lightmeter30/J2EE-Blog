@@ -80,23 +80,24 @@ async function getArticle(ids: number[]) {
   }
   const res = await getArticleByIdListAPI(data);
   if( res.data.status === 0 ) {
-    groupData.currentArticleList = res.data.data;
+    const currentArticleList = res.data.data;
     // TODO: 查询作者姓名
     const author: number[] = [];
     const ids: number[] = [];
-    for( let i = 0; i < groupData.currentArticleList.length; i++) {
-      author[i] = groupData.currentArticleList[i].author;
-      ids[i] = groupData.currentArticleList[i].id;
+    for( let i = 0; i < currentArticleList.length; i++) {
+      author[i] = currentArticleList[i].author;
+      ids[i] = currentArticleList[i].id;
     }
-    getUserName(author);
-    getThemeList(ids);
-    getLabelList(ids);
+    await getUserName(author, currentArticleList);
+    await getThemeList(ids);
+    await getLabelList(ids);
+    groupData.currentArticleList = currentArticleList;
   } else {
     console.log(res.data);
   }
 }
 
-async function getUserName(ids: number[]) {
+async function getUserName(ids: number[], currentArticleList: Article[]) {
   const data: RequestGetUserNames = {
     ids: ids
   }
@@ -104,7 +105,7 @@ async function getUserName(ids: number[]) {
   if(res.data.status == 0) {
     const author = res.data.data;
     for(let i = 0; i < author.length; i++) {
-      groupData.currentArticleList[i].authorName = author[i];
+      currentArticleList[i].authorName = author[i];
     }
   } else {
     console.error(res.data.message);
