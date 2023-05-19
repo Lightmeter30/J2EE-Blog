@@ -34,7 +34,11 @@ async function getDraftPage(page: number) {
   const res = await getUserDraftPageAPI(data, userState);
   if (res.data.status === 0) {
     // TODO:
-    console.log(res.data.data);
+    // console.log(res.data.data);
+    if(res.data.data.length === 0) {
+      loading.value = false;
+      return;
+    }
     const draftList = res.data.data;
     const ids: number[] = [];
     for(let i = 0; i < draftList.length; i++) {

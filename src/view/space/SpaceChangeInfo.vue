@@ -45,6 +45,7 @@ const changeInfo = async () => {
   console.log("Change info...");
   const res = await updateUserInfoAPI(userInfo, userState);
   if(res.data.status === 0) {
+    userState.userName = userInfo.name;
     message.success('修改信息成功!');
   } else {
     message.error(res.data.message);

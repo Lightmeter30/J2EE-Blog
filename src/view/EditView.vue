@@ -173,6 +173,7 @@ const addArticle = async () => {
   if (res.data.status === 0) {
     // router.replace({path: '/blog', query: {code: res.data.code}});
     console.log(res);
+    router.replace({path: '/blog', query: {id: res.data.data}});
     message.success('发布成功!', { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });

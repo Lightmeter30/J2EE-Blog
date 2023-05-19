@@ -115,14 +115,14 @@ async function getHotTags() {
 }
 
 onMounted(() => {
-  getUserCardInfo();
+  if(userState.isLogin) getUserCardInfo();
   getHotTags();
 });
 </script>
 
 <template>
   <div class="sideContent">
-    <user-card v-show="userState.isLogin" :id="userState.userId" :attention="sideContentData.cardInfo.followedNum" :blog="sideContentData.cardInfo.articleNum" :fans="sideContentData.cardInfo.followerNum" :name="sideContentData.cardInfo.name" :is-attention="sideContentData.cardInfo.followed" :url="sideContentData.cardInfo.avatar" ></user-card>
+    <user-card v-show="userState.isLogin" :id="userState.userId" :attention="sideContentData.cardInfo.followedNum" :blog="sideContentData.cardInfo.articleNum" :fans="sideContentData.cardInfo.followerNum" :name="sideContentData.cardInfo.name" :is-attention="(sideContentData.cardInfo.followed as boolean)" :url="sideContentData.cardInfo.avatar" ></user-card>
     <div class="sideCard">
       <div class="title">
         <n-icon color="#C70002" style="position: relative; top: 3px;"><american-football-sharp /></n-icon>

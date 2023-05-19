@@ -38,7 +38,11 @@ const changePage = async (page: number) => {
   const res = await getUserPageArticlesAPI(data, userState);
   if (res.data.status === 0) {
     // TODO: 接口对接
-    console.log(res);
+    // console.log(res);
+    if(res.data.data.length === 0) {
+      loading.value = false;
+      return;
+    }
     const currentArticleList = res.data.data;
     const ids: number[] = [];
     const author: number[] = [];

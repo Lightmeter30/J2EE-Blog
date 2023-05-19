@@ -717,7 +717,7 @@ export const getUserFollowListAPI = (userState: any): Res<responseTypes.Response
 
 export const deleteUserFromFollowAPI = (data: requestTypes.RequestDeleteFollow, userState: any): Res<responseTypes.ResponseDeleteFollow> => {
   const Data = setData(data);
-  return axios.post("draft/add", Data, { headers: {
+  return axios.post("follow/delete", Data, { headers: {
     id: userState.userId,
     token: userState.token
   } });

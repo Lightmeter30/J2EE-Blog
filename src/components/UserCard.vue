@@ -22,7 +22,8 @@ interface authorInfo {
 const props = defineProps<authorInfo>();
 
 function toPersonalPage() {
-  router.push({ path: '/space/home', query: { id: props.id } });
+  const newPage = router.resolve({ path: '/space/home', query: { id: props.id } });
+  window.open(newPage.href, '_blank');
 }
 
 async function addAttention() {
@@ -119,7 +120,7 @@ function addOrRemoveAttention(key: number) {
         </template>
         关注
       </n-button>
-      <n-button v-else color="#8E2C2D" @click="addOrRemoveAttention(2)" block>
+      <n-button v-else color="#C70002" @click="addOrRemoveAttention(2)" block>
         <template #icon>
           <n-icon>
             <remove-circle />

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Folder, Trash } from "@vicons/ionicons5";
-import { DEFAULT_ECDH_CURVE } from "tls";
 type collect = {
   index: number,
   id: number,
@@ -57,12 +56,12 @@ onMounted(() => {
         {{ name }}
       </span>
     </div>
-    <div class="articleNum"><span>{{ articleNum }}</span></div>
     <div class="delete" @click="deleteMe" v-show="isShowDelete" :id="'delete' + index">
       <n-icon>
         <Trash />
       </n-icon>
     </div>
+    <div class="articleNum" v-show="!isShowDelete"><span>{{ articleNum }}</span></div>
   </div>
 </template>
 
@@ -85,7 +84,6 @@ onMounted(() => {
     top: 12px;
     background-color: $github-card-hover;
     // z-index: 10;
-    width: 32px;
     text-align: center;
     cursor: pointer;
   }
@@ -96,7 +94,7 @@ onMounted(() => {
     top: 12px;
     background-color: $miku-fans-theme;
     // z-index: 10;
-    width: 32px;
+    // width: 32px;
     text-align: center;
     cursor: pointer;
   }

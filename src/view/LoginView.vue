@@ -209,6 +209,7 @@ const submitLogin = async () => {
       // console.log(info);
       if(info.data.status === 0) {
         message.success('登录成功!');
+        userState.userName = info.data.data.name;
         userState.setAvatar(info.data.data.avatar);
         router.replace('/'); // 去主页
       } else {

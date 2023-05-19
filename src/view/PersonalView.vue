@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { faker } from '@faker-js/faker';
 import { Bookmark, Book, Person, Archive, AddCircle, RemoveCircle } from '@vicons/ionicons5';
 import { onMounted } from 'vue';
 import { DataGetInfo } from '@/request/responseData';
-import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
-import { getUserInfoAPI, deleteUserFromFollowAPI, addUserToFollowAPI } from '@/request/api';
+import { RequestAddFollow, RequestDeleteFollow, RequestGetOtherInfo } from '@/request/requestData';
+import { getUserInfoAPI, deleteUserFromFollowAPI, addUserToFollowAPI, getOtherInfoAPI } from '@/request/api';
 import { darkTheme } from 'naive-ui';
 const userState = useUserStore();
 const router = useRouter();
 const message = useMessage();
 const user: DataGetInfo = reactive({
-  name: 'takune',
+  name: 'NAN',
   description: '',
   avatar: '',
   articleNum: 0,
@@ -94,7 +93,10 @@ function addOrRemoveAttention(key: number) {
 }
 
 const getUserInfo = async () => {
-  const res = await getUserInfoAPI(userState);
+  const data: RequestGetOtherInfo = {
+    id: Number(router.currentRoute.value.query.id),
+  }
+  const res = await getOtherInfoAPI(data, userState);
   // 获取个人信息
   if (res.data.status === 0) {
     user.articleNum = res.data.data.articleNum;
@@ -103,6 +105,7 @@ const getUserInfo = async () => {
     user.description = res.data.data.description;
     user.followedNum = res.data.data.followedNum;
     user.followerNum = res.data.data.followerNum;
+    user.followed = res.data.data.followed;
   }
 }
 
@@ -142,21 +145,21 @@ onMounted(() => {
             <span class="description">{{ user.description }}</span>
           </div>
           <div v-show="Number(router.currentRoute.value.query.id) !== userState.userId" class="attentionButton">
-            <n-button v-if="user.followed" @click="addOrRemoveAttention(1)" color="#39c5bb" block>
-              <template #icon>
-                <n-icon>
-                  <add-circle />
-                </n-icon>
-              </template>
-              关注
-            </n-button>
-            <n-button v-else color="#8E2C2D" @click="addOrRemoveAttention(2)" block>
+            <n-button v-if="user.followed" color="#C70002" @click="addOrRemoveAttention(2)" block>
               <template #icon>
                 <n-icon>
                   <remove-circle />
                 </n-icon>
               </template>
               取消关注
+            </n-button>
+            <n-button v-else @click="addOrRemoveAttention(1)" color="#39c5bb" block>
+              <template #icon>
+                <n-icon>
+                  <add-circle />
+                </n-icon>
+              </template>
+              关注
             </n-button>
           </div>
         </div>
@@ -180,11 +183,19 @@ onMounted(() => {
             </n-icon> <b>个人信息</b></span>
         </div>
         <div class="infoBox">
-          <div class="boxContent" id="attention" @click="routeTo(5)">
+          <div v-if="Number(router.currentRoute.value.query.id) === userState.userId" class="boxContent" id="attention" @click="routeTo(5)">
             <div class="title">关注数</div>
             <div class="content">{{ user.followedNum }}</div>
           </div>
-          <div class="boxContent" id="fans" @click="routeTo(6)">
+          <div v-else style="color: rgba(255,255,255,0.7);">
+            <div class="title">关注数</div>
+            <div class="content">{{ user.followedNum }}</div>
+          </div>
+          <div v-if="Number(router.currentRoute.value.query.id) === userState.userId" class="boxContent" id="fans" @click="routeTo(6)">
+            <div class="title">粉丝数</div>
+            <div class="content">{{ user.followerNum }}</div>
+          </div>
+          <div v-else style="color: rgba(255,255,255,0.7);" id="blog">
             <div class="title">粉丝数</div>
             <div class="content">{{ user.followerNum }}</div>
           </div>

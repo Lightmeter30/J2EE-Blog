@@ -3,8 +3,8 @@ import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close, PricetagsSharp, Albums, Balloon } from '@vicons/ionicons5';
-import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI, checkArticleInFoldersAPI } from '@/request/api';
-import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite, RequestCheckArticleInFolders } from '@/request/requestData';
+import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI, checkArticleInFoldersAPI, deleteArticleFromCollectAPI } from '@/request/api';
+import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite, RequestCheckArticleInFolders, RequestDeleteFavorites } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { FavoriteFolder, Article, Comment, DataGetInfo, Theme, Label } from '@/request/responseData';
 import { darkTheme } from 'naive-ui';
@@ -81,7 +81,12 @@ async function comment() {
   const res = await addArticleCommentAPI(data, userStore);
   if (res.data.status === 0) {
     // TODO: API test
-    console.log(res.data.data);
+    myComment.value = '';
+    const comment = res.data.data;
+    comment.avatar = userStore.avatar;
+    comment.userName = userStore.userName;
+    blogData.commentList.push(comment);
+    // console.log(res.data.data);
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
@@ -128,18 +133,19 @@ async function getComments() {
   if (res.data.status === 0) {
     // TODO: API test
     // console.log(res.data.data);
-    blogData.commentList = res.data.data;
+    const commentList = res.data.data;
     const ids: number[] = [];
-    for (const item of res.data.data) {
-      ids.push(item.id);
+    for (const item of commentList) {
+      ids.push(item.userId);
     }
-    getBriefInfo(ids);
+    await getBriefInfo(ids, commentList);
+    blogData.commentList = commentList;
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
 };
 
-async function getBriefInfo(ids: number[]) {
+async function getBriefInfo(ids: number[], commentList: Comment[]) {
   const data: RequestGetOtherBriefInfos = {
     ids: ids
   };
@@ -147,8 +153,8 @@ async function getBriefInfo(ids: number[]) {
   if (res.data.status === 0) {
     const temp = res.data.data;
     for (let i = 0; i < temp.length; i++) {
-      blogData.commentList[i].avatar = temp[i].avatar;
-      blogData.commentList[i].userName = temp[i].name;
+      commentList[i].avatar = temp[i].avatar;
+      commentList[i].userName = temp[i].name;
     }
   } else {
     message.error(res.data.message)
@@ -236,7 +242,7 @@ onMounted(() => {
   getArticle();
   getComments();
   getAllFolders();
-  checkArticleInFolders();
+  // checkArticleInFolders();
 })
 </script>
 <template>
@@ -332,12 +338,12 @@ onMounted(() => {
                       {{ item.name }}
                     </span>
                   </div>
-                  <div v-if="blogData.isInFolder[index]" class="collectButton">
+                  <!-- <div v-if="blogData.isInFolder[index]" class="collectButton">
                     <n-button color="#8E2C2D" @click="addBlogToCollect(item.id, item.name)">
                       移除收藏
                     </n-button>
-                  </div>
-                  <div v-else class="collectButton">
+                  </div> -->
+                  <div class="collectButton">
                     <n-button color="#39c5bb" @click="addBlogToCollect(item.id, item.name)">
                       收藏
                     </n-button>
