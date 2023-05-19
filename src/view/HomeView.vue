@@ -7,14 +7,20 @@
       {{ userInfo.username }}
       {{ userInfo.userid }}
     </div> -->
-      <div class="homeContent">
-        <blog-card v-for="(item, index) in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
-          :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
-          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" :tags="homeData.tagsList[index]" :topic="homeData.topicList[index]" ></blog-card>
+      <div class="loading" v-if="loading">
+        <n-spin :size="150" stroke="#39c5bb" />
       </div>
-      <div class="homeFoot" v-show="homeData.total > 1" >
+      <div v-else class="homeContent">
+        <blog-card v-for="(item, index) in homeData.currentArticleList" :author="item.author"
+          :author-name="(item.authorName as string)" :card-type="1" :description="item.description"
+          :favorites-num="item.favoritesNum" :id="item.id" :title="item.title" :update-time="item.updateTime"
+          :comments-num="item.commentsNum" :tags="homeData.tagsList[index]"
+          :topic="homeData.topicList[index]"></blog-card>
+      </div>
+      <div class="homeFoot" v-show="homeData.total > 1">
         <n-config-provider :theme="darkTheme">
-          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="homeData.total"
+            show-quick-jumper>
             <template #goto>
               跳至
             </template>
@@ -22,7 +28,7 @@
         </n-config-provider>
       </div>
       <div style="height: 20px;"></div>
-        <n-back-top :right="'1.3%'" />
+      <n-back-top :right="'1.3%'" />
     </div>
   </div>
 </template>
@@ -38,6 +44,7 @@ import SideContent from '@/components/SideContent.vue';
 const message = useMessage();
 const router = useRouter();
 const nowPage = ref(1);
+const loading = ref(true);
 
 type homeDataType = {
   currentArticleList: Article[],
@@ -54,6 +61,7 @@ const homeData = reactive<homeDataType>({
 });
 
 const changePage = async (page: number) => {
+  loading.value = true;
   nowPage.value = page;
   const data: RequestGetPageArticles = {
     currentPage: page,
@@ -64,8 +72,8 @@ const changePage = async (page: number) => {
     console.log(res);
     const currentArticleList = res.data.data;
     const author: Array<number> = [];
-    const ids: number[] = []; 
-    for(let i = 0; i < currentArticleList.length; i++) {
+    const ids: number[] = [];
+    for (let i = 0; i < currentArticleList.length; i++) {
       author.push(currentArticleList[i].author);
       ids.push(currentArticleList[i].id);
     }
@@ -73,8 +81,9 @@ const changePage = async (page: number) => {
     await getThemeList(ids);
     await getLabelList(ids);
     homeData.currentArticleList = currentArticleList;
+    loading.value = false;
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 }
 
@@ -83,9 +92,9 @@ async function getUserName(ids: number[], currentArticleList: Article[]) {
     ids: ids
   }
   const res = await getUserNamesAPI(data);
-  if(res.data.status == 0) {
+  if (res.data.status == 0) {
     const author = res.data.data;
-    for(let i = 0; i < author.length; i++) {
+    for (let i = 0; i < author.length; i++) {
       currentArticleList[i].authorName = author[i];
     }
   } else {
@@ -98,7 +107,7 @@ async function getThemeList(ids: number[]) {
     ids: ids
   };
   const res = await getArticleThemeListAPI(data);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     homeData.topicList = res.data.data;
   } else {
     console.error(res.data.message);
@@ -110,7 +119,7 @@ async function getLabelList(ids: number[]) {
     ids: ids
   };
   const res = await getArticleLabelListAPI(data);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     homeData.tagsList = res.data.data;
   } else {
     console.error(res.data.message);
@@ -123,7 +132,7 @@ const init = async () => {
     homeData.total = res.data.data;
     changePage(1);
   } else {
-    message.error(res.data.message, {duration: 1200});
+    message.error(res.data.message, { duration: 1200 });
   }
 };
 
@@ -172,5 +181,11 @@ onMounted(() => {
   &::-webkit-scrollbar-thumb {
     background-color: $scrollbar-color;
   }
+}
+
+.loading {
+  @include center;
+  position: relative;
+  top: 200px;
 }
 </style>

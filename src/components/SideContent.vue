@@ -86,13 +86,13 @@ const sideContentData = reactive<sideContentType>({
 });
 
 function tagClick(id: number) {
-  console.log(id);
-  router.push({path: "/tags", query:{ id: id }});
+  const newPage = router.resolve({path: "/tags", query:{ id: id }});
+  window.open(newPage.href, '_blank');
 }
 
 function toGroup(id: number) {
-  console.log(`to group ${id}`);
-  router.push({path: "/group", query:{ id: id }});
+  const newPage = router.resolve({path: "/group", query:{ id: id }});
+  window.open(newPage.href, '_blank');
 }
 
 const getUserCardInfo = async () => {

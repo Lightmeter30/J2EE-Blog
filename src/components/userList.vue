@@ -16,6 +16,7 @@ const props = defineProps<userListType>();
 const myIsAttention = ref(0);
 const message = useMessage();
 const userState = useUserStore();
+const router = useRouter();
 
 function addOrRemoveAttention(key: number) {
   console.log('addAttention', key);
@@ -52,6 +53,11 @@ async function removeAttention() {
   }
 }
 
+function toPersonal() {
+  const newPage = router.resolve({ path: '/space/home', query: { id: props.id } });
+  window.open(newPage.href, '_blank');
+}
+
 </script>
 
 <template>
@@ -61,11 +67,11 @@ async function removeAttention() {
       <n-avatar round :size="60" :src="userState.staticHead + avatar" />
     </div>
     <div class="title">
-      <span class="name"><b>{{ name }}</b></span><br/>
+      <span class="name" @click="toPersonal" ><b>{{ name }}</b></span><br/>
       <span class="description">{{ description }}</span>
     </div>
     <div class="attention">
-      <n-button v-if="(myIsAttention === 0 ? isAttention : myIsAttention === 1 )" color="#39c5bb" @click="addOrRemoveAttention(2)" >
+      <n-button v-if="(myIsAttention === 0 ? isAttention : myIsAttention === 1 )" color="#C70002" @click="addOrRemoveAttention(2)" >
         <template #icon>
           <n-icon>
             <remove-circle />

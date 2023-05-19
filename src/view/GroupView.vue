@@ -2,19 +2,20 @@
   <div class="scrollMe">
     <SideContent />
     <div class="searchView">
-      <!-- <div @click="hClick" class="button hvr-bounce-to-left" >home</div>
-    <div>
-      {{ userInfo.username }}
-      {{ userInfo.userid }}
-    </div> -->
-      <div class="searchContent">
-        <blog-card v-for="(item, index) in groupData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
-          :card-type="1" :description="item.description" :favorites-num="item.favoritesNum" :id="item.id"
-          :title="item.title" :update-time="item.updateTime" :comments-num="item.commentsNum" :tags="groupData.tagsList[index]" :topic="groupData.topicList[index]" ></blog-card>
+      <div class="loading" v-if="loading">
+        <n-spin :size="150" stroke="#39c5bb" />
+      </div>
+      <div v-else class="searchContent">
+        <blog-card v-for="(item, index) in groupData.currentArticleList" :author="item.author"
+          :author-name="(item.authorName as string)" :card-type="1" :description="item.description"
+          :favorites-num="item.favoritesNum" :id="item.id" :title="item.title" :update-time="item.updateTime"
+          :comments-num="item.commentsNum" :tags="groupData.tagsList[index]"
+          :topic="groupData.topicList[index]"></blog-card>
       </div>
       <div class="searchFoot" v-show="groupData.total > 1">
         <n-config-provider :theme="darkTheme">
-          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="groupData.total" show-quick-jumper>
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="groupData.total"
+            show-quick-jumper>
             <template #goto>
               跳至
             </template>
@@ -41,6 +42,7 @@ const message = useMessage();
 const router = useRouter();
 const searchStore = useSearchStore();
 const nowPage = ref(1);
+const loading = ref(true);
 // import 'hover.css';
 // import { loginAPI } from '@/request/api';
 // import { RequestLogin } from '@/request/requestData';
@@ -67,7 +69,7 @@ async function changePage(page: number) {
     currentPage: page,
   };
   const res = await getPageThemeArticleIdsAPI(data);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     getArticle(res.data.data);
   } else {
     console.log(res.data);
@@ -75,16 +77,17 @@ async function changePage(page: number) {
 }
 
 async function getArticle(ids: number[]) {
+  loading.value = true;
   const data: RequestGetByIdList = {
     ids: ids
   }
   const res = await getArticleByIdListAPI(data);
-  if( res.data.status === 0 ) {
+  if (res.data.status === 0) {
     const currentArticleList = res.data.data;
     // TODO: 查询作者姓名
     const author: number[] = [];
     const ids: number[] = [];
-    for( let i = 0; i < currentArticleList.length; i++) {
+    for (let i = 0; i < currentArticleList.length; i++) {
       author[i] = currentArticleList[i].author;
       ids[i] = currentArticleList[i].id;
     }
@@ -92,6 +95,7 @@ async function getArticle(ids: number[]) {
     await getThemeList(ids);
     await getLabelList(ids);
     groupData.currentArticleList = currentArticleList;
+    loading.value = false;
   } else {
     console.log(res.data);
   }
@@ -102,9 +106,9 @@ async function getUserName(ids: number[], currentArticleList: Article[]) {
     ids: ids
   }
   const res = await getUserNamesAPI(data);
-  if(res.data.status == 0) {
+  if (res.data.status == 0) {
     const author = res.data.data;
-    for(let i = 0; i < author.length; i++) {
+    for (let i = 0; i < author.length; i++) {
       currentArticleList[i].authorName = author[i];
     }
   } else {
@@ -118,7 +122,7 @@ async function getThemeList(ids: number[]) {
     ids: ids
   };
   const res = await getArticleThemeListAPI(data);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     groupData.topicList = res.data.data;
   } else {
     console.error(res.data.message);
@@ -130,7 +134,7 @@ async function getLabelList(ids: number[]) {
     ids: ids
   };
   const res = await getArticleLabelListAPI(data);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     groupData.tagsList = res.data.data;
   } else {
     console.error(res.data.message);
@@ -142,12 +146,21 @@ async function init() {
     themeId: Number(router.currentRoute.value.query.id),
   }
   const res = await getThemeArticlePageNumAPI(data);
-  if(res.data.status === 0) {
+  if (res.data.status === 0) {
     groupData.total = res.data.data;
   } else {
     console.log(res.data);
   }
 }
+
+watch(
+  () => router.currentRoute.value.query.id,
+  (newValue, oldValue) => {
+    // console.log(newValue, oldValue);
+    init();
+    changePage(1);
+  },
+);
 
 onMounted(() => {
   init();
@@ -195,5 +208,10 @@ onMounted(() => {
   &::-webkit-scrollbar-thumb {
     background-color: $scrollbar-color;
   }
+}
+.loading {
+  @include center;
+  position: relative;
+  top: 200px;
 }
 </style>

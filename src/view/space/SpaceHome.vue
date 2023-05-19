@@ -190,4 +190,5 @@ onMounted(() => {
   @include center;
   position: relative;
   top: 200px;
-}</style>
+}
+</style>
