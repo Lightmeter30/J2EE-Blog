@@ -16,6 +16,7 @@ const message = useMessage();
 const dialog = useDialog();
 const nowPage = ref(1);
 let nowFolderID = -1;
+let nowFolderIndex = 0;
 
 type collectDataType = {
   currentArticleList: FavoriteArticle[],
@@ -43,6 +44,10 @@ function showDialog() {
   showModal.value = true;
 }
 
+function removeCollection() {
+  collectData.collectFolderList[nowFolderIndex].favoritesNum --;
+}
+
 function changeSelectCollect(id: number, index: number) {
   if (collect === undefined) {
     collect = document.getElementById(`folder0`) as HTMLElement;
@@ -62,6 +67,7 @@ function changeSelectCollect(id: number, index: number) {
   // change collect now
   nowPage.value = 1;
   nowFolderID = id;
+  nowFolderIndex = index;
   loading.value = true;
   getFolderPageNum();
   getOnePage(nowPage.value);
@@ -245,7 +251,7 @@ onMounted(() => {
             :favorites-num="item.article.favoritesNum" :id="item.article.id" :title="item.article.title"
             :update-time="item.article.updateTime" :comments-num="item.article.commentsNum"
             :favorite-id="item.favorite.id" :tags="collectData.tagsList[index]"
-            :topic="collectData.topicList[index]"></blog-card>
+            :topic="collectData.topicList[index]" @remove-collect="removeCollection" ></blog-card>
         </div>
         <div class="collectFoot" v-show="collectData.total > 1">
           <n-config-provider :theme="darkTheme">

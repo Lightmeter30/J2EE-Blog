@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getOtherBriefInfosAPI } from "@/request/api";
+import { getOtherBriefInfosAPI, getUserFollowerListAPI } from "@/request/api";
 import { RequestGetOtherBriefInfos } from "@/request/requestData";
 import { BriefInfo } from "@/request/responseData";
 import { useUserStore } from "@/stores/user";
@@ -24,7 +24,17 @@ function changePage(page: number) {
 const loading = ref(true);
 
 async function init() {
-  console.log(`111`);
+  const res = await getUserFollowerListAPI(userState);
+  if(res.data.status === 0) {
+    if(res.data.data.length === 0) {
+      loading.value = false;
+      return;
+    }
+    fansData.ids = res.data.data;
+    getBriefInfo(fansData.ids);
+  } else {
+    console.log(res.data.message);
+  }
 }
 
 async function getBriefInfo(ids:number[]) {
@@ -41,7 +51,6 @@ async function getBriefInfo(ids:number[]) {
 }
 
 onMounted(() => {
-  console.log(router.currentRoute.value);
   init();
 })
 </script>
@@ -52,7 +61,11 @@ onMounted(() => {
       <n-spin :size="150" stroke="#39c5bb" />
     </div>
     <div v-else>
-      <div class="listContent">
+      <div v-if="fansData.userList.length === 0" class="empty">
+        <img style="height: 300px;margin-top: 100px;" src="@/assets/img/null-search.svg" />
+        <div>您还没有粉丝哦!</div>
+      </div>
+      <div v-else class="listContent">
         <user-list v-for="(item, index) in fansData.userList" :id="fansData.ids[index]" :avatar="item.avatar" :name="item.name" :description="item.description" :is-attention="item.followed" />
       </div>
       <div class="listFoot" v-show="false" >
@@ -76,7 +89,11 @@ onMounted(() => {
   margin-bottom: 40px;
   min-height: 550px;
 
-  .listContent {}
+  .empty {
+    font-size: 20px;
+    color: $github-header-text;
+    text-align: center;
+  }
 
   .listFoot {
     background-color: $github-card-background;

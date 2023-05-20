@@ -115,7 +115,7 @@ function toTags(id: number) {
   window.open(newPage.href, '_blank');
 }
 
-async function addBlogToCollect(collectID: number, collectName: string) {
+async function addBlogToCollect(collectID: number, collectName: string, index: number) {
   console.log(collectID);
   const data: RequestAddFavorite = {
     articleId: Number(router.currentRoute.value.query.id),
@@ -123,6 +123,8 @@ async function addBlogToCollect(collectID: number, collectName: string) {
   };
   const res = await addArticleToCollectAPI(data, userStore);
   if (res.data.status === 0) {
+    blogData.isInFolder[index] = res.data.data;
+    blogData.blog.favoritesNum ++;
     message.success(`成功添加到${collectName}!`, { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
@@ -136,6 +138,7 @@ async function deleteBlogToCollect(index: number, name: string) {
   const res = await deleteArticleFromCollectAPI(data, userStore);
   if(res.data.status === 0) {
     blogData.isInFolder[index] = -1;
+    blogData.blog.favoritesNum --;
     message.success(`成功从${name}删除!`, { duration: 1200 });
   } else {
     console.error(res.data.message);
@@ -356,12 +359,12 @@ onMounted(() => {
                     </span>
                   </div>
                   <div v-if="blogData.isInFolder[index] !== -1" class="collectButton">
-                    <n-button color="#8E2C2D" @click="deleteBlogToCollect(index, item.name)">
+                    <n-button style="color: rgba(255,255,255,0.8)" color="#8E2C2D" @click="deleteBlogToCollect(index, item.name)">
                       移除收藏
                     </n-button>
                   </div>
                   <div v-else class="collectButton">
-                    <n-button color="#39c5bb" @click="addBlogToCollect(item.id, item.name)">
+                    <n-button style="color: rgba(255,255,255,0.8)" color="#39c5bb" @click="addBlogToCollect(item.id, item.name, index)">
                       收藏
                     </n-button>
                   </div>

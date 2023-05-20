@@ -720,6 +720,21 @@ export const getUserFollowListAPI = (userState: any): Res<responseTypes.Response
 }
 
 /**
+ * 用于获取当前用户的粉丝列表
+ * 
+ * url: follow/getUserFollower
+ * 
+ * 
+* */
+
+export const getUserFollowerListAPI = (userState: any): Res<responseTypes.ResponseGetUserFollowed> => {
+  return axios.post("follow/getUserFollower", undefined, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
  * 用于取消关注某个用户
  * 
  * url: follow/delete

@@ -22,11 +22,12 @@ interface ArticleCard {
   CommentOrderNum?: number; // 只在某一个博客的内容界面需要
   favoriteId?: number; // 收藏夹中某一收藏的id,在删除时调用
   topic: Theme;
-  tags: Label[]; 
+  tags: Label[];
 };
 
 const isDelete = ref(false);
 const props = defineProps<ArticleCard>();
+const emits = defineEmits(['removeCollect']);
 function toBlogView() {
   // console.log('toBlogView');
   const newPage = router.resolve({ path: '/blog', query: { id: props.id } });
@@ -79,6 +80,7 @@ function removeFromCollect() {
       }
       const res = await deleteArticleFromCollectAPI(data, userState);
       if (res.data.status === 0) {
+        emits('removeCollect');
         isDelete.value = true;
         message.success('移除收藏夹成功', { duration: 1200 });
       } else {
