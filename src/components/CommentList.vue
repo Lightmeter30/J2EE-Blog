@@ -1,14 +1,5 @@
 <script setup lang="ts">
-// import { faker } from '@faker-js/faker';
-import { Comment } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
-// const comment = {
-//   id: 1,
-//   name: faker.name.firstName(),
-//   avatar: faker.image.avatar(),
-//   time: faker.date.birthdate(),
-//   comment: '114,514,1919810,你是一个一个,114,514,1919810,你是一个一个114,514,1919810,你是一个一个',
-// }
 const router = useRouter();
 const userState = useUserStore();
 interface CommentType {
@@ -23,7 +14,7 @@ interface CommentType {
 }; 
 const props = defineProps<CommentType>();
 function toPersonalPage() {
-  const newPage = router.resolve({ path: '/space/home', query: { id: props.id } });
+  const newPage = router.resolve({ path: '/space/home', query: { id: props.userId } });
   window.open(newPage.href, '_blank');
 }
 </script>
@@ -51,6 +42,10 @@ function toPersonalPage() {
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
+
+    &:hover {
+      background-color: $github-card-hover;
+    }
     .commentHead {
       display: flex;
       height: 70px;

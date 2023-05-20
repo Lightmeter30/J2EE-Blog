@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import { darkTheme } from "naive-ui";
 import { useUserStore } from '@/stores/user';
-import { getUserDraftPageNumAPI, getUserDraftPageAPI } from '@/request/api';
-import { RequestGetUserPage, RequestGetUserPageNum } from '@/request/requestData';
-import { Draft } from '@/request/responseData';
+import { getUserDraftPageNumAPI, getUserDraftPageAPI, getDraftLabelListAPI, getDraftThemeListAPI, getUserNamesAPI } from '@/request/api';
+import { RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames, RequestGetUserPage, RequestGetUserPageNum } from '@/request/requestData';
+import { Draft, Theme, Label } from '@/request/responseData';
 const message = useMessage();
 const loading = ref(true);
 const userState = useUserStore();
 type draftDataType = {
   draftList: Draft[];
   total: number;
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
 };
 
 const draftData = reactive<draftDataType>({
   draftList: [],
   total: 1,
+  topicList: [],
+  tagsList: [],
 });
 
 function changePage(page: number) {
@@ -30,13 +34,48 @@ async function getDraftPage(page: number) {
   const res = await getUserDraftPageAPI(data, userState);
   if (res.data.status === 0) {
     // TODO:
-    console.log(res.data.data);
-    draftData.draftList = res.data.data;
+    // console.log(res.data.data);
+    if(res.data.data.length === 0) {
+      loading.value = false;
+      return;
+    }
+    const draftList = res.data.data;
+    const ids: number[] = [];
+    for(let i = 0; i < draftList.length; i++) {
+      ids.push(draftList[i].id);
+    }
+    await getLabelList(ids);
+    await getThemeList(ids);
+    draftData.draftList = draftList;
     loading.value = false;
   } else {
     message.error(res.data.message);
   }
 };
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getDraftThemeListAPI(data, userState);
+  if(res.data.status === 0) {
+    draftData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getDraftLabelListAPI(data, userState);
+  if(res.data.status === 0) {
+    draftData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
 
 onMounted(async () => {
   const data: RequestGetUserPageNum = {
@@ -64,8 +103,8 @@ onMounted(async () => {
       </div>
       <div v-else>
         <div class="draftContent">
-          <draft-card v-for="item in draftData.draftList" :author="item.author" :description="item.description"
-            :id="item.id" :title="item.title" :update-time="item.updateTime"></draft-card>
+          <draft-card v-for="(item, index) in draftData.draftList" :author="item.author" :description="item.description"
+            :id="item.id" :title="item.title" :update-time="item.updateTime" :tags="draftData.tagsList[index]" :topic="draftData.topicList[index]"></draft-card>
         </div>
         <div class="draftFoot" v-show="draftData.total !== 1">
           <n-config-provider :theme="darkTheme">

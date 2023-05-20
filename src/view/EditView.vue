@@ -4,11 +4,10 @@ import 'md-editor-v3/lib/style.css';
 import type { FormRules } from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
 import { darkTheme } from "naive-ui";
-import { RequestAddArticle, RequestGetTheme, RequestGetLabels, RequestUploadImg, RequestUpdateArticle, RequestGetArticle, RequestAddDraft, RequestUpdateDraft, RequestGetDraft } from '@/request/requestData';
+import { RequestAddArticle, RequestGetTheme, RequestGetLabels, RequestUploadImg, RequestUpdateArticle, RequestGetArticle, RequestAddDraft, RequestUpdateDraft, RequestGetDraft, RequestDeleteDraft } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { useUserStore } from '@/stores/user';
-import { updateArticleAPI, getArticleThemeAPI, addArticleAPI, getArticleLabelsAPI, getArticleAPI, uploadImgAPI, addDraftAPI, updateDraftAPI, getDraftAPI } from '@/request/api';
-import { VolumeHigh } from '@vicons/ionicons5';
+import { updateArticleAPI, getArticleThemeAPI, addArticleAPI, getArticleLabelsAPI, getArticleAPI, uploadImgAPI, addDraftAPI, updateDraftAPI, getDraftAPI, publishDraftAPI, getDraftThemeAPI, getDraftLabelsAPI, deleteDraftAPI } from '@/request/api';
 
 let text = ref('');
 const router = useRouter();
@@ -50,7 +49,7 @@ const groupOptions = [
   },
   {
     value: 5,
-    label: '育儿' 
+    label: '育儿'
   },
   {
     value: 6,
@@ -174,10 +173,23 @@ const addArticle = async () => {
   if (res.data.status === 0) {
     // router.replace({path: '/blog', query: {code: res.data.code}});
     console.log(res);
+    router.replace({path: '/blog', query: {id: res.data.data}});
     message.success('发布成功!', { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
+};
+
+const publishDraft = async () => {
+  addArticle();
+  deleteDraft();
+};
+
+const deleteDraft = () => {
+  const data: RequestDeleteDraft = {
+    id: blog.draftID,
+  }
+  deleteDraftAPI(data, userState);
 };
 
 const updateArticle = async () => {
@@ -233,7 +245,7 @@ async function updateDraft() {
   const res = await updateDraftAPI(data, userState);
   if (res.data.status === 0) {
     console.log(res);
-    message.success('发布成功!', { duration: 1200 });
+    message.success('已保存到草稿箱!', { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
@@ -244,13 +256,17 @@ const upload = () => {
     message.error('文章标题,简介或内容不能为空!', { duration: 1200 });
     return;
   }
-  if (articleType === 0 || articleType === 1) {
+  if (articleType === 0) {
     addArticle();
-  } else if(articleType === 2) {
+  } else if(articleType === 1){
+    addArticle();
+    deleteDraft();
+  } else if (articleType === 2) {
     updateArticle();
-  } else if(articleType === 3) {
+  } else if (articleType === 3) {
     // TODO: 此时应该先更新文章,再删除对应的草稿
     updateArticle();
+    deleteDraft();
   }
 }
 
@@ -285,14 +301,34 @@ const getArticleInfo = async () => {
 }
 // id表示要查询的文章/草稿ID;type=1为草稿,type=2为文章
 const getGroupAndTags = async (id: number, type: number) => {
-  if(type === 1) {
-    // TODO: draft topic and tags
-  } else if(type === 2) {
+  if (type === 1) {
+    const data: RequestGetTheme = {
+      id: id,
+    }
+    const res = await getDraftThemeAPI(data, userState);
+    if (res.data.status === 0) {
+      blog.Group = res.data.data.id;
+    } else {
+      message.error(res.data.message);
+    }
+    const data1: RequestGetLabels = {
+      id: id
+    };
+    const res1 = await getDraftLabelsAPI(data1, userState);
+    if (res1.data.status === 0) {
+      const labels = res1.data.data;
+      for (let i = 0; i < labels.length; i++) {
+        blog.tags[i] = labels[i].name;
+      }
+    } else {
+      message.error(res.data.message);
+    }
+  } else if (type === 2) {
     const data: RequestGetTheme = {
       id: id,
     }
     const res = await getArticleThemeAPI(data);
-    if(res.data.status === 0) {
+    if (res.data.status === 0) {
       blog.Group = res.data.data.id;
     } else {
       message.error(res.data.message);
@@ -301,9 +337,9 @@ const getGroupAndTags = async (id: number, type: number) => {
       id: id
     };
     const res1 = await getArticleLabelsAPI(data1);
-    if(res1.data.status === 0) {
+    if (res1.data.status === 0) {
       const labels = res1.data.data;
-      for(let i = 0; i < labels.length; i++) {
+      for (let i = 0; i < labels.length; i++) {
         blog.tags[i] = labels[i].name;
       }
     } else {
@@ -322,6 +358,7 @@ async function getDraftInfo() {
     blog.title = res.data.data.title;
     blog.description = res.data.data.description;
     text.value = res.data.data.content as string;
+    getGroupAndTags(blog.draftID, 1);
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
@@ -357,7 +394,7 @@ onMounted(() => {
       <n-config-provider :theme="darkTheme">
         <div class="tagAndGroup">
           <div class="group">
-            <div>博客分组<span style="color: #d03050;" > *</span></div>
+            <div>博客分组<span style="color: #d03050;"> *</span></div>
             <n-select v-model:value="blog.Group" :options="groupOptions" />
           </div>
           <div class="tags">

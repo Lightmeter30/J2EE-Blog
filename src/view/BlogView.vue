@@ -3,8 +3,8 @@ import 'md-editor-v3/lib/style.css';
 import MdEditor from 'md-editor-v3';
 import { useUserStore } from '@/stores/user';
 import { Send, Person, Time, Star, Close, PricetagsSharp, Albums, Balloon } from '@vicons/ionicons5';
-import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI } from '@/request/api';
-import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite } from '@/request/requestData';
+import { getArticleAPI, getArticleThemeAPI, getArticleLabelsAPI, getArticleCommentsAPI, getUserAllCollectAPI, addArticleCommentAPI, addArticleToCollectAPI, getOtherInfoAPI, getOtherBriefInfosAPI, checkArticleInFoldersAPI, deleteArticleFromCollectAPI } from '@/request/api';
+import { RequestGetArticle, RequestGetTheme, RequestGetLabels, RequestGetOtherBriefInfos, RequestGetOtherInfo, RequestGetArticleComments, RequestAddComment, RequestAddFavorite, RequestCheckArticleInFolders, RequestDeleteFavorites } from '@/request/requestData';
 import { getNowTime } from '@/utils/validate';
 import { FavoriteFolder, Article, Comment, DataGetInfo, Theme, Label } from '@/request/responseData';
 import { darkTheme } from 'naive-ui';
@@ -24,6 +24,7 @@ type blogDataType = {
   blog: Article,
   cardInfo: DataGetInfo,
   collectList: FavoriteFolder[],
+  isInFolder: number[],
   commentList: Comment[],
   topic: Theme,
   tags: Label[]
@@ -59,7 +60,8 @@ const blogData = reactive<blogDataType>({
     id: 1,
     name: '',
   },
-  tags: []
+  tags: [],
+  isInFolder: [],
 });
 const userStore = useUserStore();
 const route = useRoute();
@@ -79,7 +81,12 @@ async function comment() {
   const res = await addArticleCommentAPI(data, userStore);
   if (res.data.status === 0) {
     // TODO: API test
-    console.log(res.data.data);
+    myComment.value = '';
+    const comment = res.data.data;
+    comment.avatar = userStore.avatar;
+    comment.userName = userStore.userName;
+    blogData.commentList.push(comment);
+    // console.log(res.data.data);
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
@@ -92,6 +99,10 @@ function showDialog() {
 function closeModal() {
   showModal.value = false;
   console.log('closeModal');
+}
+
+function attentionMe(isAttention: boolean) {
+  blogData.cardInfo.followed = isAttention;
 }
 
 function toTheme() {
@@ -118,6 +129,19 @@ async function addBlogToCollect(collectID: number, collectName: string) {
   }
 }
 
+async function deleteBlogToCollect(index: number, name: string) {
+  const data: RequestDeleteFavorites = {
+    id: blogData.isInFolder[index],
+  };
+  const res = await deleteArticleFromCollectAPI(data, userStore);
+  if(res.data.status === 0) {
+    blogData.isInFolder[index] = -1;
+    message.success(`成功从${name}删除!`, { duration: 1200 });
+  } else {
+    console.error(res.data.message);
+  }
+}
+
 async function getComments() {
   const data: RequestGetArticleComments = {
     articleId: Number(router.currentRoute.value.query.id)
@@ -126,18 +150,19 @@ async function getComments() {
   if (res.data.status === 0) {
     // TODO: API test
     // console.log(res.data.data);
-    blogData.commentList = res.data.data;
+    const commentList = res.data.data;
     const ids: number[] = [];
-    for (const item of res.data.data) {
-      ids.push(item.id);
+    for (const item of commentList) {
+      ids.push(item.userId);
     }
-    getBriefInfo(ids);
+    await getBriefInfo(ids, commentList);
+    blogData.commentList = commentList;
   } else {
     message.error(res.data.message, { duration: 1200 });
   }
 };
 
-async function getBriefInfo(ids: number[]) {
+async function getBriefInfo(ids: number[], commentList: Comment[]) {
   const data: RequestGetOtherBriefInfos = {
     ids: ids
   };
@@ -145,8 +170,8 @@ async function getBriefInfo(ids: number[]) {
   if (res.data.status === 0) {
     const temp = res.data.data;
     for (let i = 0; i < temp.length; i++) {
-      blogData.commentList[i].avatar = temp[i].avatar;
-      blogData.commentList[i].userName = temp[i].name;
+      commentList[i].avatar = temp[i].avatar;
+      commentList[i].userName = temp[i].name;
     }
   } else {
     message.error(res.data.message)
@@ -190,6 +215,18 @@ const getAllFolders = async () => {
   }
 };
 
+const checkArticleInFolders = async () => {
+  const data: RequestCheckArticleInFolders = {
+    articleId: Number(router.currentRoute.value.query.id)
+  }
+  const res = await checkArticleInFoldersAPI(data, userStore);
+  if(res.data.status === 0) {
+    blogData.isInFolder = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+};
+
 const getGroupAndTags = async (id: number) => {
   const data: RequestGetTheme = {
     id: id,
@@ -222,6 +259,7 @@ onMounted(() => {
   getArticle();
   getComments();
   getAllFolders();
+  checkArticleInFolders();
 })
 </script>
 <template>
@@ -230,7 +268,7 @@ onMounted(() => {
       <div class="card">
         <user-card :id="blogData.blog.author" :attention="blogData.cardInfo.followedNum"
           :blog="blogData.cardInfo.articleNum" :fans="blogData.cardInfo.followerNum" :name="blogData.cardInfo.name"
-          :is-attention="(blogData.cardInfo.followed as boolean)" :url="blogData.cardInfo.avatar"></user-card>
+          :is-attention="(blogData.cardInfo.followed as boolean)" :url="blogData.cardInfo.avatar" @attention-me="attentionMe" ></user-card>
         <div class="sideCard">
           <div class="sideCardTitle">
             <n-icon color="#C70002" style="position: relative; top: 3px;"><Balloon/></n-icon>
@@ -310,14 +348,19 @@ onMounted(() => {
               </div>
             </template>
             <div class="collectList">
-              <div v-for="item in blogData.collectList">
+              <div v-for="(item, index) in blogData.collectList">
                 <div class="collectItem">
                   <div class="title">
                     <span>
                       {{ item.name }}
                     </span>
                   </div>
-                  <div class="collectButton">
+                  <div v-if="blogData.isInFolder[index] !== -1" class="collectButton">
+                    <n-button color="#8E2C2D" @click="deleteBlogToCollect(index, item.name)">
+                      移除收藏
+                    </n-button>
+                  </div>
+                  <div v-else class="collectButton">
                     <n-button color="#39c5bb" @click="addBlogToCollect(item.id, item.name)">
                       收藏
                     </n-button>

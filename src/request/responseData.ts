@@ -129,6 +129,7 @@ export interface ResponseUpdateAvatar {
   code: number;
   message: string;
   status: number;
+  data: string;
 }
 
 // /api/user/updatePassword

@@ -3,7 +3,7 @@ import { Person, Time, Star, ChatboxEllipses, Pencil, Trash, PricetagsSharp, Alb
 import { useMessage, useDialog } from 'naive-ui';
 import { RequestDeleteArticle, RequestDeleteFavorites } from '@/request/requestData';
 import { deleteArticleAPI, deleteArticleFromCollectAPI } from '@/request/api';
-import { Article } from '@/request/responseData';
+import { Article, Theme, Label } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const dialog = useDialog();
@@ -21,31 +21,12 @@ interface ArticleCard {
   updateTime: string;
   CommentOrderNum?: number; // 只在某一个博客的内容界面需要
   favoriteId?: number; // 收藏夹中某一收藏的id,在删除时调用
+  topic: Theme;
+  tags: Label[]; 
 };
+
 const isDelete = ref(false);
 const props = defineProps<ArticleCard>();
-const tags = [
-  {
-    id: 1,
-    name: 'vue'
-  },
-  {
-    id: 2,
-    name: 'html'
-  },
-  {
-    id: 3,
-    name: 'css'
-  },
-  {
-    id: 4,
-    name: 'SQL'
-  },
-  {
-    id: 5,
-    name: 'python'
-  },
-];
 function toBlogView() {
   // console.log('toBlogView');
   const newPage = router.resolve({ path: '/blog', query: { id: props.id } });
@@ -107,6 +88,16 @@ function removeFromCollect() {
   })
 };
 
+function toTopic() {
+  const nowPage = router.resolve({ path: '/group', query: { id: props.topic.id } });
+  window.open(nowPage.href, '_blank');
+}
+
+function toTags(id: number) {
+  const nowPage = router.resolve({ path: '/tags', query: { id: id } });
+  window.open(nowPage.href, '_blank');
+}
+
 </script>
 
 <template>
@@ -118,18 +109,18 @@ function removeFromCollect() {
       {{ description }}
     </div>
     <div class="tags">
-      <span class="author topic">
+      <span class="author topic" @click="toTopic" >
         <n-icon style="position: relative; top: 3px;padding-right: 4px;">
           <Albums />
         </n-icon>
-        <span>Computer Science</span></span> &nbsp;
+        <span>{{ topic.name }}</span></span> &nbsp;
       <span v-show="tags.length !== 0" >
         <b>|</b>&nbsp;
         <n-icon style="position: relative; top: 3px;padding-right: 8px;">
           <PricetagsSharp />
         </n-icon>
         <span v-for="(item, index) in tags" class="tagItem">
-          <span class="name">{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
+          <span class="name" @click="toTags(item.id)" >{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
         </span>
       </span>
     </div>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import { RequestGetUserPageNum, RequestGetUserPage, RequestGetOtherBriefInfos,  } from '@/request/requestData';
-import { Article } from '@/request/responseData';
-import { getOtherBriefInfosAPI, getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
+import { RequestGetUserPageNum, RequestGetUserPage, RequestGetOtherBriefInfos, RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames, } from '@/request/requestData';
+import { Article, Theme, Label } from '@/request/responseData';
+import { getArticleLabelListAPI, getArticleThemeListAPI, getOtherBriefInfosAPI, getUserNamesAPI, getUserPageArticlesAPI, getUserPageNumAPI } from '@/request/api';
 import { useUserStore } from '@/stores/user';
 import { darkTheme } from 'naive-ui';
 const message = useMessage();
@@ -13,27 +13,21 @@ const loading = ref(true);
 type homeDataType = {
   currentArticleList: Article[],
   total: number,
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
 };
 
 const homeData = reactive<homeDataType>({
   currentArticleList: [],
   total: 1,
+  topicList: [
+  ],
+  tagsList: [
+  ],
 });
 
-async function getBriefInfo(ids: number[]) {
-  const data: RequestGetOtherBriefInfos = {
-    ids: ids
-  };
-  const res = await getOtherBriefInfosAPI(data, userState);
-  if(res.data.status === 0) {
-    const temp = res.data.data;
-    for(let i = 0; i < temp.length; i++) {
-      homeData.currentArticleList[i].authorName = temp[i].name;
-    }
-  } else {
-    message.error(res.data.message)
-  }
-}
+
+
 
 const changePage = async (page: number) => {
   console.log(`to page ${page}`);
@@ -44,16 +38,64 @@ const changePage = async (page: number) => {
   const res = await getUserPageArticlesAPI(data, userState);
   if (res.data.status === 0) {
     // TODO: 接口对接
-    console.log(res);
-    homeData.currentArticleList = res.data.data;
-    const ids: number[] = [];
-    for(const item of res.data.data) {
-      ids.push(item.author);
+    // console.log(res);
+    if(res.data.data.length === 0) {
+      loading.value = false;
+      return;
     }
-    getBriefInfo(ids);
+    const currentArticleList = res.data.data;
+    const ids: number[] = [];
+    const author: number[] = [];
+    for (const item of res.data.data) {
+      author.push(item.author);
+      ids.push(item.id);
+    }
+    await getUserName(author, currentArticleList);
+    await getThemeList(ids);
+    await getLabelList(ids);
+    homeData.currentArticleList = currentArticleList;
     loading.value = false;
   } else {
     message.error(res.data.message);
+  }
+}
+
+async function getUserName(ids: number[], currentArticleList: Article[]) {
+  const data: RequestGetUserNames = {
+    ids: ids
+  }
+  const res = await getUserNamesAPI(data);
+  if (res.data.status == 0) {
+    const author = res.data.data;
+    for (let i = 0; i < author.length; i++) {
+      currentArticleList[i].authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getArticleThemeListAPI(data);
+  if (res.data.status === 0) {
+    homeData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if (res.data.status === 0) {
+    homeData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
   }
 }
 
@@ -87,10 +129,21 @@ onMounted(() => {
       </div>
       <div v-else>
         <div class="homeContent">
-          <blog-card v-for="item in homeData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
-            :card-type="userState.userId === Number(router.currentRoute.value.query.id) ? 2 : 1"
-            :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
-            :update-time="item.updateTime" :comments-num="item.commentsNum"></blog-card>
+          <div v-for="(item, index) in homeData.currentArticleList" >
+            <blog-card :author="item.author"
+              :author-name="(item.authorName as string)"
+              :card-type="userState.userId === Number(router.currentRoute.value.query.id) ? 2 : 1"
+              :description="item.description" 
+              :favorites-num="item.favoritesNum" 
+              :id="item.id" 
+              :title="item.title"
+              :update-time="item.updateTime" 
+              :comments-num="item.commentsNum" 
+              :tags="(homeData.tagsList[index])" 
+              :topic="(homeData.topicList[index])"
+              >
+            </blog-card>
+          </div>
         </div>
         <div class="homeFoot" v-show="homeData.total !== 1">
           <n-config-provider :theme="darkTheme">
@@ -116,10 +169,11 @@ onMounted(() => {
   margin-bottom: 40px;
 
   .empty {
-      font-size: 20px;
-      color: $github-header-text;
-      text-align: center;
-    }
+    font-size: 20px;
+    color: $github-header-text;
+    text-align: center;
+  }
+
   .homeContent {}
 
   .homeFoot {

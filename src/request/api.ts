@@ -137,6 +137,19 @@ export const getOtherBriefInfosAPI = (data: requestTypes.RequestGetOtherBriefInf
   } });
 }
 
+/**
+ * 用于获取对应id列表的用户名
+ * 
+ * url: user/getUserNames
+ * 
+ * 
+* */
+
+export const getUserNamesAPI = (data: requestTypes.RequestGetUserNames): Res<responseTypes.ResponseGetUserNames> => {
+  const Data = setData(data);
+  return axios.post("user/getUserNames", Data);
+}
+
 
 /**
  * 用于更改用户密码
@@ -452,6 +465,86 @@ export const getUserDraftPageAPI = (data: requestTypes.RequestGetUserPage, userS
 }
 
 /**
+ * 用于将草稿发布为文章
+ * 
+ * url: draft/publishDraft
+ * 
+ *  test ok
+* */
+
+export const publishDraftAPI = (data: requestTypes.RequestPublishDraft, userState: any): Res<responseTypes.ResponsePublishDraft> => {
+  const Data = setData(data);
+  return axios.post("draft/publishDraft", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某草稿的主题
+ * 
+ * url: draft/getTheme
+ * 
+ *  
+* */
+
+export const getDraftThemeAPI = (data: requestTypes.RequestGetTheme, userState: any): Res<responseTypes.ResponseGetTheme> => {
+  const Data = setData(data);
+  return axios.post("draft/getTheme", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某草稿的主题
+ * 
+ * url: draft/getThemeByIds
+ * 
+ *  
+* */
+
+export const getDraftThemeListAPI = (data: requestTypes.RequestGetThemeByIds, userState: any): Res<responseTypes.ResponseGetThemeByIds> => {
+  const Data = setData(data);
+  return axios.post("draft/getThemeByIds", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某草稿的标签
+ * 
+ * url: draft/getLabels
+ * 
+ *  
+* */
+
+export const getDraftLabelsAPI = (data: requestTypes.RequestGetLabels, userState: any): Res<responseTypes.ResponseGetLabels> => {
+  const Data = setData(data);
+  return axios.post("draft/getLabels", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某草稿的标签列表
+ * 
+ * url: draft/getLabelsByIds
+ * 
+ *  
+* */
+
+export const getDraftLabelListAPI = (data: requestTypes.RequestGetLabelsByIds, userState: any): Res<responseTypes.ResponseGetLabelsByIds> => {
+  const Data = setData(data);
+  return axios.post("draft/getLabelsByIds", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
  * 添加一篇文章到指定收藏夹
  * 
  * url: favorite/add
@@ -484,7 +577,7 @@ export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFav
 }
 
 /**
-* 删除指定收藏夹下的指定文章
+ * 删除指定收藏夹下的指定文章
  * 
  * url: favorite/delete
  * 
@@ -494,6 +587,54 @@ export const getArticlesFromCollectAPI = (data: requestTypes.RequestGetFolderFav
 export const deleteArticleFromCollectAPI = (data: requestTypes.RequestDeleteFavorites, userState: any): Res<responseTypes.ResponseDeleteFavorite> => {
   const Data = setData(data);
   return axios.post("favorite/delete", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某文章是否在当前用户收藏夹中
+ * 
+ * url: favorite/checkArticleInFolders
+ * 
+ * 
+* */
+
+export const checkArticleInFoldersAPI = (data: requestTypes.RequestCheckArticleInFolders, userState: any): Res<responseTypes.ResponseCheckArticleInFolders> => {
+  const Data = setData(data);
+  return axios.post("favorite/checkArticleInFolders", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某收藏夹的分页数量
+ * 
+ * url: favorite/getFolderFavoritesPageNum
+ * 
+ * 
+* */
+
+export const getFolderFavoritesPageNumAPI = (data: requestTypes.RequestGetFolderFavoritesPageNum, userState: any): Res<responseTypes.ResponseGetFolderFavoritesPageNum> => {
+  const Data = setData(data);
+  return axios.post("favorite/getFolderFavoritesPageNum", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
+}
+
+/**
+ * 用于获取某收藏夹某页的收藏
+ * 
+ * url: favorite/getPageFolderFavorites
+ * 
+ * 
+* */
+
+export const getPageFolderFavoritesAPI = (data: requestTypes.RequestGetPageFolderFavorites, userState: any): Res<responseTypes.ResponseGetPageFolderFavorites> => {
+  const Data = setData(data);
+  return axios.post("favorite/getPageFolderFavorites", Data, { headers: {
     id: userState.userId,
     token: userState.token
   } });
@@ -588,7 +729,7 @@ export const getUserFollowListAPI = (userState: any): Res<responseTypes.Response
 
 export const deleteUserFromFollowAPI = (data: requestTypes.RequestDeleteFollow, userState: any): Res<responseTypes.ResponseDeleteFollow> => {
   const Data = setData(data);
-  return axios.post("draft/add", Data, { headers: {
+  return axios.post("follow/delete", Data, { headers: {
     id: userState.userId,
     token: userState.token
   } });
@@ -608,6 +749,19 @@ export const getArticleThemeAPI = (data: requestTypes.RequestGetTheme): Res<resp
 }
 
 /**
+ * 用于获取文章主题
+ * 
+ * url: article/getThemeByIds
+ * 
+ * 
+* */
+
+export const getArticleThemeListAPI = (data: requestTypes.RequestGetThemeByIds): Res<responseTypes.ResponseGetThemeByIds> => {
+  const Data = setData(data);
+  return axios.post("article/getThemeByIds", Data);
+}
+
+/**
  * 用于获取文章标签
  * 
  * url: article/getLabels
@@ -618,6 +772,19 @@ export const getArticleThemeAPI = (data: requestTypes.RequestGetTheme): Res<resp
 export const getArticleLabelsAPI = (data: requestTypes.RequestGetLabels): Res<responseTypes.ResponseGetLabels> => {
   const Data = setData(data);
   return axios.post("article/getLabels", Data);
+}
+
+/**
+ * 用于获取文章id列表对应的标签列表
+ * 
+ * url: article/getLabelsByIds
+ * 
+ * 
+* */
+
+export const getArticleLabelListAPI = (data: requestTypes.RequestGetLabelsByIds): Res<responseTypes.ResponseGetLabelsByIds> => {
+  const Data = setData(data);
+  return axios.post("article/getLabelsByIds", Data);
 }
 
 /**

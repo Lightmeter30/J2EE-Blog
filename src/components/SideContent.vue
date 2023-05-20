@@ -2,7 +2,7 @@
 import { AmericanFootballSharp, Albums, PricetagsSharp } from '@vicons/ionicons5';
 import { Label, DataGetInfo } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
-import { getUserInfoAPI, getHotTagsAPI } from '@/request/api';
+import { getUserInfoAPI } from '@/request/api';
 const userState = useUserStore();
 const message = useMessage();
 const router = useRouter();
@@ -86,13 +86,13 @@ const sideContentData = reactive<sideContentType>({
 });
 
 function tagClick(id: number) {
-  console.log(id);
-  router.push({path: "/tags", query:{ id: id }});
+  const newPage = router.resolve({path: "/tags", query:{ id: id }});
+  window.open(newPage.href, '_blank');
 }
 
 function toGroup(id: number) {
-  console.log(`to group ${id}`);
-  router.push({path: "/group", query:{ id: id }});
+  const newPage = router.resolve({path: "/group", query:{ id: id }});
+  window.open(newPage.href, '_blank');
 }
 
 const getUserCardInfo = async () => {
@@ -104,25 +104,16 @@ const getUserCardInfo = async () => {
   }
 };
 
-async function getHotTags() {
-  const res = await getHotTagsAPI(); 
-  if(res.data.status === 0) {
-    // TODO:
-    console.log(res.data.data);
-  } else {
-    console.log(res.data);
-  }
-}
+
 
 onMounted(() => {
-  getUserCardInfo();
-  getHotTags();
+  if(userState.isLogin) getUserCardInfo();
 });
 </script>
 
 <template>
   <div class="sideContent">
-    <user-card v-show="userState.isLogin" :id="userState.userId" :attention="sideContentData.cardInfo.followedNum" :blog="sideContentData.cardInfo.articleNum" :fans="sideContentData.cardInfo.followerNum" :name="sideContentData.cardInfo.name" :is-attention="sideContentData.cardInfo.followed" :url="sideContentData.cardInfo.avatar" ></user-card>
+    <user-card v-show="userState.isLogin" :id="userState.userId" :attention="sideContentData.cardInfo.followedNum" :blog="sideContentData.cardInfo.articleNum" :fans="sideContentData.cardInfo.followerNum" :name="sideContentData.cardInfo.name" :is-attention="(sideContentData.cardInfo.followed as boolean)" :url="sideContentData.cardInfo.avatar" ></user-card>
     <div class="sideCard">
       <div class="title">
         <n-icon color="#C70002" style="position: relative; top: 3px;"><american-football-sharp /></n-icon>

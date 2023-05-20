@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { AddCircle, CloudUpload } from "@vicons/ionicons5";
 import { useUserStore } from '@/stores/user';
-import { getArticlesFromCollectAPI, addCollectAPI, deleteCollectAPI, getUserAllCollectAPI, getArticleByListAPI, getOtherBriefInfosAPI } from "@/request/api";
-import { RequestGetFolderFavorites, RequestAddFavoriteFolder, RequestDeleteFavoriteFolder, RequestGetByIdList, RequestGetOtherBriefInfos } from "@/request/requestData";
-import { FavoriteFolder, Article } from "@/request/responseData";
+import { addCollectAPI, deleteCollectAPI, getUserAllCollectAPI, getArticleLabelListAPI, getArticleThemeListAPI, getUserNamesAPI, getFolderFavoritesPageNumAPI, getPageFolderFavoritesAPI } from "@/request/api";
+import { RequestAddFavoriteFolder, RequestDeleteFavoriteFolder, RequestGetLabelsByIds, RequestGetThemeByIds, RequestGetUserNames, RequestGetFolderFavoritesPageNum, RequestGetPageFolderFavorites } from "@/request/requestData";
+import { FavoriteFolder, FavoriteArticle, Theme, Label } from "@/request/responseData";
 import { darkTheme } from "naive-ui";
 
 let collect: HTMLElement;
@@ -14,21 +14,30 @@ const loading = ref(true);
 const userStore = useUserStore();
 const message = useMessage();
 const dialog = useDialog();
+const nowPage = ref(1);
+let nowFolderID = -1;
 
 type collectDataType = {
-  currentArticleList: Article[],
+  currentArticleList: FavoriteArticle[],
   collectFolderList: FavoriteFolder[],
   total: number,
+  topicList: Theme[],
+  tagsList: Array<Label[]>,
 };
 
 const collectData = reactive<collectDataType>({
   currentArticleList: [],
   collectFolderList: [],
   total: 1,
+  topicList: [],
+  tagsList: [],
 });
 function changePage(page: number) {
-  console.log(`to page ${page}`);
+  nowPage.value = page;
+  getOnePage(page);
 }
+
+
 
 function showDialog() {
   showModal.value = true;
@@ -51,60 +60,87 @@ function changeSelectCollect(id: number, index: number) {
   Delete.classList.remove('delete');
   Delete.classList.add('selectDelete');
   // change collect now
-  getArticlesFromCollect(id);
+  nowPage.value = 1;
+  nowFolderID = id;
+  loading.value = true;
+  getFolderPageNum();
+  getOnePage(nowPage.value);
 }
 
-async function getArticlesFromCollect(collectId: number) {
-  const data: RequestGetFolderFavorites = {
-    folderId: collectId
-  };
-  const res = await getArticlesFromCollectAPI(data, userStore);
-  if (res.data.status == 0) {
-    // TODO: test API
-    console.log(res.data.data);
-    const favorites = res.data.data;
-    const articleNum: number[] = [];
-    const favoriteID: number[] = [];
-    for( let i = 0; i < favorites.length; i++) {
-      articleNum[i] = favorites[i].articleId;
-      favoriteID[i] = favorites[i].id;
-    }
-    getArticles(articleNum, favoriteID);
-  } else {
-    message.error(res.data.message);
-  }
-}
-
-async function getArticles(ids: number[], favoriteID: number[]) {
-  const data: RequestGetByIdList = {
+async function getUserName(ids: number[], currentArticleList: FavoriteArticle[]) {
+  const data: RequestGetUserNames = {
     ids: ids
   }
-  const res = await getArticleByListAPI(data, userStore);
-  if(res.data.status === 0) {
-    collectData.currentArticleList = res.data.data;
+  const res = await getUserNamesAPI(data);
+  if (res.data.status == 0) {
+    const author = res.data.data;
+    for (let i = 0; i < author.length; i++) {
+      currentArticleList[i].article.authorName = author[i];
+    }
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getThemeList(ids: number[]) {
+  const data: RequestGetThemeByIds = {
+    ids: ids
+  };
+  const res = await getArticleThemeListAPI(data);
+  if (res.data.status === 0) {
+    collectData.topicList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getLabelList(ids: number[]) {
+  const data: RequestGetLabelsByIds = {
+    ids: ids
+  };
+  const res = await getArticleLabelListAPI(data);
+  if (res.data.status === 0) {
+    collectData.tagsList = res.data.data;
+  } else {
+    console.error(res.data.message);
+  }
+}
+
+async function getFolderPageNum() {
+  const data: RequestGetFolderFavoritesPageNum = {
+    folderId: nowFolderID,
+  };
+  const res = await getFolderFavoritesPageNumAPI(data, userStore);
+  if (res.data.status === 0) {
+    collectData.total = res.data.data;
+  }
+}
+
+async function getOnePage(page: number) {
+  const data: RequestGetPageFolderFavorites = {
+    folderId: nowFolderID,
+    currentPage: page,
+  };
+  const res = await getPageFolderFavoritesAPI(data, userStore);
+  if (res.data.status === 0) {
+    if (res.data.data.length === 0) {
+      collectData.currentArticleList = [];
+      loading.value = false;
+      return;
+    }
+    const currentArticleList = res.data.data
+    const author: number[] = [];
     const ids: number[] = [];
-    for(let i = 0; i < collectData.currentArticleList.length; i++) {
-      collectData.currentArticleList[i].favoritesNum = favoriteID[i];
-      ids.push(collectData.currentArticleList[i].author);
+    for (let i = 0; i < currentArticleList.length; i++) {
+      author.push(currentArticleList[i].article.author);
+      ids.push(currentArticleList[i].article.id);
     }
     // TODO: 添加用户名
-    getBriefInfo(ids);
-  }
-}
-
-async function getBriefInfo(ids: number[]) {
-  const data: RequestGetOtherBriefInfos = {
-    ids: ids
-  };
-  const res = await getOtherBriefInfosAPI(data, userStore);
-  if(res.data.status === 0) {
-    const temp = res.data.data;
-    for(let i = 0; i < temp.length; i++) {
-      collectData.currentArticleList[i].authorName = temp[i].name;
-    }
+    await getUserName(author, currentArticleList);
+    await getThemeList(ids);
+    await getLabelList(ids);
+    collectData.currentArticleList = currentArticleList;
     loading.value = false;
-  } else {
-    message.error(res.data.message)
   }
 }
 
@@ -126,6 +162,8 @@ async function addCollect() {
       userId: userStore.userId
     }
     collectData.collectFolderList.push(newFolder);
+    newCollect.value = '';
+    showModal.value = false;
   } else {
     message.error(res.data.message);
   }
@@ -163,7 +201,9 @@ const getAllFolders = async () => {
     // collect = document.getElementById(`folder0`) as HTMLElement;
     // collect.classList.remove('collectHover');
     // collect.classList.add('selectedCollect');
-    getArticlesFromCollect(collectData.collectFolderList[0].id);
+    nowFolderID = collectData.collectFolderList[0].id;
+    getFolderPageNum();
+    getOnePage(1);
   } else {
     message.error(res.data.message);
   }
@@ -177,10 +217,7 @@ onMounted(() => {
 
 <template>
   <div class="spaceCollect">
-    <div class="loading" v-if="loading">
-      <n-spin :size="150" stroke="#39c5bb" />
-    </div>
-    <div class="container" v-else>
+    <div class="container">
       <div class="sideIndex">
         <div class="addCollect" @click="showDialog">
           <n-icon style="position: relative; top: 2px;">
@@ -190,22 +227,30 @@ onMounted(() => {
         <CollectList v-for="(item, key) in collectData.collectFolderList" :index="key" :id="item.id" :name="item.name"
           :articleNum="item.favoritesNum" @select-me="changeSelectCollect" @delete-me="removeCollect" />
       </div>
-      <div class="content" v-if="collectData.currentArticleList.length === 0">
+      <div class="content" v-if="collectData.currentArticleList.length === 0 && !loading">
         <div class="empty">
-          <img  style="height: 300px;margin-top: 100px;" src="@/assets/img/null-search.svg" />
+          <img style="height: 300px;margin-top: 100px;" src="@/assets/img/null-search.svg" />
           <div>勇敢的少年啊快去收藏博客!</div>
         </div>
       </div>
+      <div class="content" v-else-if="loading">
+        <div class="loading" >
+        <n-spin :size="150" stroke="#39c5bb" />
+      </div>
+      </div>
       <div class="content" v-else>
         <div class="collectContent">
-          <blog-card v-for="item in collectData.currentArticleList" :author="item.author" :author-name="(item.authorName as string)"
-            :card-type="3"
-            :description="item.description" :favorites-num="item.favoritesNum" :id="item.id" :title="item.title"
-            :update-time="item.updateTime" :comments-num="item.commentsNum" :favorite-id="item.favoritesNum"></blog-card>
+          <blog-card v-for="(item, index) in collectData.currentArticleList" :author="item.article.author"
+            :author-name="(item.article.authorName as string)" :card-type="3" :description="item.article.description"
+            :favorites-num="item.article.favoritesNum" :id="item.article.id" :title="item.article.title"
+            :update-time="item.article.updateTime" :comments-num="item.article.commentsNum"
+            :favorite-id="item.favorite.id" :tags="collectData.tagsList[index]"
+            :topic="collectData.topicList[index]"></blog-card>
         </div>
-        <div class="collectFoot" v-show="collectData.total !== 1">
+        <div class="collectFoot" v-show="collectData.total > 1">
           <n-config-provider :theme="darkTheme">
-            <n-pagination :on-update:page="changePage" :item-count="collectData.total" show-quick-jumper>
+            <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="collectData.total"
+              show-quick-jumper>
               <template #goto>
                 跳至
               </template>

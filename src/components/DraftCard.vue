@@ -3,7 +3,7 @@ import { Person, Time, Star, ChatboxEllipses, Pencil, Trash,PricetagsSharp, Albu
 import { useMessage, useDialog } from 'naive-ui';
 import {  RequestDeleteDraft } from '@/request/requestData';
 import {  deleteDraftAPI } from '@/request/api';
-import { Draft } from '@/request/responseData';
+import { Draft, Theme, Label } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const dialog = useDialog();
@@ -16,32 +16,11 @@ interface draftDataType {
   id: number;
   title: string;
   updateTime: string;
+  topic: Theme;
+  tags: Label[];
 };
 
 const props = defineProps<draftDataType>();
-
-const tags = [
-  {
-    id: 1,
-    name: 'vue'
-  },
-  {
-    id: 2,
-    name: 'html'
-  },
-  {
-    id: 3,
-    name: 'css'
-  },
-  {
-    id: 4,
-    name: 'SQL'
-  },
-  {
-    id: 5,
-    name: 'python'
-  },
-];
 
 function toEdit() {
   console.log('toEdit');
@@ -68,6 +47,16 @@ function removeDraft() {
   })
 };
 
+function toTopic() {
+  const nowPage = router.resolve({ path: '/group', query: { id: props.topic.id } });
+  window.open(nowPage.href, '_blank');
+}
+
+function toTags(id: number) {
+  const nowPage = router.resolve({ path: '/tags', query: { id: id } });
+  window.open(nowPage.href, '_blank');
+}
+
 </script>
 
 <template>
@@ -79,18 +68,18 @@ function removeDraft() {
       {{ description }}
     </div>
     <div class="tags">
-      <span class="topic">
+      <span class="topic" @click="toTopic" >
         <n-icon style="position: relative; top: 3px;padding-right: 4px;">
           <Albums />
         </n-icon>
-        <span>Computer Science</span></span> &nbsp;
+        <span>{{ topic.name }}</span></span> &nbsp;
       <span v-show="tags.length !== 0" >
         <b>|</b>&nbsp;
         <n-icon style="position: relative; top: 3px;padding-right: 8px;">
           <PricetagsSharp />
         </n-icon>
         <span v-for="(item, index) in tags" class="tagItem">
-          <span class="name">{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
+          <span class="name" @click="toTags(item.id)" >{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
         </span>
       </span>
     </div>

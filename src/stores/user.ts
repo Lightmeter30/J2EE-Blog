@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore({
     id: 'user',
     state: () => ({
+        userName: '',
         token: '',
         userId: -1,
         isLogin: false,
@@ -26,6 +27,7 @@ export const useUserStore = defineStore({
           this.userId = -1;
           this.isLogin = false;
           this.avatar = '';
+          this.userName = '';
         },
         setAvatar(avatar: string):void {
           this.avatar = avatar;

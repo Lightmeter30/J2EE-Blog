@@ -20,9 +20,11 @@ interface authorInfo {
 
 
 const props = defineProps<authorInfo>();
+const emits = defineEmits(['AttentionMe']);
 
 function toPersonalPage() {
-  router.push({ path: '/space/home', query: { id: props.id } });
+  const newPage = router.resolve({ path: '/space/home', query: { id: props.id } });
+  window.open(newPage.href, '_blank');
 }
 
 async function addAttention() {
@@ -31,6 +33,7 @@ async function addAttention() {
   };
   const res = await addUserToFollowAPI(data, userState);
   if (res.data.status === 0) {
+    emits('AttentionMe', true);
     message.success('关注成功', { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
@@ -39,10 +42,11 @@ async function addAttention() {
 
 async function removeAttention() {
   const data: RequestDeleteFollow = {
-    followed: props.id,
+    id: props.id,
   };
   const res = await deleteUserFromFollowAPI(data, userState);
   if (res.data.status === 0) {
+    emits('AttentionMe', false);
     message.success('取消关注', { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
@@ -119,7 +123,7 @@ function addOrRemoveAttention(key: number) {
         </template>
         关注
       </n-button>
-      <n-button v-else color="#8E2C2D" @click="addOrRemoveAttention(2)" block>
+      <n-button v-else color="#C70002" @click="addOrRemoveAttention(2)" block>
         <template #icon>
           <n-icon>
             <remove-circle />

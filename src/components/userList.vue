@@ -1,22 +1,61 @@
 <script setup lang="ts">
-import {faker} from '@faker-js/faker';
+import { addUserToFollowAPI, deleteUserFromFollowAPI } from '@/request/api';
+import { RequestAddFollow, RequestDeleteFollow } from '@/request/requestData';
+import { useUserStore } from '@/stores/user';
 import { AddCircle, RemoveCircle } from '@vicons/ionicons5';
 import { darkTheme } from 'naive-ui';
-const user = reactive({
-  name: faker.name.firstName(),
-  description: '都什么年代了,还在当传统二次元',
-  avatar:faker.image.avatar(),
-  isAttention: true,
-})
+
+interface userListType {
+  id: number;
+  name: string;
+  description: string;
+  avatar: string;
+  isAttention: boolean;
+};
+const props = defineProps<userListType>();
+const myIsAttention = ref(0);
+const message = useMessage();
+const userState = useUserStore();
+const router = useRouter();
 
 function addOrRemoveAttention(key: number) {
-  console.log('add',key);
-  if(key === 2) {
-    user.isAttention = true;
+  console.log('addAttention', key);
+  if (key === 1) {
+    addAttention();
+  } else if (key === 2) {
+    removeAttention();
   }
-  else {
-    user.isAttention = false;
+}
+
+async function addAttention() {
+  const data: RequestAddFollow = {
+    followed: props.id,
+  };
+  const res = await addUserToFollowAPI(data, userState);
+  if (res.data.status === 0) {
+    message.success('关注成功', { duration: 1200 });
+    myIsAttention.value = 1;
+  } else {
+    message.error(res.data.message, { duration: 1200 });
   }
+}
+
+async function removeAttention() {
+  const data: RequestDeleteFollow = {
+    id: props.id,
+  };
+  const res = await deleteUserFromFollowAPI(data, userState);
+  if (res.data.status === 0) {
+    myIsAttention.value = 2;
+    message.success('取消关注', { duration: 1200 });
+  } else {
+    message.error(res.data.message, { duration: 1200 });
+  }
+}
+
+function toPersonal() {
+  const newPage = router.resolve({ path: '/space/home', query: { id: props.id } });
+  window.open(newPage.href, '_blank');
 }
 
 </script>
@@ -25,28 +64,28 @@ function addOrRemoveAttention(key: number) {
   <div>
   <div class="userList">
     <div class="avatar">
-      <n-avatar round :size="60" :src="user.avatar" />
+      <n-avatar round :size="60" :src="userState.staticHead + avatar" />
     </div>
     <div class="title">
-      <span class="name"><b>{{ user.name }}</b></span><br/>
-      <span class="description">{{ user.description }}</span>
+      <span class="name" @click="toPersonal" ><b>{{ name }}</b></span><br/>
+      <span class="description">{{ description }}</span>
     </div>
     <div class="attention">
-      <n-button v-if="user.isAttention" @click="addOrRemoveAttention(1)" color="#39c5bb" >
-        <template #icon>
-          <n-icon>
-            <add-circle />
-          </n-icon>
-        </template>
-        关注
-      </n-button>
-      <n-button v-else color="#39c5bb" @click="addOrRemoveAttention(2)" >
+      <n-button v-if="(myIsAttention === 0 ? isAttention : myIsAttention === 1 )" color="#C70002" @click="addOrRemoveAttention(2)" >
         <template #icon>
           <n-icon>
             <remove-circle />
           </n-icon>
         </template>
         取消关注
+      </n-button>
+      <n-button v-else @click="addOrRemoveAttention(1)" color="#39c5bb" >
+        <template #icon>
+          <n-icon>
+            <add-circle />
+          </n-icon>
+        </template>
+        关注
       </n-button>
     </div>
   </div>

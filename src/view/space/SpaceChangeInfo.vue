@@ -45,6 +45,7 @@ const changeInfo = async () => {
   console.log("Change info...");
   const res = await updateUserInfoAPI(userInfo, userState);
   if(res.data.status === 0) {
+    userState.userName = userInfo.name;
     message.success('修改信息成功!');
   } else {
     message.error(res.data.message);
@@ -69,6 +70,7 @@ const uploadAvatar = async ({
   console.log(avatar);
   const res = await updateUserAvatarAPI(avatar, userState);
   if(res.data.status === 0) {
+    userState.avatar = res.data.data;
     message.success('头像修改成功');
   } else {
     message.error(res.data.message);
