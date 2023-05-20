@@ -370,6 +370,10 @@ export interface RequestAddFollow {
 // 用于获取用户的关注列表
 // 请求体中无参数
 
+// /api/follow/getUserFollower
+// 用于获取用户的粉丝列表
+// 请求体中无参数
+
 // /api/follow/delete
 // 用于取消关注
 export interface RequestDeleteFollow {

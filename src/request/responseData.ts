@@ -490,6 +490,7 @@ export interface ResponseGetLabelsByIds {
 // 用于添加一个收藏
 export interface ResponseAddFavorite {
   code: number;
+  data: number; // 收藏id
   message: string;
   status: number;
 }
@@ -594,6 +595,15 @@ export interface ResponseAddFollow {
 export interface ResponseGetUserFollowed {
   code: number;
   data: number[];   // 关注用户的id列表
+  message: string;
+  status: number;
+}
+
+// /api/follow/getUserFollower
+// 用于获取用户的粉丝列表
+export interface ResponseGetUserFollower {
+  code: number;
+  data: number[];   // 粉丝用户的id列表
   message: string;
   status: number;
 }
