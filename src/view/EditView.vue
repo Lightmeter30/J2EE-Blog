@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MdEditor from 'md-editor-v3';
+import MdEditor, { ToolbarNames } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import type { FormRules } from "naive-ui";
 // import { CloudUploadOutline } from "@vicons/ionicons5"
@@ -14,7 +14,7 @@ const router = useRouter();
 const NormalToolbar = MdEditor.NormalToolbar;
 const message = useMessage();
 const userState = useUserStore();
-let articleType: number = 0; // 0 is new, 1 is draft, 2 is old article , 3表示由旧文章转变为草稿
+let article = ref(0); // 0 is new, 1 is draft, 2 is old article 
 interface blogType {
   title: string,
   description: string,
@@ -145,18 +145,18 @@ async function save() {
     message.error('文章标题,简介或内容不能为空!', { duration: 1200 });
     return;
   }
-  if (articleType === 0) {
+  if (article.value === 0) {
     // it's a new article
     addDraft();
-    articleType = 1;
-  } else if (articleType === 1 || articleType === 3) {
+    article.value = 1;
+  } else if (article.value === 1 || article.value === 3) {
     // it's a draft article
     updateDraft();
-  } else if (articleType === 2) {
+  } else if (article.value === 2) {
     // it's a old article
     // TODO: 
     addDraft();
-    articleType = 3;
+    article.value = 3;
   }
 };
 
@@ -234,7 +234,7 @@ async function addDraft() {
 
 async function updateDraft() {
   const data: RequestUpdateDraft = {
-    id: Number(router.currentRoute.value.query.id),
+    id: blog.draftID,
     title: blog.title,
     content: text.value,
     updateTime: getNowTime(),
@@ -256,14 +256,14 @@ const upload = () => {
     message.error('文章标题,简介或内容不能为空!', { duration: 1200 });
     return;
   }
-  if (articleType === 0) {
+  if (article.value === 0) {
     addArticle();
-  } else if(articleType === 1){
+  } else if(article.value === 1){
     addArticle();
     deleteDraft();
-  } else if (articleType === 2) {
+  } else if (article.value === 2) {
     updateArticle();
-  } else if (articleType === 3) {
+  } else if (article.value === 3) {
     // TODO: 此时应该先更新文章,再删除对应的草稿
     updateArticle();
     deleteDraft();
@@ -367,13 +367,13 @@ async function getDraftInfo() {
 onMounted(() => {
   //  114514 is the new(0), 1919 is the draft(1), 810 is the old(2)
   if (router.currentRoute.value.query.type === '114514') {
-    articleType = 0;
+    article.value = 0;
   } else if (router.currentRoute.value.query.type === '1919') {
-    articleType = 1;
+    article.value = 1;
     blog.draftID = Number(router.currentRoute.value.query.id);
     getDraftInfo();
   } else if (router.currentRoute.value.query.type === '810') {
-    articleType = 2;
+    article.value = 2;
     getArticleInfo();
   }
 });
@@ -406,7 +406,7 @@ onMounted(() => {
       </n-config-provider>
     </div>
     <div class="editContent">
-      <MdEditor theme="dark" v-model="text" :toolbars="toolbar" :show-code-row-number="true" @onUploadImg="onUploadImg">
+      <MdEditor theme="dark" v-model="text" :toolbars="(toolbar as ToolbarNames[])" :show-code-row-number="true" @onUploadImg="onUploadImg">
         <template #defToolbars>
           <NormalToolbar title="保存到草稿箱" @onClick="save()">
             <template #trigger>
