@@ -3,42 +3,22 @@ import { ref, nextTick, onMounted } from 'vue';
 import * as echarts from "echarts";
 import 'echarts-wordcloud';
 import { emit } from 'process';
+import { getHotTagsAPI } from '@/request/api';
 const wordcloudRef = ref()
 const emits = defineEmits(['tagClick']);
+
+async function getHotTags() {
+  const res = await getHotTagsAPI(); 
+  if(res.data.status === 0) {
+    // TODO:
+    console.log(res.data.data);
+    initWordCloud(res.data.data);
+  } else {
+    console.log(res.data);
+  }
+}
 onMounted(() => {
-  const data = [
-    {
-      id: 1,
-      name: '前端工程师',
-      value: 100
-    },
-    {
-      id: 2,
-      name: '数据可视化',
-      value: 50
-    },
-    {
-      id: 3,
-      name: '数学',
-      value: 2000
-    },
-    {
-      id: 4,
-      name: '化学',
-      value: 150
-    },
-    {
-      id: 5,
-      name: '物理',
-      value: 75
-    },
-    {
-      id: 6,
-      name: '游戏',
-      value: 515
-    }
-  ]
-  initWordCloud(data)
+  getHotTags();
 })
 // 初始化词云
 const initWordCloud = (data: any, max = 42) => {

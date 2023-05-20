@@ -24,7 +24,7 @@ type blogDataType = {
   blog: Article,
   cardInfo: DataGetInfo,
   collectList: FavoriteFolder[],
-  isInFolder: boolean[],
+  isInFolder: number[],
   commentList: Comment[],
   topic: Theme,
   tags: Label[]
@@ -101,6 +101,10 @@ function closeModal() {
   console.log('closeModal');
 }
 
+function attentionMe(isAttention: boolean) {
+  blogData.cardInfo.followed = isAttention;
+}
+
 function toTheme() {
   const newPage = router.resolve({ path: '/group', query: { id: blogData.topic.id } });
   window.open(newPage.href, '_blank');
@@ -122,6 +126,19 @@ async function addBlogToCollect(collectID: number, collectName: string) {
     message.success(`成功添加到${collectName}!`, { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
+  }
+}
+
+async function deleteBlogToCollect(index: number, name: string) {
+  const data: RequestDeleteFavorites = {
+    id: blogData.isInFolder[index],
+  };
+  const res = await deleteArticleFromCollectAPI(data, userStore);
+  if(res.data.status === 0) {
+    blogData.isInFolder[index] = -1;
+    message.success(`成功从${name}删除!`, { duration: 1200 });
+  } else {
+    console.error(res.data.message);
   }
 }
 
@@ -242,7 +259,7 @@ onMounted(() => {
   getArticle();
   getComments();
   getAllFolders();
-  // checkArticleInFolders();
+  checkArticleInFolders();
 })
 </script>
 <template>
@@ -251,7 +268,7 @@ onMounted(() => {
       <div class="card">
         <user-card :id="blogData.blog.author" :attention="blogData.cardInfo.followedNum"
           :blog="blogData.cardInfo.articleNum" :fans="blogData.cardInfo.followerNum" :name="blogData.cardInfo.name"
-          :is-attention="(blogData.cardInfo.followed as boolean)" :url="blogData.cardInfo.avatar"></user-card>
+          :is-attention="(blogData.cardInfo.followed as boolean)" :url="blogData.cardInfo.avatar" @attention-me="attentionMe" ></user-card>
         <div class="sideCard">
           <div class="sideCardTitle">
             <n-icon color="#C70002" style="position: relative; top: 3px;"><Balloon/></n-icon>
@@ -338,12 +355,12 @@ onMounted(() => {
                       {{ item.name }}
                     </span>
                   </div>
-                  <!-- <div v-if="blogData.isInFolder[index]" class="collectButton">
-                    <n-button color="#8E2C2D" @click="addBlogToCollect(item.id, item.name)">
+                  <div v-if="blogData.isInFolder[index] !== -1" class="collectButton">
+                    <n-button color="#8E2C2D" @click="deleteBlogToCollect(index, item.name)">
                       移除收藏
                     </n-button>
-                  </div> -->
-                  <div class="collectButton">
+                  </div>
+                  <div v-else class="collectButton">
                     <n-button color="#39c5bb" @click="addBlogToCollect(item.id, item.name)">
                       收藏
                     </n-button>

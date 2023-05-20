@@ -42,7 +42,7 @@ async function addAttention() {
 
 async function removeAttention() {
   const data: RequestDeleteFollow = {
-    followed: props.id,
+    id: props.id,
   };
   const res = await deleteUserFromFollowAPI(data, userState);
   if (res.data.status === 0) {

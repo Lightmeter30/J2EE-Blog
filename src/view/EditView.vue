@@ -305,7 +305,7 @@ const getGroupAndTags = async (id: number, type: number) => {
     const data: RequestGetTheme = {
       id: id,
     }
-    const res = await getDraftThemeAPI(data);
+    const res = await getDraftThemeAPI(data, userState);
     if (res.data.status === 0) {
       blog.Group = res.data.data.id;
     } else {
@@ -314,7 +314,7 @@ const getGroupAndTags = async (id: number, type: number) => {
     const data1: RequestGetLabels = {
       id: id
     };
-    const res1 = await getDraftLabelsAPI(data1);
+    const res1 = await getDraftLabelsAPI(data1, userState);
     if (res1.data.status === 0) {
       const labels = res1.data.data;
       for (let i = 0; i < labels.length; i++) {

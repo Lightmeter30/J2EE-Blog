@@ -57,7 +57,7 @@ async function getThemeList(ids: number[]) {
   const data: RequestGetThemeByIds = {
     ids: ids
   };
-  const res = await getDraftThemeListAPI(data);
+  const res = await getDraftThemeListAPI(data, userState);
   if(res.data.status === 0) {
     draftData.topicList = res.data.data;
   } else {
@@ -69,7 +69,7 @@ async function getLabelList(ids: number[]) {
   const data: RequestGetLabelsByIds = {
     ids: ids
   };
-  const res = await getDraftLabelListAPI(data);
+  const res = await getDraftLabelListAPI(data, userState);
   if(res.data.status === 0) {
     draftData.tagsList = res.data.data;
   } else {

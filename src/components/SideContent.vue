@@ -2,7 +2,7 @@
 import { AmericanFootballSharp, Albums, PricetagsSharp } from '@vicons/ionicons5';
 import { Label, DataGetInfo } from '@/request/responseData';
 import { useUserStore } from '@/stores/user';
-import { getUserInfoAPI, getHotTagsAPI } from '@/request/api';
+import { getUserInfoAPI } from '@/request/api';
 const userState = useUserStore();
 const message = useMessage();
 const router = useRouter();
@@ -104,19 +104,10 @@ const getUserCardInfo = async () => {
   }
 };
 
-async function getHotTags() {
-  const res = await getHotTagsAPI(); 
-  if(res.data.status === 0) {
-    // TODO:
-    console.log(res.data.data);
-  } else {
-    console.log(res.data);
-  }
-}
+
 
 onMounted(() => {
   if(userState.isLogin) getUserCardInfo();
-  getHotTags();
 });
 </script>
 

@@ -373,5 +373,5 @@ export interface RequestAddFollow {
 // /api/follow/delete
 // 用于取消关注
 export interface RequestDeleteFollow {
-  followed: number  // 被关注者的id
+  id: number  // 被关注者的id
 }

@@ -488,9 +488,12 @@ export const publishDraftAPI = (data: requestTypes.RequestPublishDraft, userStat
  *  
 * */
 
-export const getDraftThemeAPI = (data: requestTypes.RequestGetTheme): Res<responseTypes.ResponseGetTheme> => {
+export const getDraftThemeAPI = (data: requestTypes.RequestGetTheme, userState: any): Res<responseTypes.ResponseGetTheme> => {
   const Data = setData(data);
-  return axios.post("draft/getTheme", Data);
+  return axios.post("draft/getTheme", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
 }
 
 /**
@@ -501,9 +504,12 @@ export const getDraftThemeAPI = (data: requestTypes.RequestGetTheme): Res<respon
  *  
 * */
 
-export const getDraftThemeListAPI = (data: requestTypes.RequestGetThemeByIds): Res<responseTypes.ResponseGetThemeByIds> => {
+export const getDraftThemeListAPI = (data: requestTypes.RequestGetThemeByIds, userState: any): Res<responseTypes.ResponseGetThemeByIds> => {
   const Data = setData(data);
-  return axios.post("draft/getThemeByIds", Data);
+  return axios.post("draft/getThemeByIds", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
 }
 
 /**
@@ -514,9 +520,12 @@ export const getDraftThemeListAPI = (data: requestTypes.RequestGetThemeByIds): R
  *  
 * */
 
-export const getDraftLabelsAPI = (data: requestTypes.RequestGetLabels): Res<responseTypes.ResponseGetLabels> => {
+export const getDraftLabelsAPI = (data: requestTypes.RequestGetLabels, userState: any): Res<responseTypes.ResponseGetLabels> => {
   const Data = setData(data);
-  return axios.post("draft/getLabels", Data);
+  return axios.post("draft/getLabels", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
 }
 
 /**
@@ -527,9 +536,12 @@ export const getDraftLabelsAPI = (data: requestTypes.RequestGetLabels): Res<resp
  *  
 * */
 
-export const getDraftLabelListAPI = (data: requestTypes.RequestGetLabelsByIds): Res<responseTypes.ResponseGetLabelsByIds> => {
+export const getDraftLabelListAPI = (data: requestTypes.RequestGetLabelsByIds, userState: any): Res<responseTypes.ResponseGetLabelsByIds> => {
   const Data = setData(data);
-  return axios.post("draft/getLabelsByIds", Data);
+  return axios.post("draft/getLabelsByIds", Data, { headers: {
+    id: userState.userId,
+    token: userState.token
+  } });
 }
 
 /**

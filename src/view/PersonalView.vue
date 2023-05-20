@@ -65,6 +65,7 @@ async function addAttention() {
   };
   const res = await addUserToFollowAPI(data, userState);
   if (res.data.status === 0) {
+    user.followed = true;
     message.success('关注成功');
   } else {
     message.error(res.data.message);
@@ -73,10 +74,11 @@ async function addAttention() {
 
 async function removeAttention() {
   const data: RequestDeleteFollow = {
-    followed: Number(router.currentRoute.value.query.id)
+    id: Number(router.currentRoute.value.query.id)
   };
   const res = await deleteUserFromFollowAPI(data, userState);
   if (res.data.status === 0) {
+    user.followed = false;
     message.success('取消关注');
   } else {
     message.error(res.data.message);

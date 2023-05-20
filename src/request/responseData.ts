@@ -522,7 +522,7 @@ export interface ResponseDeleteFavorite {
 // 用于获取某文章是否在当前用户收藏夹中
 export interface ResponseCheckArticleInFolders {
   code: number;
-  data: boolean[];
+  data: number[];
   message: string;
   status: number;
 }
