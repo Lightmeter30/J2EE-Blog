@@ -189,6 +189,7 @@ function removeCollect(id: number, index: number) {
       if (res.data.status === 0) {
         // TODO: test API
         collectData.collectFolderList.splice(index, 1);
+        changeSelectCollect(collectData.collectFolderList[0].id, 0);
         message.success('删除成功');
       } else {
         message.error(res.data.message);
