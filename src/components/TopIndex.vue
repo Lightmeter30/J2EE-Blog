@@ -80,7 +80,9 @@ const options = [
 let searchText = ref('');
 
 async function search() {
-  if(searchText.value === '') {
+  if(!userState.isLogin) {
+    message.warning('只有登录用户才能使用搜索功能');
+  }else if(searchText.value === '') {
     message.error('检索关键词不能为空!');
   } else if (router.currentRoute.value.path === '/search') {
     searchStore.goSearch(searchText.value);

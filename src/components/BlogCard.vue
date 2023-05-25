@@ -28,21 +28,27 @@ interface ArticleCard {
 const isDelete = ref(false);
 const props = defineProps<ArticleCard>();
 const emits = defineEmits(['removeCollect']);
+
+
 function toBlogView() {
-  // console.log('toBlogView');
+  if(!userState.isLogin) {
+    message.warning('只有登录用户才能查看博客内容!');
+    return;
+  }
   const newPage = router.resolve({ path: '/blog', query: { id: props.id } });
   window.open(newPage.href, '_blank');
 }
 
 function toPersonView() {
-  // console.log('toPersonView');
+  if(!userState.isLogin) {
+    message.warning('只有登录用户才能查看作者界面!');
+    return;
+  }
   const newPage = router.resolve({ path: '/space/home', query: { id: props.author } });
   window.open(newPage.href, '_blank');
 }
 
 function toEdit() {
-  // console.log('toEdit');
-
   const nowPage = router.resolve({ path: '/edit', query: { id: props.id, type: '810' } });
   window.open(nowPage.href, '_blank');
 }
