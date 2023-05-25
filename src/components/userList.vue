@@ -68,7 +68,7 @@ function toPersonal() {
     </div>
     <div class="title">
       <span class="name" @click="toPersonal" ><b>{{ name }}</b></span><br/>
-      <span class="description">{{ description }}</span>
+      <span class="description">{{ description === null ? '这个人很懒, 什么也没留下' : description }}</span>
     </div>
     <div class="attention">
       <n-button v-if="(myIsAttention === 0 ? isAttention : myIsAttention === 1 )" color="#C70002" @click="addOrRemoveAttention(2)" >

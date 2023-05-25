@@ -9,9 +9,9 @@ const message = useMessage();
 const userState = useUserStore();
 const showModal = ref(false);
 const userInfo: RequestUpdateInfo = reactive({
-  name: 'takune',
+  name: '',
   sex: 1,
-  description: '都什么年代了,还在当传统二次元',
+  description: '',
   birthday: '2001-01-08',
 });
 

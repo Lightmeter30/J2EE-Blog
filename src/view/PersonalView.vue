@@ -104,7 +104,7 @@ const getUserInfo = async () => {
     user.articleNum = res.data.data.articleNum;
     user.name = res.data.data.name;
     user.avatar = userState.staticHead + res.data.data.avatar;
-    user.description = res.data.data.description;
+    user.description = res.data.data.description === null ? '这个人很懒, 什么也没留下' : res.data.data.description;
     user.followedNum = res.data.data.followedNum;
     user.followerNum = res.data.data.followerNum;
     user.followed = res.data.data.followed;

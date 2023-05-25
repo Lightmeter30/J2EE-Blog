@@ -169,7 +169,6 @@ body {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: $scrollbar-color $github-background;
-  background: url('@/assets/img/background.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0;

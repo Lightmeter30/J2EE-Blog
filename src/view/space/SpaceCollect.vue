@@ -304,10 +304,12 @@ onMounted(() => {
 
   .container {
     display: flex;
+    height: 100%;
   }
 
   .sideIndex {
     width: 20%;
+    height: 100%;
     background-color: $github-card-background;
     color: $github-header-text;
     border-radius: 5px;

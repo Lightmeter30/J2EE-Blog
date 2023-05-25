@@ -80,8 +80,9 @@ const options = [
 let searchText = ref('');
 
 async function search() {
-  // console.log('search')
-  if (router.currentRoute.value.path === '/search') {
+  if(searchText.value === '') {
+    message.error('检索关键词不能为空!');
+  } else if (router.currentRoute.value.path === '/search') {
     searchStore.goSearch(searchText.value);
   } else {
     searchStore.goSearch(searchText.value);
@@ -98,7 +99,6 @@ function handleSelect(key: string | number) {
       onPositiveClick: () => {
         userState.logout();
         router.push('/');
-        // message.success('退出登录');
       },
     })
   }
@@ -120,6 +120,15 @@ function routeTo(key: number) {
     router.push('/login');
   }
 }
+
+watch(
+  () => router.currentRoute.value.path,
+  (newValue, oldValue) => {
+    if(oldValue === '/search') {
+      searchText.value = '';
+    }
+  }
+);
 </script>
 
 <template>

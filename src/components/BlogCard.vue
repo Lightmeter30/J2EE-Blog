@@ -35,7 +35,7 @@ function toBlogView() {
 }
 
 function toPersonView() {
-  console.log('toPersonView');
+  // console.log('toPersonView');
   const newPage = router.resolve({ path: '/space/home', query: { id: props.author } });
   window.open(newPage.href, '_blank');
 }
