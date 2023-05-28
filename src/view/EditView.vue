@@ -385,10 +385,10 @@ onMounted(() => {
     <div class="editTitle">
       <NForm :rules="ruleBlog">
         <NFormItemRow label="标题" path="title">
-          <NInput maxlength="20" placeholder="请输入文章标题(限20字)" v-model:value="blog.title" />
+          <NInput maxlength="40" placeholder="请输入文章标题(限40字)" v-model:value="blog.title" />
         </NFormItemRow>
         <NFormItemRow label="简介" path="description">
-          <NInput maxlength="50" placeholder="请输入简介(限50字)" v-model:value="blog.description" />
+          <NInput maxlength="200" placeholder="请输入简介(限200字)" v-model:value="blog.description" />
         </NFormItemRow>
       </NForm>
       <n-config-provider :theme="darkTheme">

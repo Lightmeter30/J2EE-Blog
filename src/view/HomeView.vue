@@ -17,9 +17,9 @@
           :comments-num="item.commentsNum" :tags="homeData.tagsList[index]"
           :topic="homeData.topicList[index]"></blog-card>
       </div>
-      <div class="homeFoot" v-show="homeData.total > 1">
+      <div class="homeFoot" v-show="homeData.total > 1 && !loading">
         <n-config-provider :theme="darkTheme">
-          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="homeData.total"
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :page-count="homeData.total"
             show-quick-jumper>
             <template #goto>
               跳至

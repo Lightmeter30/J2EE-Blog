@@ -15,9 +15,9 @@
           :comments-num="item.commentsNum" :topic="searchData.topicList[index]"
           :tags="searchData.tagsList[index]"></blog-card>
       </div>
-      <div class="searchFoot" v-show="searchData.total > 1">
+      <div class="searchFoot" v-show="searchData.total > 1 && !loading">
         <n-config-provider :theme="darkTheme">
-          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="searchData.total"
+          <n-pagination v-model:page="nowPage" :on-update:page="changePage" :page-count="searchData.total"
             show-quick-jumper>
             <template #goto>
               跳至

@@ -106,9 +106,9 @@ onMounted(async () => {
           <draft-card v-for="(item, index) in draftData.draftList" :author="item.author" :description="item.description"
             :id="item.id" :title="item.title" :update-time="item.updateTime" :tags="draftData.tagsList[index]" :topic="draftData.topicList[index]"></draft-card>
         </div>
-        <div class="draftFoot" v-show="draftData.total !== 1">
+        <div class="draftFoot" v-show="draftData.total > 1 && !loading">
           <n-config-provider :theme="darkTheme">
-            <n-pagination :on-update:page="changePage" :item-count="draftData.total" show-quick-jumper>
+            <n-pagination :on-update:page="changePage" :page-count="draftData.total" show-quick-jumper>
               <template #goto>
                 跳至
               </template>

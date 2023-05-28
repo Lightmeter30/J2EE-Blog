@@ -41,7 +41,7 @@ const initWordCloud = (data: any, max = 42) => {
       sizeRange: [14, max],
       rotationRange: [-45, 45],
       rotationStep: 15, // 0 15 30 45 度倾斜
-      gridSize: 8,
+      gridSize: 7,
       drawOutOfBound: false,
         // 这是全局的文字样式，相对应的还可以对每个词设置字体样式
         textStyle: {
@@ -60,7 +60,7 @@ const initWordCloud = (data: any, max = 42) => {
               "#F5B6A4",
               "#184995",
               "#E290BD",
-              "4D739A"
+              "#4D739A"
             ]
             // Random color
             // return 'rgb(' + [

@@ -145,9 +145,9 @@ onMounted(() => {
             </blog-card>
           </div>
         </div>
-        <div class="homeFoot" v-show="homeData.total !== 1">
+        <div class="homeFoot" v-show="homeData.total > 1 && !loading">
           <n-config-provider :theme="darkTheme">
-            <n-pagination :on-update:page="changePage" :item-count="homeData.total" show-quick-jumper>
+            <n-pagination :on-update:page="changePage" :page-count="homeData.total" show-quick-jumper>
               <template #goto>
                 跳至
               </template>

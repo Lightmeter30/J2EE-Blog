@@ -254,9 +254,9 @@ onMounted(() => {
             :favorite-id="item.favorite.id" :tags="collectData.tagsList[index]"
             :topic="collectData.topicList[index]" @remove-collect="removeCollection" ></blog-card>
         </div>
-        <div class="collectFoot" v-show="collectData.total > 1">
+        <div class="collectFoot" v-show="collectData.total > 1 && !loading">
           <n-config-provider :theme="darkTheme">
-            <n-pagination v-model:page="nowPage" :on-update:page="changePage" :item-count="collectData.total"
+            <n-pagination v-model:page="nowPage" :on-update:page="changePage" :page-count="collectData.total"
               show-quick-jumper>
               <template #goto>
                 跳至
