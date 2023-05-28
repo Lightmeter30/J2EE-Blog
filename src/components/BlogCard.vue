@@ -31,7 +31,7 @@ const emits = defineEmits(['removeCollect']);
 
 
 function toBlogView() {
-  if(!userState.isLogin) {
+  if (!userState.isLogin) {
     message.warning('只有登录用户才能查看博客内容!');
     return;
   }
@@ -40,7 +40,7 @@ function toBlogView() {
 }
 
 function toPersonView() {
-  if(!userState.isLogin) {
+  if (!userState.isLogin) {
     message.warning('只有登录用户才能查看作者界面!');
     return;
   }
@@ -109,26 +109,29 @@ function toTags(id: number) {
 </script>
 
 <template>
-  <div class="blogCard" v-show="!isDelete" >
+  <div class="blogCard" v-show="!isDelete">
     <div class="title">
       <span @click="toBlogView()"><b>{{ title }}</b></span>
     </div>
     <div class="description">
-      {{ description }}
+      <n-ellipsis :line-clamp="2" :tooltip="false" >
+        {{ description }}
+      </n-ellipsis>
     </div>
     <div class="tags">
-      <span class="author topic" @click="toTopic" >
+      <span class="author topic" @click="toTopic">
         <n-icon style="position: relative; top: 3px;padding-right: 4px;">
           <Albums />
         </n-icon>
         <span>{{ topic.name }}</span></span> &nbsp;
-      <span v-show="tags.length !== 0" >
+      <span v-show="tags.length !== 0">
         <b>|</b>&nbsp;
         <n-icon style="position: relative; top: 3px;padding-right: 8px;">
           <PricetagsSharp />
         </n-icon>
         <span v-for="(item, index) in tags" class="tagItem">
-          <span class="name" @click="toTags(item.id)" >{{ item.name }}</span><span class="split" v-show="index !== tags.length - 1">·</span>
+          <span class="name" @click="toTags(item.id)">{{ item.name }}</span><span class="split"
+            v-show="index !== tags.length - 1">·</span>
         </span>
       </span>
     </div>
@@ -211,10 +214,11 @@ function toTags(id: number) {
     color: $cloud-1-hex;
     font-size: medium;
     width: calc(100% - 170px);
+    // max-height: 52px;
   }
 
   .tags {
-    padding-top: 5px;
+    // padding-top: 5px;
     font-size: 14px;
     color: $cloud-1-hex;
     line-height: 14px;
