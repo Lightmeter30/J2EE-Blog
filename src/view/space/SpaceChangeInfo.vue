@@ -26,7 +26,7 @@ function showDialog() {
 }
 
 const changePassword = async () => {
-  console.log("change password...");
+  // console.log("change password...");
   const data: RequestUpdatePassword = {
     newPassword: password.newPassword1,
     oldPassword: password.oldPassword,
@@ -42,7 +42,7 @@ const changePassword = async () => {
 }
 
 const changeInfo = async () => {
-  console.log("Change info...");
+  // console.log("Change info...");
   const res = await updateUserInfoAPI(userInfo, userState);
   if(res.data.status === 0) {
     userState.userName = userInfo.name;
@@ -67,7 +67,7 @@ const uploadAvatar = async ({
   }
   // formData.append(file.name, file.file as File)
   avatar.avatar = file.file;
-  console.log(avatar);
+  // console.log(avatar);
   const res = await updateUserAvatarAPI(avatar, userState);
   if(res.data.status === 0) {
     userState.avatar = res.data.data;
@@ -83,7 +83,7 @@ const uploadAvatar = async ({
 
 const init = async () => {
   const res = await getUserInfoAPI(userState);
-  console.log(res);
+  // console.log(res);
   if(res.data.status === 0) {
     userInfo.name = res.data.data.name;
     userInfo.sex = res.data.data.sex ? 1 : 0;

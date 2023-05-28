@@ -72,7 +72,7 @@ const myComment = ref('');
 const showModal = ref(false);
 
 async function comment() {
-  console.log('comment', myComment);
+  // console.log('comment', myComment);
   const data: RequestAddComment = {
     articleId: Number(router.currentRoute.value.query.id),
     time: getNowTime(),
@@ -98,7 +98,7 @@ function showDialog() {
 
 function closeModal() {
   showModal.value = false;
-  console.log('closeModal');
+  // console.log('closeModal');
 }
 
 function attentionMe(isAttention: boolean) {
@@ -116,7 +116,7 @@ function toTags(id: number) {
 }
 
 async function addBlogToCollect(collectID: number, collectName: string, index: number) {
-  console.log(collectID);
+  // console.log(collectID);
   const data: RequestAddFavorite = {
     articleId: Number(router.currentRoute.value.query.id),
     folderId: collectID
@@ -211,7 +211,7 @@ const getAllFolders = async () => {
   const res = await getUserAllCollectAPI(userStore);
   if (res.data.status === 0) {
     // TODO:
-    console.log(res.data.data);
+    // console.log(res.data.data);
     blogData.collectList = res.data.data;
   } else {
     message.error(res.data.message, { duration: 1200 });

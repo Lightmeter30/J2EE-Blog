@@ -30,7 +30,7 @@ const homeData = reactive<homeDataType>({
 
 
 const changePage = async (page: number) => {
-  console.log(`to page ${page}`);
+  // console.log(`to page ${page}`);
   const data: RequestGetUserPage = {
     userId: Number(router.currentRoute.value.query.id),
     currentPage: page,

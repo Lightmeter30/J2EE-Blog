@@ -72,7 +72,7 @@ async function changePage(page: number) {
   if (res.data.status === 0) {
     getArticle(res.data.data);
   } else {
-    console.log(res.data);
+    console.error(res.data);
   }
 }
 

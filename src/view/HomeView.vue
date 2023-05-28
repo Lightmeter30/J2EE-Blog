@@ -69,7 +69,7 @@ const changePage = async (page: number) => {
   const res = await getHomePageArticlesAPI(data);
   if (res.data.status === 0) {
     // TODO: 接口对接
-    console.log(res);
+    // console.log(res);
     const currentArticleList = res.data.data;
     const author: Array<number> = [];
     const ids: number[] = [];

@@ -172,7 +172,7 @@ const addArticle = async () => {
   const res = await addArticleAPI(data, userState);
   if (res.data.status === 0) {
     // router.replace({path: '/blog', query: {code: res.data.code}});
-    console.log(res);
+    // console.log(res);
     router.replace({path: '/blog', query: {id: res.data.data}});
     message.success('发布成功!', { duration: 1200 });
   } else {
@@ -204,7 +204,7 @@ const updateArticle = async () => {
   };
   const res = await updateArticleAPI(data, userState);
   if (res.data.status === 0) {
-    console.log(res);
+    // console.log(res);
     message.success('发布成功!', { duration: 1200 });
     router.replace({ path: '/blog', query: { id: router.currentRoute.value.query.id } });
   } else {
@@ -244,7 +244,7 @@ async function updateDraft() {
   };
   const res = await updateDraftAPI(data, userState);
   if (res.data.status === 0) {
-    console.log(res);
+    // console.log(res);
     message.success('已保存到草稿箱!', { duration: 1200 });
   } else {
     message.error(res.data.message, { duration: 1200 });
@@ -276,7 +276,7 @@ const onUploadImg = async (files: any, callback: any) => {
   };
   const res = await uploadImgAPI(data, userState);
   if (res.data.status === 0) {
-    console.log(res.data);
+    // console.log(res.data);
     const url: Array<string> = [userState.staticHead + res.data.data];
     callback(url);
   } else {

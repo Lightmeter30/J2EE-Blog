@@ -68,7 +68,7 @@ async function changePage(page: number) {
   if (res.data.status === 0) {
     getArticle(res.data.data);
   } else {
-    console.log(res.data);
+    console.error(res.data);
   }
 }
 
@@ -93,7 +93,7 @@ async function getArticle(ids: number[]) {
     tagsData.currentArticleList = currentArticleList;
     loading.value = false;
   } else {
-    console.log(res.data);
+    console.error(res.data);
   }
 }
 
@@ -105,7 +105,7 @@ async function init() {
   if (res.data.status === 0) {
     tagsData.total = res.data.data;
   } else {
-    console.log(res.data);
+    console.error(res.data);
   }
 }
 

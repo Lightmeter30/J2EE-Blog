@@ -72,7 +72,7 @@ function changePage(page: number) {
 }
 
 searchStore.$subscribe((obj, param1) => {
-  console.log('change from subscribe');
+  // console.log('change from subscribe');
   nowPage.value = 1;
   searchAPI(nowPage.value, param1.searchText);
 })
@@ -86,7 +86,7 @@ async function searchAPI(curPage: number, searchText: string) {
   const res = await pageFuzzySearchAPI(data, userState);
   if (res.data.status === 0) {
     // TODO: 接口数据对接
-    console.log(res.data.data);
+    // console.log(res.data.data);
     const currentArticleList = res.data.data.pageArticles;
     const author: Array<number> = [];
     const ids: Array<number> = [];
@@ -145,7 +145,7 @@ async function getLabelList(ids: number[]) {
 }
 
 onMounted(() => {
-  console.log('change from onMounted');
+  // console.log('change from onMounted');
   searchAPI(1, searchStore.searchText);
 })
 

@@ -34,7 +34,7 @@ function hideDelete() {
 };
 
 onMounted(() => {
-  console.log(props.index);
+  // console.log(props.index);
   if (props.index === 0) {
     const collect = document.getElementById(`folder0`) as HTMLElement;
     const Delete = document.createElement(`delete0`) as HTMLElement;

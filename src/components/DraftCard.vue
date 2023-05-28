@@ -23,7 +23,7 @@ interface draftDataType {
 const props = defineProps<draftDataType>();
 
 function toEdit() {
-  console.log('toEdit');
+  // console.log('toEdit');
   router.push({ path: '/edit', query: { id: props.id, type: '1919' } });
 }
 

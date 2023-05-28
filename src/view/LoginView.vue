@@ -183,7 +183,7 @@ const ruleRegister: FormRules = {
 
 const updateTab = (value: string) => {
   tabValue.value = value
-  console.log(value)
+  // console.log(value)
 }
 
 const submitLogin = async () => {
@@ -254,10 +254,10 @@ const submitRegister = async () => {
   }
 }
 const sendCode = async () => {
-  console.log('sendcode', register.email);
+  // console.log('sendcode', register.email);
   const email: RequestGetVerifyCode = { email: register.email };
   const res = await getVerifyCodeAPI(email);
-  console.log(res);
+  // console.log(res);
   if(res.data.status === 0)
     message.success('验证码发送成功！五分钟内有效');
   else

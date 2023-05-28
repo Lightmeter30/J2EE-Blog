@@ -11,10 +11,10 @@ async function getHotTags() {
   const res = await getHotTagsAPI(); 
   if(res.data.status === 0) {
     // TODO:
-    console.log(res.data.data);
+    // console.log(res.data.data);
     initWordCloud(res.data.data);
   } else {
-    console.log(res.data);
+    console.error(res.data);
   }
 }
 onMounted(() => {

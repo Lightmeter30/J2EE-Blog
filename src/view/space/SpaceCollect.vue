@@ -202,9 +202,9 @@ const getAllFolders = async () => {
   const res = await getUserAllCollectAPI(userStore);
   if (res.data.status === 0) {
     // TODO:
-    console.log(res.data.data);
+    // console.log(res.data.data);
     collectData.collectFolderList = res.data.data;
-    console.log(`folder${collectData.collectFolderList[0].id}`);
+    // console.log(`folder${collectData.collectFolderList[0].id}`);
     // collect = document.getElementById(`folder0`) as HTMLElement;
     // collect.classList.remove('collectHover');
     // collect.classList.add('selectedCollect');

@@ -22,7 +22,7 @@ const draftData = reactive<draftDataType>({
 });
 
 function changePage(page: number) {
-  console.log(`to page ${page}`);
+  // console.log(`to page ${page}`);
   getDraftPage(page);
 }
 

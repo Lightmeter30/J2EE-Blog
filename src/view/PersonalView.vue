@@ -86,7 +86,7 @@ async function removeAttention() {
 }
 
 function addOrRemoveAttention(key: number) {
-  console.log('addAttention', key);
+  // console.log('addAttention', key);
   if (key === 1) {
     addAttention();
   } else if (key === 2) {

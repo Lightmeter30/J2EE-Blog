@@ -19,7 +19,7 @@ const fansData = reactive<fansDataType>({
   userList: [],
 });
 function changePage(page: number) {
-  console.log(`to page ${page}`);
+  // console.log(`to page ${page}`);
 }
 const loading = ref(true);
 
@@ -33,7 +33,7 @@ async function init() {
     fansData.ids = res.data.data;
     getBriefInfo(fansData.ids);
   } else {
-    console.log(res.data.message);
+    console.error(res.data.message);
   }
 }
 

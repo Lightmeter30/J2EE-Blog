@@ -35,7 +35,7 @@ async function init() {
     followedData.ids = res.data.data;
     getBriefInfo(followedData.ids);
   } else {
-    console.log(res.data.message);
+    console.error(res.data.message);
   }
 }
 
