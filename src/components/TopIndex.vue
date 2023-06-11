@@ -117,7 +117,8 @@ function routeTo(key: number) {
   } else if (key === 2) {
     router.push({ path: '/space/home', query: { id: userState.userId } });
   } else if (key === 3) {
-    router.push({ path: '/edit', query: { type: '114514' } });
+    const newPage = router.resolve({ path: '/edit', query: { type: '114514' } });
+    window.open(newPage.href, '_blank');
   } else if (key === 4) {
     router.push('/login');
   }
